@@ -83,10 +83,12 @@ abstract class ShardedDaemonProcessSpec
       }
       enterBarrier("snitch-registered")
 
-      probe.awaitAssert({
-        typedSystem.receptionist ! Receptionist.Find(SnitchServiceKey, probe.ref)
-        probe.expectMessageType[Receptionist.Listing].serviceInstances(SnitchServiceKey).size should ===(1)
-      }, 5.seconds)
+      probe.awaitAssert(
+        {
+          typedSystem.receptionist ! Receptionist.Find(SnitchServiceKey, probe.ref)
+          probe.expectMessageType[Receptionist.Listing].serviceInstances(SnitchServiceKey).size should ===(1)
+        },
+        5.seconds)
       enterBarrier("snitch-seen")
     }
 

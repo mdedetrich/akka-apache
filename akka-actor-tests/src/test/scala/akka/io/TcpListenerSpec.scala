@@ -151,7 +151,7 @@ class TcpListenerSpec extends AkkaSpec("""
 
     def bindListener(): Unit = {
       listener ! new ChannelRegistration {
-        def enableInterest(op: Int): Unit = interestCallReceiver.ref ! op
+        def enableInterest(op: Int): Unit = interestCallReceiver.ref  ! op
         def disableInterest(op: Int): Unit = interestCallReceiver.ref ! -op
         def cancelAndClose(andThen: () => Unit): Unit = {
           register.channel.close()

@@ -62,9 +62,11 @@ class RemoteDeployNotAllowedSpec
           case SpawnChild(name) =>
             // this should throw
             try {
-              ctx.spawn(Behaviors.setup[AnyRef] { _ =>
-                Behaviors.empty
-              }, name)
+              ctx.spawn(
+                Behaviors.setup[AnyRef] { _ =>
+                  Behaviors.empty
+                },
+                name)
             } catch {
               case ex: Exception => probe.ref ! ex
             }

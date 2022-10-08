@@ -45,7 +45,7 @@ class TcpDnsClientSpec extends AkkaSpec with ImplicitSender {
 
       // When a new request arrived after the connection is closed
       registered ! PeerClosed
-      client ! exampleRequestMessage
+      client     ! exampleRequestMessage
 
       // Expect a reconnect
       tcpExtensionProbe.expectMsg(Tcp.Connect(dnsServerAddress))

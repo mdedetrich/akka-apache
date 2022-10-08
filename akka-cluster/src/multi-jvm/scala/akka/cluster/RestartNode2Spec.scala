@@ -80,13 +80,15 @@ abstract class RestartNode2SpecSpec extends MultiNodeClusterSpec(RestartNode2Spe
       // seed1System is a separate ActorSystem, to be able to simulate restart
       // we must transfer its address to seed2
       runOn(seed2) {
-        system.actorOf(Props(new Actor {
-          def receive = {
-            case a: Address =>
-              seedNode1Address = a
-              sender() ! "ok"
-          }
-        }).withDeploy(Deploy.local), name = "address-receiver")
+        system.actorOf(
+          Props(new Actor {
+            def receive = {
+              case a: Address =>
+                seedNode1Address = a
+                sender() ! "ok"
+            }
+          }).withDeploy(Deploy.local),
+          name = "address-receiver")
         enterBarrier("seed1-address-receiver-ready")
       }
 

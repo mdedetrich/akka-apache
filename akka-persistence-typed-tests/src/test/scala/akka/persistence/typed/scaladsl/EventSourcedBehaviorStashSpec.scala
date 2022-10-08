@@ -286,7 +286,7 @@ class EventSourcedBehaviorStashSpec
       (1 to 100).foreach { n =>
         if (n % 10 == 0)
           c ! Unhandled(notUsedProbe.ref)
-        c ! Increment(s"inc-3-$n", ackProbe.ref)
+        c   ! Increment(s"inc-3-$n", ackProbe.ref)
       }
 
       c ! GetValue(stateProbe.ref)
@@ -479,8 +479,8 @@ class EventSourcedBehaviorStashSpec
       c ! Increment(s"inc-2", ackProbe.ref)
       // while the next two messages are already in the mailbox, so they will be stashed in the persisting state
       c.unsafeUpcast[Any] ! GetState(getStateProbe.ref)
-      c ! Increment(s"inc-3", ackProbe.ref)
-      c ! Increment(s"inc-4", ackProbe.ref)
+      c                   ! Increment(s"inc-3", ackProbe.ref)
+      c                   ! Increment(s"inc-4", ackProbe.ref)
 
       latch.countDown()
 
@@ -556,7 +556,8 @@ class EventSourcedBehaviorStashSpec
                     Effect.stash()
                 }
             }
-          }, {
+          },
+          {
             case (_, "start-stashing") => true
             case (_, "unstash")        => false
             case (_, _)                => throw new IllegalArgumentException()
@@ -665,7 +666,7 @@ class EventSourcedBehaviorStashSpec
       c ! Increment("4", ackProbe.ref)
 
       // start unstashing
-      c ! Activate("5", ackProbe.ref)
+      c           ! Activate("5", ackProbe.ref)
       c.toClassic ! PoisonPill
       // 6 shouldn't make it, already stopped
       c ! Increment("6", ackProbe.ref)
@@ -704,7 +705,7 @@ class EventSourcedBehaviorStashSpec
       // this PoisonPill will most likely be received in RequestingRecoveryPermit since it's sent slightly afterwards
       Thread.sleep(1)
       c3.toClassic ! PoisonPill
-      c3 ! Increment("4", ackProbe.ref)
+      c3           ! Increment("4", ackProbe.ref)
       signalProbe.expectMessage("RecoveryCompleted-3")
       signalProbe.expectMessage("PostStop")
       ackProbe.expectNoMessage(20.millis)
@@ -713,7 +714,7 @@ class EventSourcedBehaviorStashSpec
       signalProbe.expectMessage("RecoveryCompleted-3")
       // this PoisonPill will be received in Running
       c4.toClassic ! PoisonPill
-      c4 ! Increment("4", ackProbe.ref)
+      c4           ! Increment("4", ackProbe.ref)
       signalProbe.expectMessage("PostStop")
       ackProbe.expectNoMessage(20.millis)
 
@@ -723,7 +724,7 @@ class EventSourcedBehaviorStashSpec
       c5 ! Increment("5", ackProbe.ref)
       // this PoisonPill will most likely be received in PersistingEvents
       c5.toClassic ! PoisonPill
-      c5 ! Increment("6", ackProbe.ref)
+      c5           ! Increment("6", ackProbe.ref)
       ackProbe.expectMessage(Ack("4"))
       ackProbe.expectMessage(Ack("5"))
       signalProbe.expectMessage("PostStop")

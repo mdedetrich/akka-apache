@@ -470,7 +470,7 @@ class WriteAggregatorSpec extends AkkaSpec(s"""
 
       probe.expectMsgType[Write]
       probe.lastSender ! WriteNack
-      aggr ! UpdateSuccess(WriteAggregatorSpec.KeyA, None) // the local write
+      aggr             ! UpdateSuccess(WriteAggregatorSpec.KeyA, None) // the local write
       probe.expectMsgType[Write]
       probe.lastSender ! WriteAck
       probe.expectMsgType[Write]

@@ -136,8 +136,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesJoiningToOneNode = getInt("nr-of-nodes-joining-to-one") * nFactor
     // remaining will join to seed nodes
     val numberOfNodesJoiningToSeedNodes = (totalNumberOfNodes - numberOfSeedNodes -
-    numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
-    numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode)
+      numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
+      numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode)
       .requiring(_ >= 0, s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}")
     val numberOfNodesLeavingOneByOneSmall = getInt("nr-of-nodes-leaving-one-by-one-small") * nFactor
     val numberOfNodesLeavingOneByOneLarge = getInt("nr-of-nodes-leaving-one-by-one-large") * nFactor
@@ -540,12 +540,12 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
         Props(classOf[ClusterResultAggregator], title, expectedResults, settings).withDeploy(Deploy.local),
         name = "result" + step)
       if (includeInHistory && infolog) aggregator ! ReportTo(Some(clusterResultHistory))
-      else aggregator ! ReportTo(None)
+      else aggregator                             ! ReportTo(None)
     }
     enterBarrier("result-aggregator-created-" + step)
     runOn(roles.take(nbrUsedRoles): _*) {
       val resultAggregator = identifyClusterResultAggregator()
-      phiObserver ! ReportTo(resultAggregator)
+      phiObserver   ! ReportTo(resultAggregator)
       statsObserver ! Reset
       statsObserver ! ReportTo(resultAggregator)
     }
@@ -767,7 +767,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       else {
         val t = title + " round " + counter
         runOn(usedRoles: _*) {
-          phiObserver ! Reset
+          phiObserver   ! Reset
           statsObserver ! Reset
         }
         createResultAggregator(t, expectedResults = nbrUsedRoles, includeInHistory = true)
@@ -813,7 +813,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       runOn(usedRoles: _*) {
         awaitMembersUp(nbrUsedRoles, timeout = remainingOrDefault)
         awaitAllReachable()
-        phiObserver ! Reset
+        phiObserver   ! Reset
         statsObserver ! Reset
       }
     }

@@ -52,7 +52,7 @@ class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with Scala
             new OutputStream {
               override def write(i: Int): Unit = ()
               override def write(bytes: Array[Byte]): Unit = p.ref ! ByteString(bytes).utf8String
-              override def flush(): Unit = p.ref ! "flush"
+              override def flush(): Unit = p.ref                   ! "flush"
             },
           autoFlush = true))
       p.expectMsg(data(0).utf8String)
@@ -135,7 +135,7 @@ class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with Scala
         new OutputStream {
           override def write(i: Int): Unit = ()
           override def write(bytes: Array[Byte]): Unit = p.ref ! ByteString(bytes).utf8String
-          override def close() = p.ref ! "closed"
+          override def close() = p.ref                         ! "closed"
         }))
 
       p.expectMsg("closed")

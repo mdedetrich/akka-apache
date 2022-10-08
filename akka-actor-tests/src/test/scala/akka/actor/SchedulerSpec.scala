@@ -42,8 +42,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
         implicit executor: ExecutionContext): Cancellable
 
     def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit
-        executor: ExecutionContext): Cancellable
+        implicit executor: ExecutionContext): Cancellable
   }
 
   class ScheduleWithFixedDelayAdapter extends ScheduleAdapter {
@@ -52,8 +51,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
       system.scheduler.scheduleWithFixedDelay(initialDelay, delay)(runnable)
 
     def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit
-        executor: ExecutionContext): Cancellable =
+        implicit executor: ExecutionContext): Cancellable =
       system.scheduler.scheduleWithFixedDelay(initialDelay, delay, receiver, message)
 
     override def toString: String = "scheduleWithFixedDelay"
@@ -65,8 +63,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
       system.scheduler.scheduleAtFixedRate(initialDelay, delay)(runnable)
 
     def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit
-        executor: ExecutionContext): Cancellable =
+        implicit executor: ExecutionContext): Cancellable =
       system.scheduler.scheduleAtFixedRate(initialDelay, delay, receiver, message)
 
     override def toString: String = "scheduleAtFixedRate"
@@ -240,11 +237,14 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
         "stop continuous scheduling if the task throws exception" taggedAs TimingTest in {
           EventFilter[Exception]("TEST", occurrences = 1).intercept {
             val count = new AtomicInteger(0)
-            collectCancellable(scheduleAdapter.schedule(Duration.Zero, 20.millis, () => {
-              val c = count.incrementAndGet()
-              testActor ! c
-              if (c == 3) throw new RuntimeException("TEST") with NoStackTrace
-            }))
+            collectCancellable(scheduleAdapter.schedule(
+              Duration.Zero,
+              20.millis,
+              () => {
+                val c = count.incrementAndGet()
+                testActor ! c
+                if (c == 3) throw new RuntimeException("TEST") with NoStackTrace
+              }))
             expectMsg(1)
             expectMsg(2)
             expectMsg(3)
@@ -256,24 +256,30 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           // when first throws
           EventFilter[Exception]("TEST-1", occurrences = 1).intercept {
             val count1 = new AtomicInteger(0)
-            collectCancellable(scheduleAdapter.schedule(Duration.Zero, 20.millis, () => {
-              val c = count1.incrementAndGet()
-              if (c == 1)
-                throw new IllegalStateException("TEST-1") with NoStackTrace
-              else
-                testActor ! c
-            }))
+            collectCancellable(scheduleAdapter.schedule(
+              Duration.Zero,
+              20.millis,
+              () => {
+                val c = count1.incrementAndGet()
+                if (c == 1)
+                  throw new IllegalStateException("TEST-1") with NoStackTrace
+                else
+                  testActor ! c
+              }))
             expectNoMessage(200.millis)
           }
 
           // when later
           EventFilter[Exception]("TEST-3", occurrences = 1).intercept {
             val count2 = new AtomicInteger(0)
-            collectCancellable(scheduleAdapter.schedule(Duration.Zero, 20.millis, () => {
-              val c = count2.incrementAndGet()
-              testActor ! c
-              if (c == 3) throw new IllegalStateException("TEST-3") with NoStackTrace
-            }))
+            collectCancellable(scheduleAdapter.schedule(
+              Duration.Zero,
+              20.millis,
+              () => {
+                val c = count2.incrementAndGet()
+                testActor ! c
+                if (c == 3) throw new IllegalStateException("TEST-3") with NoStackTrace
+              }))
             expectMsg(1)
             expectMsg(2)
             expectMsg(3)
@@ -286,9 +292,12 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
 
           val initialDelay = 200.millis.dilated
           val delay = 10.millis.dilated
-          val timeout = collectCancellable(scheduleAdapter.schedule(initialDelay, delay, () => {
-            ticks.incrementAndGet()
-          }))
+          val timeout = collectCancellable(scheduleAdapter.schedule(
+            initialDelay,
+            delay,
+            () => {
+              ticks.incrementAndGet()
+            }))
           Thread.sleep(10.millis.dilated.toMillis)
           timeout.cancel()
           Thread.sleep((initialDelay + 100.millis.dilated).toMillis)
@@ -301,9 +310,12 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
 
           val initialDelay = 90.millis.dilated
           val delay = 500.millis.dilated
-          val timeout = collectCancellable(scheduleAdapter.schedule(initialDelay, delay, () => {
-            ticks.incrementAndGet()
-          }))
+          val timeout = collectCancellable(scheduleAdapter.schedule(
+            initialDelay,
+            delay,
+            () => {
+              ticks.incrementAndGet()
+            }))
           Thread.sleep((initialDelay + 200.millis.dilated).toMillis)
           timeout.cancel()
           Thread.sleep((delay + 100.millis.dilated).toMillis)
@@ -473,9 +485,11 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
           val counter = new AtomicInteger
           val terminated = Future {
             var rounds = 0
-            while (Try(sched.scheduleOnce(Duration.Zero, new Scheduler.TaskRunOnClose {
-                     override def run(): Unit = ()
-                   })(localEC)).isSuccess) {
+            while (Try(sched.scheduleOnce(
+                Duration.Zero,
+                new Scheduler.TaskRunOnClose {
+                  override def run(): Unit = ()
+                })(localEC)).isSuccess) {
               Thread.sleep(1)
               driver.wakeUp(step)
               rounds += 1
@@ -485,9 +499,11 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
           def delay = if (ThreadLocalRandom.current.nextBoolean) step * 2 else step
           val N = 1000000
           (1 to N).foreach(_ =>
-            sched.scheduleOnce(delay, new Scheduler.TaskRunOnClose {
-              override def run(): Unit = counter.incrementAndGet()
-            }))
+            sched.scheduleOnce(
+              delay,
+              new Scheduler.TaskRunOnClose {
+                override def run(): Unit = counter.incrementAndGet()
+              }))
           sched.close()
           Await.result(terminated, 3.seconds.dilated) should be > 10
           awaitAssert(counter.get should ===(N))
@@ -614,9 +630,11 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
           var overrun = headroom
           val cap = 1000000
           val (success, failure) = Iterator
-            .continually(Try(sched.scheduleOnce(100.millis, new Scheduler.TaskRunOnClose {
-              override def run(): Unit = counter.incrementAndGet()
-            })))
+            .continually(Try(sched.scheduleOnce(
+              100.millis,
+              new Scheduler.TaskRunOnClose {
+                override def run(): Unit = counter.incrementAndGet()
+              })))
             .take(cap)
             .takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
             .partition(_.isSuccess)
@@ -632,9 +650,11 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
           import system.dispatcher
           val counter = new AtomicInteger()
           sched.scheduleOnce(10.seconds)(counter.incrementAndGet())
-          sched.scheduleOnce(10.seconds, new Scheduler.TaskRunOnClose {
-            override def run(): Unit = counter.incrementAndGet()
-          })
+          sched.scheduleOnce(
+            10.seconds,
+            new Scheduler.TaskRunOnClose {
+              override def run(): Unit = counter.incrementAndGet()
+            })
           driver.close()
           sched.close()
           counter.get should ===(1)

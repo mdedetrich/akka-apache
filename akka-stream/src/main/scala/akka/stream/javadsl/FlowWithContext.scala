@@ -38,7 +38,6 @@ object FlowWithContext {
  * operations.
  *
  * An "empty" flow can be created by calling `FlowWithContext[Ctx, T]`.
- *
  */
 final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
     delegate: javadsl.Flow[Pair[In, CtxIn], Pair[Out, CtxOut], Mat])

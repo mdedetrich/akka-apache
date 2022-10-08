@@ -36,7 +36,7 @@ class TestActor(probe: ActorRef) extends Actor {
     case "THROW"                    => throw new TestActor.NormalException
     case "THROW_STOPPING_EXCEPTION" => throw new TestActor.StoppingException
     case ("TO_PARENT", msg)         => context.parent ! msg
-    case other                      => probe ! other
+    case other                      => probe          ! other
   }
 }
 
@@ -272,10 +272,12 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec("""
       supervisor ! "THROW"
 
       // note that the message could be lost (dead letters) because ended up with previous crashed child
-      probe.awaitAssert({
-        supervisor ! "PING"
-        probe.expectMsg("PING")
-      }, 1.second)
+      probe.awaitAssert(
+        {
+          supervisor ! "PING"
+          probe.expectMsg("PING")
+        },
+        1.second)
     }
   }
 }

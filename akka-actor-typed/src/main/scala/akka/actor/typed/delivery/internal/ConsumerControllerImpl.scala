@@ -126,8 +126,9 @@ import akka.util.ConstantFun.scalaIdentityFunction
             }
             Behaviors.withTimers { timers =>
               // wait for the `Start` message from the consumer, SequencedMessage will be stashed
-              def waitForStart(registering: Option[ActorRef[ProducerController.Command[A]]], stopping: Boolean)
-                  : Behavior[InternalCommand] = {
+              def waitForStart(
+                  registering: Option[ActorRef[ProducerController.Command[A]]],
+                  stopping: Boolean): Behavior[InternalCommand] = {
                 Behaviors.receiveMessagePartial {
                   case reg: RegisterToProducerController[A] @unchecked =>
                     reg.producerController ! ProducerController.RegisterConsumer(context.self)

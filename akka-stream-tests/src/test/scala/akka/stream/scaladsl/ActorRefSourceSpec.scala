@@ -136,7 +136,7 @@ class ActorRefSourceSpec extends StreamSpec {
         .run()
 
       for (n <- 1 to 20) ref ! n
-      ref ! "ok"
+      ref                    ! "ok"
 
       s.request(10)
       for (n <- 1 to 10) s.expectNext(n)
@@ -153,7 +153,7 @@ class ActorRefSourceSpec extends StreamSpec {
         .run()
 
       for (n <- 1 to 20) ref ! n
-      ref ! "ok"
+      ref                    ! "ok"
 
       s.request(10)
 

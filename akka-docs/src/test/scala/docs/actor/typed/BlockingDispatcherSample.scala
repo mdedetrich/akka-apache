@@ -25,7 +25,7 @@ object BlockingFutureActor {
   def triggerFutureBlockingOperation(i: Int)(implicit ec: ExecutionContext): Future[Unit] = {
     println(s"Calling blocking Future: $i")
     Future {
-      Thread.sleep(5000) //block for 5 seconds
+      Thread.sleep(5000) // block for 5 seconds
       println(s"Blocking future finished $i")
     }
   }
@@ -48,7 +48,7 @@ object SeparateDispatcherFutureActor {
   def triggerFutureBlockingOperation(i: Int)(implicit ec: ExecutionContext): Future[Unit] = {
     println(s"Calling blocking Future: $i")
     Future {
-      Thread.sleep(5000) //block for 5 seconds
+      Thread.sleep(5000) // block for 5 seconds
       println(s"Blocking future finished $i")
     }
   }
@@ -61,7 +61,7 @@ object BlockingDispatcherSample {
     val root = Behaviors.setup[Nothing] { context =>
       for (i <- 1 to 100) {
         context.spawn(BlockingFutureActor(), s"futureActor-$i") ! i
-        context.spawn(PrintActor(), s"printActor-$i") ! i
+        context.spawn(PrintActor(), s"printActor-$i")           ! i
       }
       Behaviors.empty
     }
@@ -90,7 +90,7 @@ object SeparateDispatcherSample {
     val root = Behaviors.setup[Nothing] { context =>
       for (i <- 1 to 100) {
         context.spawn(SeparateDispatcherFutureActor(), s"futureActor-$i") ! i
-        context.spawn(PrintActor(), s"printActor-$i") ! i
+        context.spawn(PrintActor(), s"printActor-$i")                     ! i
       }
       Behaviors.ignore
     }

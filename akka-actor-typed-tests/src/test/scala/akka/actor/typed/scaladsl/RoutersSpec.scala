@@ -242,8 +242,8 @@ class RoutersSpec extends ScalaTestWithActorTestKit("""
       val unreachableProbe = createTestProbe[String]()
       router
         .unsafeUpcast[Any] ! Receptionist.Listing(serviceKey, Set(reachableProbe.ref), Set(unreachableProbe.ref), false)
-      router ! "one"
-      router ! "two"
+      router               ! "one"
+      router               ! "two"
       reachableProbe.expectMessage("one")
       reachableProbe.expectMessage("two")
     }

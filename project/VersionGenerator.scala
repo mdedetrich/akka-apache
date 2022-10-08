@@ -14,9 +14,15 @@ object VersionGenerator {
 
   val settings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
-      resourceGenerators += generateVersion(resourceManaged, _ / "version.conf", """|akka.version = "%s"
+      resourceGenerators += generateVersion(
+        resourceManaged,
+        _ / "version.conf",
+        """|akka.version = "%s"
          |"""),
-      sourceGenerators += generateVersion(sourceManaged, _ / "akka" / "Version.scala", """|package akka
+      sourceGenerators += generateVersion(
+        sourceManaged,
+        _ / "akka" / "Version.scala",
+        """|package akka
          |
          |object Version {
          |  val current: String = "%s"

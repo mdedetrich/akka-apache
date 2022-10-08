@@ -47,7 +47,7 @@ object MultiDcClusterShardingSpec {
 
 object MultiDcClusterShardingSpecConfig
     extends MultiNodeClusterShardingConfig(
-      loglevel = "DEBUG", //issue #23741
+      loglevel = "DEBUG", // issue #23741
       additionalConfig = s"""
     akka.cluster {
       debug.verbose-heartbeat-logging = on
@@ -113,11 +113,13 @@ abstract class MultiDcClusterShardingSpec
     if (a.hasLocalScope) Cluster(system).selfAddress else a
 
   private def assertCurrentRegions(expected: Set[Address]): Unit = {
-    awaitAssert({
-      val p = TestProbe()
-      region.tell(GetCurrentRegions, p.ref)
-      p.expectMsg(CurrentRegions(expected))
-    }, 10.seconds)
+    awaitAssert(
+      {
+        val p = TestProbe()
+        region.tell(GetCurrentRegions, p.ref)
+        p.expectMsg(CurrentRegions(expected))
+      },
+      10.seconds)
   }
 
   "Cluster sharding in multi data center cluster" must {
@@ -127,12 +129,14 @@ abstract class MultiDcClusterShardingSpec
       join(third, first)
       join(fourth, first)
 
-      awaitAssert({
-        withClue(s"Members: ${Cluster(system).state}") {
-          Cluster(system).state.members.size should ===(4)
-          Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
-        }
-      }, 10.seconds)
+      awaitAssert(
+        {
+          withClue(s"Members: ${Cluster(system).state}") {
+            Cluster(system).state.members.size should ===(4)
+            Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
+          }
+        },
+        10.seconds)
 
       runOn(first, second) {
         assertCurrentRegions(Set(first, second).map(r => node(r).address))

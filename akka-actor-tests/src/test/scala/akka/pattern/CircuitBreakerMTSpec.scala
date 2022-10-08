@@ -23,10 +23,12 @@ class CircuitBreakerMTSpec extends AkkaSpec {
     def openBreaker(breaker: CircuitBreaker): Unit = {
       // returns true if the breaker is open
       def failingCall(): Boolean =
-        Await.result(breaker.withCircuitBreaker(Future.failed(new RuntimeException("FAIL"))).recover {
-          case _: CircuitBreakerOpenException => true
-          case _                              => false
-        }, remainingOrDefault)
+        Await.result(
+          breaker.withCircuitBreaker(Future.failed(new RuntimeException("FAIL"))).recover {
+            case _: CircuitBreakerOpenException => true
+            case _                              => false
+          },
+          remainingOrDefault)
 
       // fire some failing calls
       (1 to (maxFailures + 1)).foreach { _ =>

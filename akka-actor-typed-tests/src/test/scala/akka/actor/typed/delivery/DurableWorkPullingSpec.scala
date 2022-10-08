@@ -188,9 +188,9 @@ class DurableWorkPullingSpec
       }
 
       val replyTo = createTestProbe[Done]()
-      producerProbe.receiveMessage().askNextTo ! MessageWithConfirmation(TestConsumer.Job("msg-2"), replyTo.ref)
+      producerProbe.receiveMessage().askNextTo  ! MessageWithConfirmation(TestConsumer.Job("msg-2"), replyTo.ref)
       producerProbe.receiveMessage().sendNextTo ! TestConsumer.Job("msg-3")
-      producerProbe.receiveMessage().askNextTo ! MessageWithConfirmation(TestConsumer.Job("msg-4"), replyTo.ref)
+      producerProbe.receiveMessage().askNextTo  ! MessageWithConfirmation(TestConsumer.Job("msg-4"), replyTo.ref)
       producerProbe.receiveMessage().sendNextTo ! TestConsumer.Job("msg-5")
       workerController1Probe.receiveMessage() // msg-2
       workerController1Probe.receiveMessage() // msg-3
@@ -304,7 +304,7 @@ class DurableWorkPullingSpec
       }
       val seqMsg1 = workerController1Probe.expectMessageType[ConsumerController.SequencedMessage[TestConsumer.Job]]
       seqMsg1.message should ===(TestConsumer.Job("msg-1"))
-      seqMsg1.producerController ! ProducerControllerImpl.Request(1L, 5L, true, false)
+      seqMsg1.producerController                ! ProducerControllerImpl.Request(1L, 5L, true, false)
       producerProbe.receiveMessage().sendNextTo ! TestConsumer.Job("msg-2")
       producerProbe.receiveMessage().sendNextTo ! TestConsumer.Job("msg-3")
       producerProbe.receiveMessage().sendNextTo ! TestConsumer.Job("msg-4")

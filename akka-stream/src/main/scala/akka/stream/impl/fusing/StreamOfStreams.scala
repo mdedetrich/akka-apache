@@ -74,12 +74,14 @@ import akka.util.ccompat.JavaConverters._
       override def onUpstreamFinish(): Unit = if (activeSources == 0) completeStage()
       override def onPull(): Unit = {
         pull(in)
-        setHandler(out, new OutHandler {
-          override def onPull(): Unit = {
-            // could be unavailable due to async input having been executed before this notification
-            if (queue.nonEmpty && isAvailable(out)) pushOut()
-          }
-        })
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull(): Unit = {
+              // could be unavailable due to async input having been executed before this notification
+              if (queue.nonEmpty && isAvailable(out)) pushOut()
+            }
+          })
       }
 
       setHandlers(in, out, this)
@@ -267,7 +269,6 @@ import akka.util.ccompat.JavaConverters._
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) with OutHandler with InHandler {
       parent =>
-
       lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private val activeSubstreamsMap = new java.util.HashMap[Any, SubstreamSource]()
       private val closedSubstreams =
@@ -505,7 +506,7 @@ import akka.util.ccompat.JavaConverters._
       new OutHandler {
         override def onPull(): Unit = {
           if (substreamSource eq null) {
-            //can be already pulled from substream in case split after
+            // can be already pulled from substream in case split after
             if (!hasBeenPulled(in)) pull(in)
           } else if (substreamWaitingToBePushed) pushSubstreamSource()
         }

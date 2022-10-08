@@ -119,43 +119,45 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     }
 
     "contain the class name where the first log was called" in {
-      val eventFilter = LoggingTestKit.custom({
+      val eventFilter = LoggingTestKit.custom {
         case event if event.loggerName == classOf[ActorLoggingSpec].getName =>
           true
         case event =>
           println(event.loggerName)
           false
-      })
+      }
 
-      eventFilter.expect(spawn(Behaviors.setup[String] { context =>
-        context.log.info("Started")
+      eventFilter.expect(spawn(
+        Behaviors.setup[String] { context =>
+          context.log.info("Started")
 
-        Behaviors.receive { (context, message) =>
-          context.log.info("got message {}", message)
-          Behaviors.same
-        }
-      }, "the-actor-with-class"))
+          Behaviors.receive { (context, message) =>
+            context.log.info("got message {}", message)
+            Behaviors.same
+          }
+        },
+        "the-actor-with-class"))
 
     }
 
     "contain the object class name where the first log was called" in {
-      val eventFilter = LoggingTestKit.custom({
+      val eventFilter = LoggingTestKit.custom {
         case event if event.loggerName == WhereTheBehaviorIsDefined.getClass.getName => true
         case other =>
           println(other.loggerName)
           false
-      })
+      }
 
       eventFilter.expect(spawn(WhereTheBehaviorIsDefined.behavior, "the-actor-with-object"))
     }
 
     "contain the abstract behavior class name where the first log was called" in {
-      val eventFilter = LoggingTestKit.custom({
+      val eventFilter = LoggingTestKit.custom {
         case event if event.loggerName == classOf[BehaviorWhereTheLoggerIsUsed].getName => true
         case other =>
           println(other.loggerName)
           false
-      })
+      }
 
       eventFilter.expect {
         spawn(Behaviors.setup[String](context => new BehaviorWhereTheLoggerIsUsed(context)), "the-actor-with-behavior")
@@ -200,7 +202,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
           true // any is fine, we're just after the right count of statements reaching the listener
         }
         .withOccurrences(36)
-        .expect({
+        .expect {
           spawn(Behaviors.setup[String] {
             context =>
               context.log.debug("message")
@@ -247,7 +249,7 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
 
               Behaviors.stopped
           })
-        })
+        }
     }
 
     "use Slf4jLogger from akka-slf4j automatically" in {

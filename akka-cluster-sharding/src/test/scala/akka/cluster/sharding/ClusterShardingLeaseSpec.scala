@@ -135,10 +135,12 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
       testLease.initialPromise.complete(Success(true))
       expectMsg(4)
       testLease.getCurrentCallback()(Option(LeaseFailed("oh dear")))
-      awaitAssert({
-        region ! 4
-        expectMsg(4)
-      }, max = 10.seconds)
+      awaitAssert(
+        {
+          region ! 4
+          expectMsg(4)
+        },
+        max = 10.seconds)
     }
   }
 }

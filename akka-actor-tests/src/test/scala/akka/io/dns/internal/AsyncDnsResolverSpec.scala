@@ -227,8 +227,11 @@ class AsyncDnsResolverSpec extends AkkaSpec("""
 
   def resolver(clients: List[ActorRef], config: Config): ActorRef = {
     val settings = new DnsSettings(system.asInstanceOf[ExtendedActorSystem], config)
-    system.actorOf(Props(new AsyncDnsResolver(settings, new SimpleDnsCache(), (_, _) => {
-      clients
-    })))
+    system.actorOf(Props(new AsyncDnsResolver(
+      settings,
+      new SimpleDnsCache(),
+      (_, _) => {
+        clients
+      })))
   }
 }

@@ -207,11 +207,11 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
         // by setting something for each key we don't have to worry about NotFound
         List(KeyA, KeyB, KeyC).foreach { key =>
           fullStateReplicator ! Update(key, PNCounter.empty, WriteLocal)(_ :+ 1)
-          deltaReplicator ! Update(key, PNCounter.empty, WriteLocal)(_ :+ 1)
+          deltaReplicator     ! Update(key, PNCounter.empty, WriteLocal)(_ :+ 1)
         }
         List(KeyD, KeyE, KeyF).foreach { key =>
           fullStateReplicator ! Update(key, ORSet.empty[String], WriteLocal)(_ :+ "a")
-          deltaReplicator ! Update(key, ORSet.empty[String], WriteLocal)(_ :+ "a")
+          deltaReplicator     ! Update(key, ORSet.empty[String], WriteLocal)(_ :+ "a")
         }
       }
       enterBarrier("updated-1")
@@ -374,21 +374,21 @@ class ReplicatorDeltaSpec extends MultiNodeSpec(ReplicatorDeltaSpec) with STMult
             case Delay(d) => Thread.sleep(d)
             case Incr(key, n, consistency) =>
               fullStateReplicator ! Update(key, PNCounter.empty, consistency)(_ :+ n)
-              deltaReplicator ! Update(key, PNCounter.empty, consistency)(_ :+ n)
+              deltaReplicator     ! Update(key, PNCounter.empty, consistency)(_ :+ n)
             case Decr(key, n, consistency) =>
               fullStateReplicator ! Update(key, PNCounter.empty, consistency)(_.decrement(n))
-              deltaReplicator ! Update(key, PNCounter.empty, consistency)(_.decrement(n))
+              deltaReplicator     ! Update(key, PNCounter.empty, consistency)(_.decrement(n))
             case Add(key, elem, consistency) =>
               // to have an deterministic result when mixing add/remove we can only perform
               // the ORSet operations from one node
               runOn((if (key == KeyF) List(first) else List(first, second, third)): _*) {
                 fullStateReplicator ! Update(key, ORSet.empty[String], consistency)(_ :+ elem)
-                deltaReplicator ! Update(key, ORSet.empty[String], consistency)(_ :+ elem)
+                deltaReplicator     ! Update(key, ORSet.empty[String], consistency)(_ :+ elem)
               }
             case Remove(key, elem, consistency) =>
               runOn(first) {
                 fullStateReplicator ! Update(key, ORSet.empty[String], consistency)(_.remove(elem))
-                deltaReplicator ! Update(key, ORSet.empty[String], consistency)(_.remove(elem))
+                deltaReplicator     ! Update(key, ORSet.empty[String], consistency)(_.remove(elem))
               }
           }
         }

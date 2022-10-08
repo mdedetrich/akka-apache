@@ -69,12 +69,14 @@ class AkkaSpecSpec extends AnyWordSpec with Matchers {
       try {
         var locker = Seq.empty[DeadLetter]
         implicit val timeout: Timeout = TestKitExtension(system).DefaultTimeout.duration.dilated(system)
-        val davyJones = otherSystem.actorOf(Props(new Actor {
-          def receive = {
-            case m: DeadLetter => locker :+= m
-            case "Die!"        => sender() ! "finally gone"; context.stop(self)
-          }
-        }), "davyJones")
+        val davyJones = otherSystem.actorOf(
+          Props(new Actor {
+            def receive = {
+              case m: DeadLetter => locker :+= m
+              case "Die!"        => sender() ! "finally gone"; context.stop(self)
+            }
+          }),
+          "davyJones")
 
         system.eventStream.subscribe(davyJones, classOf[DeadLetter])
 

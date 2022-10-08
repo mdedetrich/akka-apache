@@ -102,11 +102,11 @@ object TcpHelper {
       case b @ Tcp.Bound(_) =>
         listener = sender()
         listener ! Tcp.ResumeAccepting(1)
-        probe ! b
+        probe    ! b
       case Tcp.Connected(_, _) =>
         val handler = context.actorOf(testClientProps(sender()))
         listener ! Tcp.ResumeAccepting(1)
-        probe ! handler
+        probe    ! handler
       case ServerClose =>
         listener ! Tcp.Unbind
         context.stop(self)
@@ -137,8 +137,8 @@ trait TcpHelper { this: TcpSpec =>
 
     def waitRead(): ByteString = connectionProbe.expectMsgType[ReadResult].bytes
     def confirmedClose(): Unit = connectionActor ! ClientClose(Tcp.ConfirmedClose)
-    def close(): Unit = connectionActor ! ClientClose(Tcp.Close)
-    def abort(): Unit = connectionActor ! ClientClose(Tcp.Abort)
+    def close(): Unit = connectionActor          ! ClientClose(Tcp.Close)
+    def abort(): Unit = connectionActor          ! ClientClose(Tcp.Abort)
 
     def expectClosed(expected: ConnectionClosed): Unit = expectClosed(_ == expected)
 

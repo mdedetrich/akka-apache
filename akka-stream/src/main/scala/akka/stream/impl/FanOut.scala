@@ -30,7 +30,7 @@ import akka.util.unused
 
   class SubstreamSubscription(val parent: ActorRef, val id: Int) extends Subscription {
     override def request(elements: Long): Unit = parent ! SubstreamRequestMore(id, elements)
-    override def cancel(): Unit = parent ! SubstreamCancel(id)
+    override def cancel(): Unit = parent                ! SubstreamCancel(id)
     override def toString = "SubstreamSubscription" + System.identityHashCode(this)
   }
 

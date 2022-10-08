@@ -286,16 +286,17 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
 
       val buffer = bufferPool.acquire()
       try innerRead(buffer, ReceivedMessageSizeLimit) match {
-        case AllRead => // nothing to do
-        case MoreDataWaiting =>
-          if (!pullMode) self ! ChannelReadable
-        case EndOfStream if channel.socket.isOutputShutdown =>
-          if (TraceLogging) log.debug("Read returned end-of-stream, our side already closed")
-          doCloseConnection(info.handler, closeCommander, ConfirmedClosed)
-        case EndOfStream =>
-          if (TraceLogging) log.debug("Read returned end-of-stream, our side not yet closed")
-          handleClose(info, closeCommander, PeerClosed)
-      } catch {
+          case AllRead => // nothing to do
+          case MoreDataWaiting =>
+            if (!pullMode) self ! ChannelReadable
+          case EndOfStream if channel.socket.isOutputShutdown =>
+            if (TraceLogging) log.debug("Read returned end-of-stream, our side already closed")
+            doCloseConnection(info.handler, closeCommander, ConfirmedClosed)
+          case EndOfStream =>
+            if (TraceLogging) log.debug("Read returned end-of-stream, our side not yet closed")
+            handleClose(info, closeCommander, PeerClosed)
+        }
+      catch {
         case e: IOException => handleError(info.handler, e)
       } finally bufferPool.release(buffer)
     }
@@ -529,7 +530,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
           self ! UpdatePendingWriteAndThen(updated, TcpConnection.doNothing)
         } else {
           release()
-          val andThen = if (!ack.isInstanceOf[NoAck])() => commander ! ack else doNothing
+          val andThen = if (!ack.isInstanceOf[NoAck]) () => commander ! ack else doNothing
           self ! UpdatePendingWriteAndThen(PendingWrite(commander, tail), andThen)
         }
       } catch {

@@ -216,7 +216,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
             }.toMap)
             if (loadData.data.nonEmpty)
               sender() ! loadData
-            sender() ! LoadAllCompleted
+            sender()   ! LoadAllCompleted
             if (log.isDebugEnabled)
               log.debug("load all of [{}] entries took [{} ms]", n, TimeUnit.NANOSECONDS.toMillis(System.nanoTime - t0))
             context.become(active)

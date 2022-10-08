@@ -127,10 +127,13 @@ abstract class SurviveInboundStreamRestartWithCompressionInFlightSpec
         Thread.sleep(2000)
 
         // we poke the remote system, awaiting its inbound stream recovery, then it should reply
-        awaitAssert({
-          sendToB ! "alive-again"
-          expectMsg(300.millis, s"${sendToB.path.name}-alive-again")
-        }, max = 5.seconds, interval = 500.millis)
+        awaitAssert(
+          {
+            sendToB ! "alive-again"
+            expectMsg(300.millis, s"${sendToB.path.name}-alive-again")
+          },
+          max = 5.seconds,
+          interval = 500.millis)
 
         // we continue sending messages using the "old table".
         // if a new table was being built, it would cause the b to be compressed as 1 causing a wrong reply to come back

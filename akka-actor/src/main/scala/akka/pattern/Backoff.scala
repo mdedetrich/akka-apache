@@ -68,7 +68,6 @@ object Backoff {
    * @param maxNrOfRetries maximum number of attempts to restart the child actor.
    *                       The supervisor will terminate itself after the maxNoOfRetries is reached.
    *                       In order to restart infinitely pass in `-1`.
-   *
    */
   @deprecated("Use BackoffOpts.onFailure instead", "2.5.22")
   def onFailure(
@@ -587,9 +586,8 @@ private final case class BackoffOptionsImpl(
   def withManualReset = copy(reset = Some(ManualReset))
   def withSupervisorStrategy(supervisorStrategy: OneForOneStrategy) = copy(supervisorStrategy = supervisorStrategy)
   def withDefaultStoppingStrategy =
-    copy(
-      supervisorStrategy =
-        OneForOneStrategy(supervisorStrategy.maxNrOfRetries)(SupervisorStrategy.stoppingStrategy.decider))
+    copy(supervisorStrategy =
+      OneForOneStrategy(supervisorStrategy.maxNrOfRetries)(SupervisorStrategy.stoppingStrategy.decider))
   def withReplyWhileStopped(replyWhileStopped: Any) = copy(replyWhileStopped = Some(replyWhileStopped))
   def withMaxNrOfRetries(maxNrOfRetries: Int) =
     copy(supervisorStrategy = supervisorStrategy.withMaxNrOfRetries(maxNrOfRetries))
@@ -606,7 +604,7 @@ private final case class BackoffOptionsImpl(
     }
 
     backoffType match {
-      //onFailure method in companion object
+      // onFailure method in companion object
       case RestartImpliesFailure =>
         Props(
           new BackoffOnRestartSupervisor(
@@ -618,7 +616,7 @@ private final case class BackoffOptionsImpl(
             randomFactor,
             supervisorStrategy,
             replyWhileStopped.map(msg => ReplyWith(msg)).getOrElse(ForwardDeathLetters)))
-      //onStop method in companion object
+      // onStop method in companion object
       case StopImpliesFailure =>
         Props(
           new BackoffOnStopSupervisor(

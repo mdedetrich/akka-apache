@@ -43,12 +43,14 @@ mailbox {
 }
 """).withFallback(ConfigFactory.load())
   implicit val sys: ActorSystem = ActorSystem("ANQ", config)
-  val ref = sys.actorOf(Props(new Actor {
-    def receive = {
-      case Stop => sender() ! Stop
-      case _    =>
-    }
-  }).withDispatcher("dispatcher").withMailbox("mailbox"), "receiver")
+  val ref = sys.actorOf(
+    Props(new Actor {
+      def receive = {
+        case Stop => sender() ! Stop
+        case _    =>
+      }
+    }).withDispatcher("dispatcher").withMailbox("mailbox"),
+    "receiver")
 
   @TearDown
   def teardown(): Unit = Await.result(sys.terminate(), 5.seconds)

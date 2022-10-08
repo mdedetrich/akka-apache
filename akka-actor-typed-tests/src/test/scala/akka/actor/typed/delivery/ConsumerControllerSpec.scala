@@ -380,7 +380,7 @@ class ConsumerControllerSpec
       consumerController ! sequencedMessage(producerId, 1, producerControllerProbe.ref)
       producerControllerProbe.expectMessage(ProducerControllerImpl.Request(0, 20, true, false))
       // that Request will typically cancel the resending of first, but in unlucky timing it may happen
-      consumerController ! sequencedMessage(producerId, 1, producerControllerProbe.ref)
+      consumerController                       ! sequencedMessage(producerId, 1, producerControllerProbe.ref)
       consumerProbe.receiveMessage().confirmTo ! ConsumerController.Confirmed
       producerControllerProbe.expectMessage(ProducerControllerImpl.Request(1, 20, true, false))
       consumerController ! sequencedMessage(producerId, 1, producerControllerProbe.ref)

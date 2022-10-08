@@ -133,7 +133,7 @@ object AdapterSpec {
     }
 
     def receive = {
-      case "send" => ref ! Ping(self) // implicit conversion
+      case "send" => ref   ! Ping(self) // implicit conversion
       case "pong" => probe ! "ok"
       case "spawn" =>
         val child = context.spawnAnonymous(typed2)
@@ -212,13 +212,15 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
       for { _ <- 0 to 10 } {
         var systemN: akka.actor.typed.ActorSystem[Done] = null
         try {
-          systemN = ActorSystem.create(Behaviors.receive[Done] { (context, message) =>
-            context.self ! Done
-            message match {
-              case Done => Behaviors.stopped
-            }
+          systemN = ActorSystem.create(
+            Behaviors.receive[Done] { (context, message) =>
+              context.self ! Done
+              message match {
+                case Done => Behaviors.stopped
+              }
 
-          }, "AdapterSpec-stopping-guardian-2")
+            },
+            "AdapterSpec-stopping-guardian-2")
 
         } finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
       }
@@ -231,7 +233,7 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
     }
 
     "allow seamless access to untyped extensions" in {
-      SerializationExtension(typedSystem) should not be (null)
+      SerializationExtension(typedSystem) should not be null
     }
   }
 
@@ -291,7 +293,7 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
       val typedRef = system.spawnAnonymous(typed2)
       val classicRef = system.actorOf(classic2(typedRef, probe.ref))
       classicRef ! "watch"
-      typedRef ! StopIt
+      typedRef   ! StopIt
       probe.expectMsg("terminated")
     }
 
@@ -299,7 +301,7 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
       val probe = TestProbe()
       val classicRef = system.actorOf(classic1)
       val typedRef = system.spawnAnonymous(typed1(classicRef, probe.ref))
-      typedRef ! "watch"
+      typedRef   ! "watch"
       classicRef ! classic.PoisonPill
       probe.expectMsg("terminated")
     }

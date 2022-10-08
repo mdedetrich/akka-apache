@@ -25,7 +25,7 @@ object UidClashTest {
       val eventStream: EventStream)
       extends MinimalActorRef {
 
-    //Ignore everything
+    // Ignore everything
     override def isTerminated: Boolean = true
     override def sendSystemMessage(message: SystemMessage): Unit = ()
     override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = ()
@@ -50,7 +50,7 @@ object UidClashTest {
       // 2. As a response to pint, RestartedSafely is sent to self
       // 3a. if Terminated was enqueued during the restart procedure it will arrive before the RestartedSafely message
       // 3b. otherwise only the RestartedSafely message arrives
-      case PingMyself      => self ! RestartedSafely
+      case PingMyself      => self           ! RestartedSafely
       case RestartedSafely => context.parent ! RestartedSafely
     }
 
@@ -81,7 +81,7 @@ object UidClashTest {
 
     def receive = {
       case PleaseRestart   => theRestartedOne ! PleaseRestart
-      case RestartedSafely => probe ! RestartedSafely
+      case RestartedSafely => probe           ! RestartedSafely
     }
   }
 

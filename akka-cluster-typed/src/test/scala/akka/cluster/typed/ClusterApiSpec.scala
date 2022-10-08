@@ -65,7 +65,7 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
 
         // check that subscriptions work
         clusterNode1.subscriptions ! Subscribe(node1Probe.ref, classOf[MemberEvent])
-        clusterNode1.manager ! Join(clusterNode1.selfMember.address)
+        clusterNode1.manager       ! Join(clusterNode1.selfMember.address)
         node1Probe.expectMessageType[MemberUp].member.uniqueAddress == clusterNode1.selfMember.uniqueAddress
 
         // check that cached selfMember is updated
@@ -77,7 +77,7 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
 
         // selfMember update and on up subscription on node 2 when joining
         clusterNode2.subscriptions ! Subscribe(node2Probe.ref, classOf[SelfUp])
-        clusterNode2.manager ! Join(clusterNode1.selfMember.address)
+        clusterNode2.manager       ! Join(clusterNode1.selfMember.address)
         node2Probe.awaitAssert(clusterNode2.selfMember.status should ===(MemberStatus.Up))
         node2Probe.expectMessageType[SelfUp]
 
@@ -87,7 +87,7 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
 
         // OnSelfRemoved and subscription events around node2 leaving
         clusterNode2.subscriptions ! Subscribe(node2Probe.ref, classOf[SelfRemoved])
-        clusterNode2.manager ! Leave(clusterNode2.selfMember.address)
+        clusterNode2.manager       ! Leave(clusterNode2.selfMember.address)
 
         // node1 seeing all those transition events
         node1Probe.expectMessageType[MemberLeft].member.uniqueAddress == clusterNode2.selfMember.uniqueAddress
