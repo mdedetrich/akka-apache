@@ -21,12 +21,13 @@ import akka.util.Version
  * and roles.
  */
 @SerialVersionUID(1L)
-class Member private[cluster] (
-    val uniqueAddress: UniqueAddress,
-    private[cluster] val upNumber: Int, // INTERNAL API
-    val status: MemberStatus,
-    val roles: Set[String],
-    val appVersion: Version)
+class Member private[cluster]
+  (
+      val uniqueAddress: UniqueAddress,
+      private[cluster] val upNumber: Int, // INTERNAL API
+      val status: MemberStatus,
+      val roles: Set[String],
+      val appVersion: Version)
     extends Serializable {
 
   lazy val dataCenter: DataCenter = roles
@@ -174,10 +175,12 @@ object Member {
    * INTERNAL API.
    */
   @InternalApi
-  private[akka] def pickHighestPriority(
-      a: Set[Member],
-      b: Set[Member],
-      tombstones: Map[UniqueAddress, Long]): Set[Member] = {
+  private[akka] def pickHighestPriority
+    (
+        a: Set[Member],
+        b: Set[Member],
+        tombstones: Map[UniqueAddress, Long])
+    : Set[Member] = {
     // group all members by Address => Seq[Member]
     val groupedByAddress = (a.toSeq ++ b.toSeq).groupBy(_.uniqueAddress)
     // pick highest MemberStatus

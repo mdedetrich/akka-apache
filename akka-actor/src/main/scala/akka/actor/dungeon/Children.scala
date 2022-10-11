@@ -258,12 +258,14 @@ private[akka] trait Children { this: ActorCell =>
     }
   }
 
-  private def makeChild(
-      cell: ActorCell,
-      props: Props,
-      name: String,
-      async: Boolean,
-      systemService: Boolean): ActorRef = {
+  private def makeChild
+    (
+        cell: ActorCell,
+        props: Props,
+        name: String,
+        async: Boolean,
+        systemService: Boolean)
+    : ActorRef = {
     val settings = cell.system.settings
     if (settings.SerializeAllCreators && !systemService && props.deploy.scope != LocalScope) {
       val oldInfo = Serialization.currentTransportInformation.value

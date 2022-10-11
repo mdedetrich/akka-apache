@@ -282,11 +282,13 @@ abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
   }
 }
 
-class RemoteSystem(
-    name: String,
-    configString: String,
-    newRemoteSystem: (Option[String], Option[String], Option[ActorSystemSetup]) => ActorSystem,
-    address: (ActorSystem) => Address)(implicit system: ActorSystem) {
+class RemoteSystem
+  (
+      name: String,
+      configString: String,
+      newRemoteSystem: (Option[String], Option[String], Option[ActorSystemSetup]) => ActorSystem,
+      address: (ActorSystem) => Address)
+  (implicit system: ActorSystem) {
 
   val sslProviderServerProbe: TestProbe = TestProbe()
   val sslProviderClientProbe: TestProbe = TestProbe()
@@ -303,11 +305,12 @@ class RemoteSystem(
 
 }
 
-class ProbedSSLEngineProvider(
-    sys: ExtendedActorSystem,
-    sslContextRef: AtomicReference[SSLContext],
-    sslProviderServerProbe: TestProbe,
-    sslProviderClientProbe: TestProbe)
+class ProbedSSLEngineProvider
+  (
+      sys: ExtendedActorSystem,
+      sslContextRef: AtomicReference[SSLContext],
+      sslProviderServerProbe: TestProbe,
+      sslProviderClientProbe: TestProbe)
     extends SSLEngineProvider {
   val delegate = new RotatingKeysSSLEngineProvider(sys)
 

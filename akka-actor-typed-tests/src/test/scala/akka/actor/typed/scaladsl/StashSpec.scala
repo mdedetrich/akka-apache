@@ -264,9 +264,11 @@ class UnstashingSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         Behaviors.same
     }
 
-  private def stashingBehavior(
-      probe: ActorRef[String],
-      withSlowStoppingChild: Option[CountDownLatch] = None): Behavior[String] = {
+  private def stashingBehavior
+    (
+        probe: ActorRef[String],
+        withSlowStoppingChild: Option[CountDownLatch] = None)
+    : Behavior[String] = {
     Behaviors.setup[String] { ctx =>
       withSlowStoppingChild.foreach(latch => ctx.spawnAnonymous(slowStoppingChild(latch)))
 

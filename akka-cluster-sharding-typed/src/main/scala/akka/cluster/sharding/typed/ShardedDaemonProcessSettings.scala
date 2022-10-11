@@ -39,10 +39,11 @@ object ShardedDaemonProcessSettings {
 /**
  * Not for user constructions, use factory methods to instanciate.
  */
-final class ShardedDaemonProcessSettings @InternalApi private[akka] (
-    val keepAliveInterval: FiniteDuration,
-    val shardingSettings: Option[ClusterShardingSettings],
-    val role: Option[String]) {
+final class ShardedDaemonProcessSettings @InternalApi private[akka]
+  (
+      val keepAliveInterval: FiniteDuration,
+      val shardingSettings: Option[ClusterShardingSettings],
+      val role: Option[String]) {
 
   /**
    * Scala API: The interval each parent of the sharded set is pinged from each node in the cluster.
@@ -76,10 +77,12 @@ final class ShardedDaemonProcessSettings @InternalApi private[akka] (
   def withRole(role: String): ShardedDaemonProcessSettings =
     copy(role = Option(role))
 
-  private def copy(
-      keepAliveInterval: FiniteDuration = keepAliveInterval,
-      shardingSettings: Option[ClusterShardingSettings] = shardingSettings,
-      role: Option[String] = role): ShardedDaemonProcessSettings =
+  private def copy
+    (
+        keepAliveInterval: FiniteDuration = keepAliveInterval,
+        shardingSettings: Option[ClusterShardingSettings] = shardingSettings,
+        role: Option[String] = role)
+    : ShardedDaemonProcessSettings =
     new ShardedDaemonProcessSettings(keepAliveInterval, shardingSettings, role)
 
 }

@@ -150,11 +150,12 @@ private[akka] object RemoteActorRefProvider {
  *
  * Remote ActorRefProvider. Starts up actor on remote node and creates a RemoteActorRef representing it.
  */
-private[akka] class RemoteActorRefProvider(
-    val systemName: String,
-    val settings: ActorSystem.Settings,
-    val eventStream: EventStream,
-    val dynamicAccess: DynamicAccess)
+private[akka] class RemoteActorRefProvider
+  (
+      val systemName: String,
+      val settings: ActorSystem.Settings,
+      val eventStream: EventStream,
+      val dynamicAccess: DynamicAccess)
     extends ActorRefProvider {
   import RemoteActorRefProvider._
 
@@ -284,12 +285,14 @@ private[akka] class RemoteActorRefProvider(
     checkClassOrThrow(system, "io.aeron.Aeron", "Artery", "Aeron client", arteryLink)
   }
 
-  private def checkClassOrThrow(
-      system: ActorSystemImpl,
-      className: String,
-      remoting: String,
-      libraryMissing: String,
-      link: String): Unit = {
+  private def checkClassOrThrow
+    (
+        system: ActorSystemImpl,
+        className: String,
+        remoting: String,
+        libraryMissing: String,
+        link: String)
+    : Unit = {
     system.dynamicAccess.getClassFor[Any](className) match {
       case Failure(_: ClassNotFoundException | _: NoClassDefFoundError) =>
         throw new IllegalStateException(
@@ -365,15 +368,17 @@ private[akka] class RemoteActorRefProvider(
   /** Override to add any additional checks if using `RemoteActorRefProvider` as a superclass. */
   protected def shouldCreateRemoteActorRef(@unused system: ActorSystem, @unused address: Address): Boolean = true
 
-  def actorOf(
-      system: ActorSystemImpl,
-      props: Props,
-      supervisor: InternalActorRef,
-      path: ActorPath,
-      systemService: Boolean,
-      deploy: Option[Deploy],
-      lookupDeploy: Boolean,
-      async: Boolean): InternalActorRef =
+  def actorOf
+    (
+        system: ActorSystemImpl,
+        props: Props,
+        supervisor: InternalActorRef,
+        path: ActorPath,
+        systemService: Boolean,
+        deploy: Option[Deploy],
+        lookupDeploy: Boolean,
+        async: Boolean)
+    : InternalActorRef =
     if (systemService) local.actorOf(system, props, supervisor, path, systemService, deploy, lookupDeploy, async)
     else {
 
@@ -655,13 +660,14 @@ private[akka] trait RemoteRef extends ActorRefScope {
  * Remote ActorRef that is used when referencing the Actor on a different node than its "home" node.
  * This reference is network-aware (remembers its origin) and immutable.
  */
-private[akka] class RemoteActorRef private[akka] (
-    remote: RemoteTransport,
-    val localAddressToUse: Address,
-    val path: ActorPath,
-    val getParent: InternalActorRef,
-    props: Option[Props],
-    deploy: Option[Deploy])
+private[akka] class RemoteActorRef private[akka]
+  (
+      remote: RemoteTransport,
+      val localAddressToUse: Address,
+      val path: ActorPath,
+      val getParent: InternalActorRef,
+      props: Option[Props],
+      deploy: Option[Deploy])
     extends InternalActorRef
     with RemoteRef {
 

@@ -40,12 +40,15 @@ object RetryFlow {
    * @param decideRetry retry condition decision function
    */
   @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
-  def withBackoff[In, Out, Mat](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRetries: Int,
-      flow: Flow[In, Out, Mat])(decideRetry: (In, Out) => Option[In]): Flow[In, Out, Mat] =
+  def withBackoff[In, Out, Mat]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRetries: Int,
+        flow: Flow[In, Out, Mat])
+    (decideRetry: (In, Out) => Option[In])
+    : Flow[In, Out, Mat] =
     Flow.fromGraph {
       val retryCoordination = BidiFlow.fromGraph(
         new RetryFlowCoordinator[In, Out](minBackoff, maxBackoff, randomFactor, maxRetries, decideRetry))
@@ -79,13 +82,16 @@ object RetryFlow {
    * @param decideRetry retry condition decision function
    */
   @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
-  def withBackoffAndContext[In, CtxIn, Out, CtxOut, Mat](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRetries: Int,
-      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat])(
-      decideRetry: ((In, CtxIn), (Out, CtxOut)) => Option[(In, CtxIn)]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
+  def withBackoffAndContext[In, CtxIn, Out, CtxOut, Mat]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRetries: Int,
+        flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat])
+    (
+        decideRetry: ((In, CtxIn), (Out, CtxOut)) => Option[(In, CtxIn)])
+    : FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     FlowWithContext.fromTuples {
       val retryCoordination = BidiFlow.fromGraph(
         new RetryFlowCoordinator[(In, CtxIn), (Out, CtxOut)](

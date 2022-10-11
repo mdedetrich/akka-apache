@@ -16,9 +16,11 @@ object TestProducerWorkPulling {
   final case class RequestNext(sendTo: ActorRef[TestConsumer.Job]) extends Command
   private case object Tick extends Command
 
-  def apply(
-      delay: FiniteDuration,
-      producerController: ActorRef[WorkPullingProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+  def apply
+    (
+        delay: FiniteDuration,
+        producerController: ActorRef[WorkPullingProducerController.Start[TestConsumer.Job]])
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       context.setLoggerName("TestProducerWorkPulling")
       val requestNextAdapter: ActorRef[WorkPullingProducerController.RequestNext[TestConsumer.Job]] =

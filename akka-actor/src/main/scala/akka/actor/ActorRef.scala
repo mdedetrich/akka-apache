@@ -337,13 +337,14 @@ private[akka] case object Nobody extends MinimalActorRef {
  *
  *  INTERNAL API
  */
-private[akka] class LocalActorRef private[akka] (
-    _system: ActorSystemImpl,
-    _props: Props,
-    _dispatcher: MessageDispatcher,
-    _mailboxType: MailboxType,
-    _supervisor: InternalActorRef,
-    override val path: ActorPath)
+private[akka] class LocalActorRef private[akka]
+  (
+      _system: ActorSystemImpl,
+      _props: Props,
+      _dispatcher: MessageDispatcher,
+      _mailboxType: MailboxType,
+      _supervisor: InternalActorRef,
+      override val path: ActorPath)
     extends ActorRefWithCell
     with LocalRef {
 
@@ -360,12 +361,14 @@ private[akka] class LocalActorRef private[akka] (
   private val actorCell: ActorCell = newActorCell(_system, this, _props, _dispatcher, _supervisor)
   actorCell.init(sendSupervise = true, _mailboxType)
 
-  protected def newActorCell(
-      system: ActorSystemImpl,
-      ref: InternalActorRef,
-      props: Props,
-      dispatcher: MessageDispatcher,
-      supervisor: InternalActorRef): ActorCell =
+  protected def newActorCell
+    (
+        system: ActorSystemImpl,
+        ref: InternalActorRef,
+        props: Props,
+        dispatcher: MessageDispatcher,
+        supervisor: InternalActorRef)
+    : ActorCell =
     new ActorCell(system, ref, props, dispatcher, supervisor)
 
   protected def actorContext: ActorContext = actorCell
@@ -657,10 +660,11 @@ private[akka] object DeadLetterActorRef {
  *
  * INTERNAL API
  */
-private[akka] class EmptyLocalActorRef(
-    override val provider: ActorRefProvider,
-    override val path: ActorPath,
-    val eventStream: EventStream)
+private[akka] class EmptyLocalActorRef
+  (
+      override val provider: ActorRefProvider,
+      override val path: ActorPath,
+      val eventStream: EventStream)
     extends MinimalActorRef {
 
   override private[akka] def isTerminated = true
@@ -749,11 +753,12 @@ private[akka] class DeadLetterActorRef(_provider: ActorRefProvider, _path: Actor
  *
  * INTERNAL API
  */
-private[akka] class VirtualPathContainer(
-    override val provider: ActorRefProvider,
-    override val path: ActorPath,
-    override val getParent: InternalActorRef,
-    val log: MarkerLoggingAdapter)
+private[akka] class VirtualPathContainer
+  (
+      override val provider: ActorRefProvider,
+      override val path: ActorPath,
+      override val getParent: InternalActorRef,
+      val log: MarkerLoggingAdapter)
     extends MinimalActorRef {
 
   private val children = new ConcurrentHashMap[String, InternalActorRef]
@@ -872,11 +877,12 @@ private[akka] class VirtualPathContainer(
  * [[FunctionRef#unwatch]] must be called to avoid a resource leak, which is different
  * from an ordinary actor.
  */
-@InternalApi private[akka] final class FunctionRef(
-    override val path: ActorPath,
-    override val provider: ActorRefProvider,
-    system: ActorSystem,
-    f: (ActorRef, Any) => Unit)
+@InternalApi private[akka] final class FunctionRef
+  (
+      override val path: ActorPath,
+      override val provider: ActorRefProvider,
+      system: ActorSystem,
+      f: (ActorRef, Any) => Unit)
     extends MinimalActorRef {
 
   // var because it's replaced in `stop`

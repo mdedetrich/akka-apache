@@ -73,7 +73,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
    * ''Must'' be called after actor system is "ready".
    * Starts system actor that takes care of unsubscribing subscribers that have terminated.
    */
-  def startUnsubscriber(): Unit =
+  def startUnsubscriber
+    ()
+    : Unit =
     // sys may be null for backwards compatibility reasons
     if (sys ne null) EventStreamUnsubscriber.start(sys, this)
 

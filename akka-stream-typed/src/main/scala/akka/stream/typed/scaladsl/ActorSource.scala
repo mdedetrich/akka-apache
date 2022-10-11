@@ -46,11 +46,13 @@ object ActorSource {
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  def actorRef[T](
-      completionMatcher: PartialFunction[T, Unit],
-      failureMatcher: PartialFunction[T, Throwable],
-      bufferSize: Int,
-      overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] =
+  def actorRef[T]
+    (
+        completionMatcher: PartialFunction[T, Unit],
+        failureMatcher: PartialFunction[T, Throwable],
+        bufferSize: Int,
+        overflowStrategy: OverflowStrategy)
+    : Source[T, ActorRef[T]] =
     Source
       .actorRef[T](
         completionMatcher.asInstanceOf[PartialFunction[Any, Unit]].andThen(_ => CompletionStrategy.Draining),
@@ -83,11 +85,13 @@ object ActorSource {
    * @param failureMatcher a partial function applied to the messages received materialized actor,
    *                       a matching message will fail the stream with the returned [[Throwable]]
    */
-  def actorRefWithBackpressure[T, Ack](
-      ackTo: ActorRef[Ack],
-      ackMessage: Ack,
-      completionMatcher: PartialFunction[T, CompletionStrategy],
-      failureMatcher: PartialFunction[T, Throwable]): Source[T, ActorRef[T]] =
+  def actorRefWithBackpressure[T, Ack]
+    (
+        ackTo: ActorRef[Ack],
+        ackMessage: Ack,
+        completionMatcher: PartialFunction[T, CompletionStrategy],
+        failureMatcher: PartialFunction[T, Throwable])
+    : Source[T, ActorRef[T]] =
     Source
       .actorRefWithAck[T](
         Some(ackTo.toClassic),
@@ -111,11 +115,13 @@ object ActorSource {
    * i.e. you can watch it to get notified when that happens.
    */
   @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
-  def actorRefWithAck[T, Ack](
-      ackTo: ActorRef[Ack],
-      ackMessage: Ack,
-      completionMatcher: PartialFunction[T, CompletionStrategy],
-      failureMatcher: PartialFunction[T, Throwable]): Source[T, ActorRef[T]] =
+  def actorRefWithAck[T, Ack]
+    (
+        ackTo: ActorRef[Ack],
+        ackMessage: Ack,
+        completionMatcher: PartialFunction[T, CompletionStrategy],
+        failureMatcher: PartialFunction[T, Throwable])
+    : Source[T, ActorRef[T]] =
     Source
       .actorRefWithAck[T](
         Some(ackTo.toClassic),

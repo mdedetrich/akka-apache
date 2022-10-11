@@ -486,12 +486,13 @@ import akka.util.unused
  * Returned by [[CompositeTraversalBuilder]] once all output ports of a subgraph has been wired.
  * See comments in akka.stream.impl.package for more details.
  */
-@InternalApi private[akka] final case class CompletedTraversalBuilder(
-    traversalSoFar: Traversal,
-    inSlots: Int,
-    inToOffset: Map[InPort, Int],
-    attributes: Attributes,
-    islandTag: OptionVal[IslandTag] = OptionVal.None)
+@InternalApi private[akka] final case class CompletedTraversalBuilder
+  (
+      traversalSoFar: Traversal,
+      inSlots: Int,
+      inToOffset: Map[InPort, Int],
+      attributes: Attributes,
+      islandTag: OptionVal[IslandTag] = OptionVal.None)
     extends TraversalBuilder {
 
   override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
@@ -553,11 +554,12 @@ import akka.util.unused
  * outToSlot array which will be then embedded in a [[MaterializeAtomic]] Traversal step.
  * See comments in akka.stream.impl.package for more details.
  */
-@InternalApi private[akka] final case class AtomicTraversalBuilder(
-    module: AtomicModule[Shape, Any],
-    outToSlot: Array[Int],
-    unwiredOuts: Int,
-    attributes: Attributes)
+@InternalApi private[akka] final case class AtomicTraversalBuilder
+  (
+      module: AtomicModule[Shape, Any],
+      outToSlot: Array[Int],
+      unwiredOuts: Int,
+      attributes: Attributes)
     extends TraversalBuilder {
 
   override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
@@ -674,10 +676,12 @@ import akka.util.unused
       t.concat(Compose(matCompose, reverse = true))
   }
 
-  def fromBuilder(
-      traversalBuilder: TraversalBuilder,
-      shape: Shape,
-      combine: AnyFunction2 = Keep.right): LinearTraversalBuilder = {
+  def fromBuilder
+    (
+        traversalBuilder: TraversalBuilder,
+        shape: Shape,
+        combine: AnyFunction2 = Keep.right)
+    : LinearTraversalBuilder = {
     traversalBuilder match {
       case linear: LinearTraversalBuilder =>
         if (combine eq Keep.right) linear
@@ -732,16 +736,17 @@ import akka.util.unused
  * -1 relative offset to something else (see rewireLastOutTo).
  * See comments in akka.stream.impl.package for more details.
  */
-@InternalApi private[akka] final case class LinearTraversalBuilder(
-    inPort: OptionVal[InPort],
-    outPort: OptionVal[OutPort],
-    inOffset: Int,
-    override val inSlots: Int,
-    traversalSoFar: Traversal,
-    pendingBuilder: OptionVal[TraversalBuilder],
-    attributes: Attributes,
-    beforeBuilder: Traversal = EmptyTraversal,
-    islandTag: OptionVal[IslandTag] = OptionVal.None)
+@InternalApi private[akka] final case class LinearTraversalBuilder
+  (
+      inPort: OptionVal[InPort],
+      outPort: OptionVal[OutPort],
+      inOffset: Int,
+      override val inSlots: Int,
+      traversalSoFar: Traversal,
+      pendingBuilder: OptionVal[TraversalBuilder],
+      attributes: Attributes,
+      beforeBuilder: Traversal = EmptyTraversal,
+      islandTag: OptionVal[IslandTag] = OptionVal.None)
     extends TraversalBuilder {
 
   protected def isEmpty: Boolean = inSlots == 0 && outPort.isEmpty
@@ -1152,17 +1157,18 @@ import akka.util.unused
  * @param outOwners        Map of output ports to their parent builders (actually the BuilderKey)
  * @param unwiredOuts      Number of output ports that have not yet been wired/assigned
  */
-@InternalApi private[akka] final case class CompositeTraversalBuilder(
-    finalSteps: Traversal = EmptyTraversal,
-    reverseBuildSteps: List[TraversalBuildStep] = AppendTraversal(PushNotUsed) :: Nil,
-    inSlots: Int = 0,
-    inOffsets: Map[InPort, Int] = Map.empty,
-    inBaseOffsetForOut: Map[OutPort, Int] = Map.empty,
-    pendingBuilders: Map[BuilderKey, TraversalBuilder] = Map.empty,
-    outOwners: Map[OutPort, BuilderKey] = Map.empty,
-    unwiredOuts: Int = 0,
-    attributes: Attributes,
-    islandTag: OptionVal[IslandTag] = OptionVal.None)
+@InternalApi private[akka] final case class CompositeTraversalBuilder
+  (
+      finalSteps: Traversal = EmptyTraversal,
+      reverseBuildSteps: List[TraversalBuildStep] = AppendTraversal(PushNotUsed) :: Nil,
+      inSlots: Int = 0,
+      inOffsets: Map[InPort, Int] = Map.empty,
+      inBaseOffsetForOut: Map[OutPort, Int] = Map.empty,
+      pendingBuilders: Map[BuilderKey, TraversalBuilder] = Map.empty,
+      outOwners: Map[OutPort, BuilderKey] = Map.empty,
+      unwiredOuts: Int = 0,
+      attributes: Attributes,
+      islandTag: OptionVal[IslandTag] = OptionVal.None)
     extends TraversalBuilder {
 
   override def toString: String =

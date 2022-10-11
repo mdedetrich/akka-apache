@@ -141,9 +141,11 @@ private[akka] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetup
     Behaviors.unhandled
   }
 
-  def onSnapshotterResponse(
-      response: SnapshotProtocol.Response,
-      receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
+  def onSnapshotterResponse
+    (
+        response: SnapshotProtocol.Response,
+        receivedPoisonPill: Boolean)
+    : Behavior[InternalProtocol] = {
 
     def loadSnapshotResult(snapshot: Option[SelectedSnapshot], toSnr: Long): Behavior[InternalProtocol] = {
       var state: S = setup.emptyState

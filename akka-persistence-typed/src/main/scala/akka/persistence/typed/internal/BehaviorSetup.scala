@@ -37,26 +37,27 @@ import org.slf4j.MDC
  * INTERNAL API: Carry state for the Persistent behavior implementation behaviors.
  */
 @InternalApi
-private[akka] final class BehaviorSetup[C, E, S](
-    val context: ActorContext[InternalProtocol],
-    val persistenceId: PersistenceId,
-    val emptyState: S,
-    val commandHandler: EventSourcedBehavior.CommandHandler[C, E, S],
-    val eventHandler: EventSourcedBehavior.EventHandler[S, E],
-    val writerIdentity: EventSourcedBehaviorImpl.WriterIdentity,
-    private val signalHandler: PartialFunction[(S, Signal), Unit],
-    val tagger: E => Set[String],
-    val eventAdapter: EventAdapter[E, Any],
-    val snapshotAdapter: SnapshotAdapter[S],
-    val snapshotWhen: (S, E, Long) => Boolean,
-    val recovery: Recovery,
-    val retention: RetentionCriteria,
-    var holdingRecoveryPermit: Boolean,
-    val settings: EventSourcedSettings,
-    val stashState: StashState,
-    val replication: Option[ReplicationSetup],
-    val publishEvents: Boolean,
-    private val internalLoggerFactory: () => Logger) {
+private[akka] final class BehaviorSetup[C, E, S]
+  (
+      val context: ActorContext[InternalProtocol],
+      val persistenceId: PersistenceId,
+      val emptyState: S,
+      val commandHandler: EventSourcedBehavior.CommandHandler[C, E, S],
+      val eventHandler: EventSourcedBehavior.EventHandler[S, E],
+      val writerIdentity: EventSourcedBehaviorImpl.WriterIdentity,
+      private val signalHandler: PartialFunction[(S, Signal), Unit],
+      val tagger: E => Set[String],
+      val eventAdapter: EventAdapter[E, Any],
+      val snapshotAdapter: SnapshotAdapter[S],
+      val snapshotWhen: (S, E, Long) => Boolean,
+      val recovery: Recovery,
+      val retention: RetentionCriteria,
+      var holdingRecoveryPermit: Boolean,
+      val settings: EventSourcedSettings,
+      val stashState: StashState,
+      val replication: Option[ReplicationSetup],
+      val publishEvents: Boolean,
+      private val internalLoggerFactory: () => Logger) {
 
   import BehaviorSetup._
   import InternalProtocol.RecoveryTickEvent

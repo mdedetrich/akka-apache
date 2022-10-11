@@ -66,11 +66,13 @@ object ReplicatedBlogExampleSpec {
     }
 
     // #command-handler
-    private def commandHandler(
-        ctx: ActorContext[Command],
-        replicationContext: ReplicationContext,
-        state: BlogState,
-        cmd: Command): Effect[Event, BlogState] = {
+    private def commandHandler
+      (
+          ctx: ActorContext[Command],
+          replicationContext: ReplicationContext,
+          state: BlogState,
+          cmd: Command)
+      : Effect[Event, BlogState] = {
       cmd match {
         case AddPost(_, content, replyTo) =>
           val evt =
@@ -103,11 +105,13 @@ object ReplicatedBlogExampleSpec {
     // #command-handler
 
     // #event-handler
-    private def eventHandler(
-        ctx: ActorContext[Command],
-        replicationContext: ReplicationContext,
-        state: BlogState,
-        event: Event): BlogState = {
+    private def eventHandler
+      (
+          ctx: ActorContext[Command],
+          replicationContext: ReplicationContext,
+          state: BlogState,
+          event: Event)
+      : BlogState = {
       ctx.log.info(s"${replicationContext.entityId}:${replicationContext.replicaId} Received event $event")
       event match {
         case PostAdded(_, content, timestamp) =>

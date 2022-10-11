@@ -138,14 +138,15 @@ object EventSourcedProducerQueue {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        restartMaxBackoff: FiniteDuration = restartMaxBackoff,
-        snapshotEvery: Int = snapshotEvery,
-        keepNSnapshots: Int = keepNSnapshots,
-        deleteEvents: Boolean = deleteEvents,
-        cleanupUnusedAfter: FiniteDuration = cleanupUnusedAfter,
-        journalPluginId: String = journalPluginId,
-        snapshotPluginId: String = snapshotPluginId) =
+    private def copy
+      (
+          restartMaxBackoff: FiniteDuration = restartMaxBackoff,
+          snapshotEvery: Int = snapshotEvery,
+          keepNSnapshots: Int = keepNSnapshots,
+          deleteEvents: Boolean = deleteEvents,
+          cleanupUnusedAfter: FiniteDuration = cleanupUnusedAfter,
+          journalPluginId: String = journalPluginId,
+          snapshotPluginId: String = snapshotPluginId) =
       new Settings(
         restartMaxBackoff,
         snapshotEvery,
@@ -215,9 +216,10 @@ object EventSourcedProducerQueue {
 /**
  * INTERNAL API
  */
-private class EventSourcedProducerQueue[A](
-    context: ActorContext[DurableProducerQueue.Command[A]],
-    cleanupUnusedAfter: FiniteDuration) {
+private class EventSourcedProducerQueue[A]
+  (
+      context: ActorContext[DurableProducerQueue.Command[A]],
+      cleanupUnusedAfter: FiniteDuration) {
   import DurableProducerQueue._
 
   private val traceEnabled = context.log.isTraceEnabled

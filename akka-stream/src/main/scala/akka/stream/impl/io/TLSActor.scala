@@ -31,12 +31,14 @@ import akka.util.ByteString
  */
 @InternalApi private[stream] object TLSActor {
 
-  def props(
-      maxInputBufferSize: Int,
-      createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
-      verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
-      closing: TLSClosing,
-      tracing: Boolean = false): Props =
+  def props
+    (
+        maxInputBufferSize: Int,
+        createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
+        verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
+        closing: TLSClosing,
+        tracing: Boolean = false)
+    : Props =
     Props(new TLSActor(maxInputBufferSize, createSSLEngine, verifySession, closing, tracing)).withDeploy(Deploy.local)
 
   final val TransportIn = 0
@@ -49,12 +51,13 @@ import akka.util.ByteString
 /**
  * INTERNAL API.
  */
-@InternalApi private[stream] class TLSActor(
-    maxInputBufferSize: Int,
-    createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
-    verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
-    closing: TLSClosing,
-    tracing: Boolean)
+@InternalApi private[stream] class TLSActor
+  (
+      maxInputBufferSize: Int,
+      createSSLEngine: ActorSystem => SSLEngine, // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
+      verifySession: (ActorSystem, SSLSession) => Try[Unit], // ActorSystem is only needed to support the AkkaSSLConfig legacy, see #21753
+      closing: TLSClosing,
+      tracing: Boolean)
     extends Actor
     with ActorLogging
     with Pump {

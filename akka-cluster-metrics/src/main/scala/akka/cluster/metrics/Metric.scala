@@ -24,7 +24,7 @@ import akka.actor.Address
  *   averages (e.g. system load average) or finite (e.g. as number of processors), are not trended.
  */
 @SerialVersionUID(1L)
-final case class Metric private[metrics] (name: String, value: Number, average: Option[EWMA])
+final case class Metric private[metrics](name: String, value: Number, average: Option[EWMA])
     extends MetricNumericConverter {
 
   require(defined(value), s"Invalid Metric [$name] value [$value]")
@@ -180,8 +180,10 @@ object StandardMetrics {
      * necessary cpu metrics.
      * @return if possible a tuple matching the Cpu constructor parameters
      */
-    def unapply(
-        nodeMetrics: NodeMetrics): Option[(Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
+    def unapply
+      (
+          nodeMetrics: NodeMetrics)
+      : Option[(Address, Long, Option[Double], Option[Double], Option[Double], Int)] = {
       for {
         processors <- nodeMetrics.metric(Processors)
       } yield (
@@ -218,13 +220,14 @@ object StandardMetrics {
    * @param processors the number of available processors
    */
   @SerialVersionUID(1L)
-  final case class Cpu(
-      address: Address,
-      timestamp: Long,
-      systemLoadAverage: Option[Double],
-      cpuCombined: Option[Double],
-      cpuStolen: Option[Double],
-      processors: Int) {
+  final case class Cpu
+    (
+        address: Address,
+        timestamp: Long,
+        systemLoadAverage: Option[Double],
+        cpuCombined: Option[Double],
+        cpuStolen: Option[Double],
+        processors: Int) {
 
     cpuCombined match {
       case Some(x) => require(0.0 <= x && x <= 1.0, s"cpuCombined must be between [0.0 - 1.0], was [$x]")

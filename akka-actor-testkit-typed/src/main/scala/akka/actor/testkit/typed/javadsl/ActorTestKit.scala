@@ -157,7 +157,7 @@ object ActorTestKit {
  *
  * For synchronous testing of a `Behavior` see [[BehaviorTestKit]]
  */
-final class ActorTestKit private[akka] (delegate: akka.actor.testkit.typed.scaladsl.ActorTestKit) {
+final class ActorTestKit private[akka](delegate: akka.actor.testkit.typed.scaladsl.ActorTestKit) {
 
   /**
    * The default timeout as specified with the config/[[akka.actor.testkit.typed.TestKitSettings]]

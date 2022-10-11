@@ -13,17 +13,19 @@ object ForkJoinExecutorConfigurator {
   /**
    * INTERNAL AKKA USAGE ONLY
    */
-  final class AkkaForkJoinPool(
-      parallelism: Int,
-      threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-      unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
-      asyncMode: Boolean)
-      extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode)
-      with LoadMetrics {
-    def this(
+  final class AkkaForkJoinPool
+    (
         parallelism: Int,
         threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-        unhandledExceptionHandler: Thread.UncaughtExceptionHandler) =
+        unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
+        asyncMode: Boolean)
+      extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode)
+      with LoadMetrics {
+    def this
+      (
+          parallelism: Int,
+          threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
+          unhandledExceptionHandler: Thread.UncaughtExceptionHandler) =
       this(parallelism, threadFactory, unhandledExceptionHandler, asyncMode = true)
 
     override def execute(r: Runnable): Unit =
@@ -72,10 +74,11 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
         "The prerequisites for the ForkJoinExecutorConfigurator is a ForkJoinPool.ForkJoinWorkerThreadFactory!")
   }
 
-  class ForkJoinExecutorServiceFactory(
-      val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
-      val parallelism: Int,
-      val asyncMode: Boolean)
+  class ForkJoinExecutorServiceFactory
+    (
+        val threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
+        val parallelism: Int,
+        val asyncMode: Boolean)
       extends ExecutorServiceFactory {
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)

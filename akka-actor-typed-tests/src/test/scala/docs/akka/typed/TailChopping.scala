@@ -19,12 +19,14 @@ object TailChopping {
   private case object FinalTimeout extends Command
   private case class WrappedReply[R](reply: R) extends Command
 
-  def apply[Reply: ClassTag](
-      sendRequest: (Int, ActorRef[Reply]) => Boolean,
-      nextRequestAfter: FiniteDuration,
-      replyTo: ActorRef[Reply],
-      finalTimeout: FiniteDuration,
-      timeoutReply: Reply): Behavior[Command] = {
+  def apply[Reply: ClassTag]
+    (
+        sendRequest: (Int, ActorRef[Reply]) => Boolean,
+        nextRequestAfter: FiniteDuration,
+        replyTo: ActorRef[Reply],
+        finalTimeout: FiniteDuration,
+        timeoutReply: Reply)
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       Behaviors.withTimers { timers =>
         val replyAdapter = context.messageAdapter[Reply](WrappedReply(_))

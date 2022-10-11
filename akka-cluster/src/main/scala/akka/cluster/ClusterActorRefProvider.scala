@@ -38,11 +38,12 @@ import akka.routing.Pool
  * the `ClusterActorRefProvider` is used.
  */
 @InternalApi
-private[akka] class ClusterActorRefProvider(
-    _systemName: String,
-    _settings: ActorSystem.Settings,
-    _eventStream: EventStream,
-    _dynamicAccess: DynamicAccess)
+private[akka] class ClusterActorRefProvider
+  (
+      _systemName: String,
+      _settings: ActorSystem.Settings,
+      _eventStream: EventStream,
+      _dynamicAccess: DynamicAccess)
     extends RemoteActorRefProvider(_systemName, _settings, _eventStream, _dynamicAccess) {
 
   override def init(system: ActorSystemImpl): Unit = {

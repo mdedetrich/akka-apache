@@ -103,9 +103,10 @@ private[remote] object AssociationState {
       s"Quarantined ${TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - nanoTime)} seconds ago"
   }
 
-  private final case class UniqueRemoteAddressValue(
-      uniqueRemoteAddress: Option[UniqueAddress],
-      listeners: List[UniqueAddress => Unit])
+  private final case class UniqueRemoteAddressValue
+    (
+        uniqueRemoteAddress: Option[UniqueAddress],
+        listeners: List[UniqueAddress => Unit])
 
   sealed trait UniqueRemoteAddressState
   case object UidKnown extends UniqueRemoteAddressState
@@ -572,10 +573,12 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   }
 
-  protected def attachInboundStreamRestart(
-      streamName: String,
-      streamCompleted: Future[Done],
-      restart: () => Unit): Unit = {
+  protected def attachInboundStreamRestart
+    (
+        streamName: String,
+        streamCompleted: Future[Done],
+        restart: () => Unit)
+    : Unit = {
     implicit val ec = materializer.executionContext
     streamCompleted.failed.foreach {
       case ShutdownSignal      => // shutdown as expected
@@ -746,10 +749,12 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   def outbound(outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundCompressionAccess, Future[Done])] =
     createOutboundSink(OrdinaryStreamId, outboundContext, envelopeBufferPool)
 
-  private def createOutboundSink(
-      streamId: Int,
-      outboundContext: OutboundContext,
-      bufferPool: EnvelopeBufferPool): Sink[OutboundEnvelope, (OutboundCompressionAccess, Future[Done])] = {
+  private def createOutboundSink
+    (
+        streamId: Int,
+        outboundContext: OutboundContext,
+        bufferPool: EnvelopeBufferPool)
+    : Sink[OutboundEnvelope, (OutboundCompressionAccess, Future[Done])] = {
 
     outboundLane(outboundContext, bufferPool, streamId).toMat(
       outboundTransportSink(outboundContext, streamId, bufferPool))(Keep.both)
@@ -758,19 +763,25 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
   def outboundTransportSink(outboundContext: OutboundContext): Sink[EnvelopeBuffer, Future[Done]] =
     outboundTransportSink(outboundContext, OrdinaryStreamId, envelopeBufferPool)
 
-  protected def outboundTransportSink(
-      outboundContext: OutboundContext,
-      streamId: Int,
-      bufferPool: EnvelopeBufferPool): Sink[EnvelopeBuffer, Future[Done]]
+  protected def outboundTransportSink
+    (
+        outboundContext: OutboundContext,
+        streamId: Int,
+        bufferPool: EnvelopeBufferPool)
+    : Sink[EnvelopeBuffer, Future[Done]]
 
-  def outboundLane(
-      outboundContext: OutboundContext): Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] =
+  def outboundLane
+    (
+        outboundContext: OutboundContext)
+    : Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] =
     outboundLane(outboundContext, envelopeBufferPool, OrdinaryStreamId)
 
-  private def outboundLane(
-      outboundContext: OutboundContext,
-      bufferPool: EnvelopeBufferPool,
-      streamId: Int): Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] = {
+  private def outboundLane
+    (
+        outboundContext: OutboundContext,
+        bufferPool: EnvelopeBufferPool,
+        streamId: Int)
+    : Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] = {
 
     Flow
       .fromGraph(killSwitch.flow[OutboundEnvelope])
@@ -786,8 +797,10 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       .viaMat(createEncoder(bufferPool, streamId))(Keep.right)
   }
 
-  def outboundControl(
-      outboundContext: OutboundContext): Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
+  def outboundControl
+    (
+        outboundContext: OutboundContext)
+    : Sink[OutboundEnvelope, (OutboundControlIngress, Future[Done])] = {
     val livenessProbeInterval =
       (settings.Advanced.QuarantineIdleOutboundAfter / 10).max(settings.Advanced.HandshakeRetryInterval)
     Flow
@@ -816,15 +829,19 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     // TODO we can also add scrubbing stage that would collapse sys msg acks/nacks and remove duplicate Quarantine messages
   }
 
-  def createEncoder(
-      pool: EnvelopeBufferPool,
-      streamId: Int): Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] =
+  def createEncoder
+    (
+        pool: EnvelopeBufferPool,
+        streamId: Int)
+    : Flow[OutboundEnvelope, EnvelopeBuffer, OutboundCompressionAccess] =
     Flow.fromGraph(
       new Encoder(localAddress, system, outboundEnvelopePool, pool, streamId, settings.LogSend, settings.Version))
 
-  def createDecoder(
-      settings: ArterySettings,
-      compressions: InboundCompressions): Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] =
+  def createDecoder
+    (
+        settings: ArterySettings,
+        compressions: InboundCompressions)
+    : Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] =
     Flow.fromGraph(new Decoder(this, system, localAddress, settings, compressions, inboundEnvelopePool))
 
   def createDeserializer(bufferPool: EnvelopeBufferPool): Flow[InboundEnvelope, InboundEnvelope, NotUsed] =
@@ -894,9 +911,11 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
       .via(new InboundQuarantineCheck(this))
       .toMat(messageDispatcherSink)(Keep.right)
 
-  def inboundFlow(
-      settings: ArterySettings,
-      compressions: InboundCompressions): Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] = {
+  def inboundFlow
+    (
+        settings: ArterySettings,
+        compressions: InboundCompressions)
+    : Flow[EnvelopeBuffer, InboundEnvelope, InboundCompressionAccess] = {
     Flow[EnvelopeBuffer].via(killSwitch.flow).viaMat(createDecoder(settings, compressions))(Keep.right)
   }
 

@@ -62,9 +62,10 @@ private[remote] object FailureInjectorTransportAdapter {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class FailureInjectorTransportAdapter(
-    wrappedTransport: Transport,
-    val extendedSystem: ExtendedActorSystem)
+private[remote] class FailureInjectorTransportAdapter
+  (
+      wrappedTransport: Transport,
+      val extendedSystem: ExtendedActorSystem)
     extends AbstractTransportAdapter(wrappedTransport)(extendedSystem.dispatchers.internalDispatcher)
     with AssociationEventListener {
 
@@ -89,9 +90,11 @@ private[remote] class FailureInjectorTransportAdapter(
     case _ => wrappedTransport.managementCommand(cmd)
   }
 
-  protected def interceptListen(
-      listenAddress: Address,
-      listenerFuture: Future[AssociationEventListener]): Future[AssociationEventListener] = {
+  protected def interceptListen
+    (
+        listenAddress: Address,
+        listenerFuture: Future[AssociationEventListener])
+    : Future[AssociationEventListener] = {
     log.warning("FailureInjectorTransport is active on this system. Gremlins might munch your packets.")
     listenerFuture.foreach {
       // Side effecting: As this class is not an actor, the only way to safely modify state is through volatile vars.
@@ -163,9 +166,10 @@ private[remote] class FailureInjectorTransportAdapter(
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] final case class FailureInjectorHandle(
-    _wrappedHandle: AssociationHandle,
-    private val gremlinAdapter: FailureInjectorTransportAdapter)
+private[remote] final case class FailureInjectorHandle
+  (
+      _wrappedHandle: AssociationHandle,
+      private val gremlinAdapter: FailureInjectorTransportAdapter)
     extends AbstractTransportAdapterHandle(_wrappedHandle, FailureInjectorSchemeIdentifier)
     with HandleEventListener {
   import gremlinAdapter.extendedSystem.dispatcher

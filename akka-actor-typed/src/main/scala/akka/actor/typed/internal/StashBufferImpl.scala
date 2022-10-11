@@ -102,11 +102,13 @@ import java.util.function.Predicate
   }
 
   @InternalStableApi
-  private def interpretUnstashedMessage(
-      behavior: Behavior[T],
-      ctx: TypedActorContext[T],
-      wrappedMessage: T,
-      @unused node: Node[T]): Behavior[T] = {
+  private def interpretUnstashedMessage
+    (
+        behavior: Behavior[T],
+        ctx: TypedActorContext[T],
+        wrappedMessage: T,
+        @unused node: Node[T])
+    : Behavior[T] = {
     Behavior.interpretMessage(behavior, ctx, wrappedMessage)
   }
 
@@ -174,11 +176,13 @@ import java.util.function.Predicate
     }
   }
 
-  private def interpretUnstashedMessages(
-      behavior: Behavior[T],
-      ctx: TypedActorContext[T],
-      messages: Iterator[Node[T]],
-      wrap: T => T): Behavior[T] = {
+  private def interpretUnstashedMessages
+    (
+        behavior: Behavior[T],
+        ctx: TypedActorContext[T],
+        messages: Iterator[Node[T]],
+        wrap: T => T)
+    : Behavior[T] = {
     @tailrec def interpretOne(b: Behavior[T]): Behavior[T] = {
       val b2 = Behavior.start(b, ctx)
       currentBehaviorWhenUnstashInProgress = OptionVal.Some(b2)

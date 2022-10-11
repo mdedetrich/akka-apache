@@ -21,10 +21,11 @@ import akka.stream.scaladsl._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class SubFlowImpl[In, Out, Mat, F[+_], C](
-    val subFlow: Flow[In, Out, NotUsed],
-    mergeBackFunction: SubFlowImpl.MergeBack[In, F],
-    finishFunction: Sink[In, NotUsed] => C)
+@InternalApi private[akka] class SubFlowImpl[In, Out, Mat, F[+_], C]
+  (
+      val subFlow: Flow[In, Out, NotUsed],
+      mergeBackFunction: SubFlowImpl.MergeBack[In, F],
+      finishFunction: Sink[In, NotUsed] => C)
     extends SubFlow[Out, Mat, F, C] {
 
   override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] =

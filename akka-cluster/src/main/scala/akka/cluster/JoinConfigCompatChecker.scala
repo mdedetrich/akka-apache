@@ -66,10 +66,12 @@ object JoinConfigCompatChecker {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def checkEquality(
-      keys: im.Seq[String],
-      toCheck: Config,
-      actualConfig: Config): ConfigValidation = {
+  @InternalApi private[akka] def checkEquality
+    (
+        keys: im.Seq[String],
+        toCheck: Config,
+        actualConfig: Config)
+    : ConfigValidation = {
 
     def checkCompat(key: String, value: ConfigValue) = {
       actualConfig.hasPath(key) && actualConfig.getValue(key) == value
@@ -113,9 +115,11 @@ object JoinConfigCompatChecker {
    * from the passed `requiredKeys` Seq.
    */
   @InternalApi
-  private[cluster] def removeSensitiveKeys(
-      requiredKeys: im.Seq[String],
-      clusterSettings: ClusterSettings): im.Seq[String] = {
+  private[cluster] def removeSensitiveKeys
+    (
+        requiredKeys: im.Seq[String],
+        clusterSettings: ClusterSettings)
+    : im.Seq[String] = {
     requiredKeys.filter { key =>
       !clusterSettings.SensitiveConfigPaths.exists(s => key.startsWith(s))
     }

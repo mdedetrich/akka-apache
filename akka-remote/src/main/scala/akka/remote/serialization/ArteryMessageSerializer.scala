@@ -143,15 +143,20 @@ private[akka] final class ArteryMessageSerializer(val system: ExtendedActorSyste
     if (str == DeadLettersRepresentation) system.deadLetters
     else system.provider.resolveActorRef(str)
 
-  def serializeActorRefCompressionAdvertisement(
-      adv: ActorRefCompressionAdvertisement): ArteryControlFormats.CompressionTableAdvertisement =
+  def serializeActorRefCompressionAdvertisement
+    (
+        adv: ActorRefCompressionAdvertisement)
+    : ArteryControlFormats.CompressionTableAdvertisement =
     serializeCompressionAdvertisement(adv)(serializeActorRef)
 
   def deserializeActorRefCompressionAdvertisement(bytes: Array[Byte]): ActorRefCompressionAdvertisement =
     deserializeCompressionAdvertisement(bytes, deserializeActorRef, ActorRefCompressionAdvertisement.apply)
 
-  def serializeCompressionAdvertisement[T](adv: CompressionAdvertisement[T])(
-      keySerializer: T => String): ArteryControlFormats.CompressionTableAdvertisement = {
+  def serializeCompressionAdvertisement[T]
+    (adv: CompressionAdvertisement[T])
+    (
+        keySerializer: T => String)
+    : ArteryControlFormats.CompressionTableAdvertisement = {
     val builder =
       ArteryControlFormats.CompressionTableAdvertisement.newBuilder
         .setFrom(serializeUniqueAddress(adv.from))
@@ -166,10 +171,12 @@ private[akka] final class ArteryMessageSerializer(val system: ExtendedActorSyste
     builder.build
   }
 
-  def deserializeCompressionAdvertisement[T, U](
-      bytes: Array[Byte],
-      keyDeserializer: String => T,
-      create: (UniqueAddress, CompressionTable[T]) => U): U = {
+  def deserializeCompressionAdvertisement[T, U]
+    (
+        bytes: Array[Byte],
+        keyDeserializer: String => T,
+        create: (UniqueAddress, CompressionTable[T]) => U)
+    : U = {
     val protoAdv = ArteryControlFormats.CompressionTableAdvertisement.parseFrom(bytes)
 
     val kvs =
@@ -187,15 +194,19 @@ private[akka] final class ArteryMessageSerializer(val system: ExtendedActorSyste
       .setVersion(version)
       .build()
 
-  def deserializeCompressionTableAdvertisementAck(
-      bytes: Array[Byte],
-      create: (UniqueAddress, Byte) => AnyRef): AnyRef = {
+  def deserializeCompressionTableAdvertisementAck
+    (
+        bytes: Array[Byte],
+        create: (UniqueAddress, Byte) => AnyRef)
+    : AnyRef = {
     val msg = ArteryControlFormats.CompressionTableAdvertisementAck.parseFrom(bytes)
     create(deserializeUniqueAddress(msg.getFrom), msg.getVersion.toByte)
   }
 
-  def serializeSystemMessageEnvelope(
-      env: SystemMessageDelivery.SystemMessageEnvelope): ArteryControlFormats.SystemMessageEnvelope = {
+  def serializeSystemMessageEnvelope
+    (
+        env: SystemMessageDelivery.SystemMessageEnvelope)
+    : ArteryControlFormats.SystemMessageEnvelope = {
     val msg = MessageSerializer.serialize(system, env.message)
 
     val builder =
@@ -223,9 +234,11 @@ private[akka] final class ArteryMessageSerializer(val system: ExtendedActorSyste
       deserializeUniqueAddress(protoEnv.getAckReplyTo))
   }
 
-  def serializeSystemMessageDeliveryAck(
-      seqNo: Long,
-      from: UniqueAddress): ArteryControlFormats.SystemMessageDeliveryAck =
+  def serializeSystemMessageDeliveryAck
+    (
+        seqNo: Long,
+        from: UniqueAddress)
+    : ArteryControlFormats.SystemMessageDeliveryAck =
     ArteryControlFormats.SystemMessageDeliveryAck.newBuilder.setSeqNo(seqNo).setFrom(serializeUniqueAddress(from)).build
 
   def deserializeSystemMessageDeliveryAck(bytes: Array[Byte], create: (Long, UniqueAddress) => AnyRef): AnyRef = {

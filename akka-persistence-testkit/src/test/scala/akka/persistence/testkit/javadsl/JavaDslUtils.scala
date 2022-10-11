@@ -13,10 +13,11 @@ import akka.persistence.typed.javadsl.{ CommandHandler, EventHandler, EventSourc
 
 trait JavaDslUtils extends CommonUtils {
 
-  def eventSourcedBehavior(
-      pid: String,
-      setConstantTag: Boolean = false,
-      replyOnRecovery: Option[ActorRef[Any]] = None) =
+  def eventSourcedBehavior
+    (
+        pid: String,
+        setConstantTag: Boolean = false,
+        replyOnRecovery: Option[ActorRef[Any]] = None) =
     new EventSourcedBehavior[TestCommand, Evt, EmptyState](PersistenceId.ofUniqueId(pid)) {
 
       override protected def emptyState: EmptyState = EmptyState()

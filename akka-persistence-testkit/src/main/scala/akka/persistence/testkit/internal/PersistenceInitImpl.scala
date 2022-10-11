@@ -27,10 +27,11 @@ import akka.persistence.RecoveryCompleted
  * and send any message to it. It will reply to the `sender()` with the same message when
  * recovery has completed.
  */
-@InternalApi private[akka] class PersistenceInitImpl(
-    override val journalPluginId: String,
-    override val snapshotPluginId: String,
-    override val persistenceId: String)
+@InternalApi private[akka] class PersistenceInitImpl
+  (
+      override val journalPluginId: String,
+      override val snapshotPluginId: String,
+      override val persistenceId: String)
     extends PersistentActor
     with ActorLogging {
 

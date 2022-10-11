@@ -44,8 +44,10 @@ object DistributedData extends ExtensionId[DistributedData] {
    * @tparam A Message type of the requesting actor.
    * @tparam B Type of the [[ReplicatedData]].
    */
-  def withReplicatorMessageAdapter[A, B <: ReplicatedData](
-      factory: JFunction[ReplicatorMessageAdapter[A, B], Behavior[A]]): Behavior[A] = {
+  def withReplicatorMessageAdapter[A, B <: ReplicatedData]
+    (
+        factory: JFunction[ReplicatorMessageAdapter[A, B], Behavior[A]])
+    : Behavior[A] = {
     Behaviors.setup[A] { context =>
       val distributedData = akka.cluster.ddata.typed.scaladsl.DistributedData(context.getSystem)
       val replicatorAdapter =

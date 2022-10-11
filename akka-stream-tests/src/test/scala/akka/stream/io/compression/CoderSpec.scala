@@ -26,8 +26,10 @@ abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSu
 
   protected def newCompressor(): Compressor
   protected def encoderFlow: Flow[ByteString, ByteString, Any]
-  protected def decoderFlow(
-      maxBytesPerChunk: Int = Compression.MaxBytesPerChunkDefault): Flow[ByteString, ByteString, Any]
+  protected def decoderFlow
+    (
+        maxBytesPerChunk: Int = Compression.MaxBytesPerChunkDefault)
+    : Flow[ByteString, ByteString, Any]
 
   protected def newDecodedInputStream(underlying: InputStream): InputStream
   protected def newEncodedOutputStream(underlying: OutputStream): OutputStream

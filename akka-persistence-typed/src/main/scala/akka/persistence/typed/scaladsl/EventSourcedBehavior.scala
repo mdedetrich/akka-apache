@@ -52,11 +52,13 @@ object EventSourcedBehavior {
    * @param commandHandler map commands to effects e.g. persisting events, replying to commands
    * @param eventHandler compute the new state given the current state when an event has been persisted
    */
-  def apply[Command, Event, State](
-      persistenceId: PersistenceId,
-      emptyState: State,
-      commandHandler: (State, Command) => Effect[Event, State],
-      eventHandler: (State, Event) => State): EventSourcedBehavior[Command, Event, State] = {
+  def apply[Command, Event, State]
+    (
+        persistenceId: PersistenceId,
+        emptyState: State,
+        commandHandler: (State, Command) => Effect[Event, State],
+        eventHandler: (State, Event) => State)
+    : EventSourcedBehavior[Command, Event, State] = {
     val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[_, _, _]], logPrefixSkipList)
     EventSourcedBehaviorImpl(persistenceId, emptyState, commandHandler, eventHandler, loggerClass)
   }
@@ -66,11 +68,13 @@ object EventSourcedBehavior {
    * Then there will be compilation errors if the returned effect isn't a [[ReplyEffect]], which can be
    * created with [[Effect.reply]], [[Effect.noReply]], [[EffectBuilder.thenReply]], or [[EffectBuilder.thenNoReply]].
    */
-  def withEnforcedReplies[Command, Event, State](
-      persistenceId: PersistenceId,
-      emptyState: State,
-      commandHandler: (State, Command) => ReplyEffect[Event, State],
-      eventHandler: (State, Event) => State): EventSourcedBehavior[Command, Event, State] = {
+  def withEnforcedReplies[Command, Event, State]
+    (
+        persistenceId: PersistenceId,
+        emptyState: State,
+        commandHandler: (State, Command) => ReplyEffect[Event, State],
+        eventHandler: (State, Event) => State)
+    : EventSourcedBehavior[Command, Event, State] = {
     val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[EventSourcedBehavior[_, _, _]], logPrefixSkipList)
     EventSourcedBehaviorImpl(persistenceId, emptyState, commandHandler, eventHandler, loggerClass)
   }
@@ -93,8 +97,10 @@ object EventSourcedBehavior {
      *
      * @see [[Effect]] for possible effects of a command.
      */
-    def command[Command, Event, State](
-        commandHandler: Command => Effect[Event, State]): (State, Command) => Effect[Event, State] =
+    def command[Command, Event, State]
+      (
+          commandHandler: Command => Effect[Event, State])
+      : (State, Command) => Effect[Event, State] =
       (_, cmd) => commandHandler(cmd)
 
   }

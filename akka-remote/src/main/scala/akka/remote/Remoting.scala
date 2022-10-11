@@ -83,9 +83,11 @@ private[remote] object Remoting {
 
   final val EndpointManagerName = "endpointManager"
 
-  def localAddressForRemote(
-      transportMapping: Map[String, Set[(AkkaProtocolTransport, Address)]],
-      remote: Address): Address = {
+  def localAddressForRemote
+    (
+        transportMapping: Map[String, Set[(AkkaProtocolTransport, Address)]],
+        remote: Address)
+    : Address = {
 
     transportMapping.get(remote.protocol) match {
       case Some(transports) =>
@@ -300,11 +302,12 @@ private[remote] object EndpointManager {
   case object StartupFinished extends RemotingCommand
   case object ShutdownAndFlush extends RemotingCommand
   @InternalStableApi
-  final case class Send(
-      message: Any,
-      senderOption: OptionVal[ActorRef],
-      recipient: RemoteActorRef,
-      seqOpt: Option[SeqNo] = None)
+  final case class Send
+    (
+        message: Any,
+        senderOption: OptionVal[ActorRef],
+        recipient: RemoteActorRef,
+        seqOpt: Option[SeqNo] = None)
       extends RemotingCommand
       with HasSequenceNumber {
     override def toString = s"Remote message $senderOption -> $recipient"
@@ -319,9 +322,10 @@ private[remote] object EndpointManager {
 
   // Messages internal to EndpointManager
   case object Prune extends NoSerializationVerificationNeeded
-  final case class ListensResult(
-      addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]],
-      results: Seq[(AkkaProtocolTransport, Address, Promise[AssociationEventListener])])
+  final case class ListensResult
+    (
+        addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]],
+        results: Seq[(AkkaProtocolTransport, Address, Promise[AssociationEventListener])])
       extends NoSerializationVerificationNeeded
   final case class ListensFailure(addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]], cause: Throwable)
       extends NoSerializationVerificationNeeded
@@ -954,13 +958,15 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       pendingReadHandoffs -= takingOverFrom
   }
 
-  private def createEndpoint(
-      remoteAddress: Address,
-      localAddress: Address,
-      transport: AkkaProtocolTransport,
-      endpointSettings: RemoteSettings,
-      handleOption: Option[AkkaProtocolHandle],
-      writing: Boolean): ActorRef = {
+  private def createEndpoint
+    (
+        remoteAddress: Address,
+        localAddress: Address,
+        transport: AkkaProtocolTransport,
+        endpointSettings: RemoteSettings,
+        handleOption: Option[AkkaProtocolHandle],
+        writing: Boolean)
+    : ActorRef = {
     require(transportMapping contains localAddress, "Transport mapping is not defined for the address")
     // refuseUid is ignored for read-only endpoints since the UID of the remote system is already known and has passed
     // quarantine checks

@@ -64,11 +64,12 @@ private[cluster] object Gossip {
  */
 @SerialVersionUID(1L)
 @InternalApi
-private[cluster] final case class Gossip(
-    members: immutable.SortedSet[Member], // sorted set of members with their status, sorted by address
-    overview: GossipOverview = GossipOverview(),
-    version: VectorClock = VectorClock(), // vector clock version
-    tombstones: Map[UniqueAddress, Gossip.Timestamp] = Map.empty) {
+private[cluster] final case class Gossip
+  (
+      members: immutable.SortedSet[Member], // sorted set of members with their status, sorted by address
+      overview: GossipOverview = GossipOverview(),
+      version: VectorClock = VectorClock(), // vector clock version
+      tombstones: Map[UniqueAddress, Gossip.Timestamp] = Map.empty) {
 
   if (Cluster.isAssertInvariantsEnabled) assertInvariants()
 
@@ -281,9 +282,10 @@ private[cluster] final case class Gossip(
  * Represents the overview of the cluster, holds the cluster convergence table and set with unreachable nodes.
  */
 @SerialVersionUID(1L)
-private[cluster] final case class GossipOverview(
-    seen: Set[UniqueAddress] = Set.empty,
-    reachability: Reachability = Reachability.empty) {
+private[cluster] final case class GossipOverview
+  (
+      seen: Set[UniqueAddress] = Set.empty,
+      reachability: Reachability = Reachability.empty) {
 
   lazy val seenDigest: Array[Byte] = {
     val bytes = seen.toVector.sorted.map(node => node.address).mkString(",").getBytes(StandardCharsets.UTF_8)

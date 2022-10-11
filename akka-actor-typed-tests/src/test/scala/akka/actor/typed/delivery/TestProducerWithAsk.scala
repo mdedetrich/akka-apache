@@ -25,10 +25,12 @@ object TestProducerWithAsk {
 
   private implicit val askTimeout: Timeout = 10.seconds
 
-  def apply(
-      delay: FiniteDuration,
-      replyProbe: ActorRef[Long],
-      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+  def apply
+    (
+        delay: FiniteDuration,
+        replyProbe: ActorRef[Long],
+        producerController: ActorRef[ProducerController.Start[TestConsumer.Job]])
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       context.setLoggerName("TestProducerWithConfirmation")
       val requestNextAdapter: ActorRef[ProducerController.RequestNext[TestConsumer.Job]] =
@@ -55,10 +57,12 @@ object TestProducerWithAsk {
     }
   }
 
-  private def active(
-      n: Int,
-      replyProbe: ActorRef[Long],
-      sendTo: ActorRef[ProducerController.MessageWithConfirmation[TestConsumer.Job]]): Behavior[Command] = {
+  private def active
+    (
+        n: Int,
+        replyProbe: ActorRef[Long],
+        sendTo: ActorRef[ProducerController.MessageWithConfirmation[TestConsumer.Job]])
+    : Behavior[Command] = {
     Behaviors.receivePartial {
       case (ctx, Tick) =>
         val msg = s"msg-$n"

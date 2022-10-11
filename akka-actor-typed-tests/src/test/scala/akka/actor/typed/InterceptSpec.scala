@@ -25,10 +25,12 @@ object InterceptSpec {
 
   class SameTypeInterceptor extends BehaviorInterceptor[String, String] {
     import BehaviorInterceptor._
-    override def aroundReceive(
-        context: TypedActorContext[String],
-        message: String,
-        target: ReceiveTarget[String]): Behavior[String] = {
+    override def aroundReceive
+      (
+          context: TypedActorContext[String],
+          message: String,
+          target: ReceiveTarget[String])
+      : Behavior[String] = {
       target(context, message)
     }
 
@@ -48,10 +50,12 @@ object InterceptSpec {
     }
 
     private class ProtocolTransformer extends BehaviorInterceptor[Any, InternalProtocol] {
-      override def aroundReceive(
-          ctx: TypedActorContext[Any],
-          msg: Any,
-          target: BehaviorInterceptor.ReceiveTarget[InternalProtocol]): Behavior[InternalProtocol] = {
+      override def aroundReceive
+        (
+            ctx: TypedActorContext[Any],
+            msg: Any,
+            target: BehaviorInterceptor.ReceiveTarget[InternalProtocol])
+        : Behavior[InternalProtocol] = {
         val wrapped = msg match {
           case c: Command          => InternalProtocol.WrappedCommand(c)
           case r: ExternalResponse => InternalProtocol.WrappedExternalResponse(r)
@@ -82,10 +86,12 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
   import InterceptSpec._
 
   private def snitchingInterceptor(probe: ActorRef[String]) = new BehaviorInterceptor[String, String] {
-    override def aroundReceive(
-        context: TypedActorContext[String],
-        message: String,
-        target: ReceiveTarget[String]): Behavior[String] = {
+    override def aroundReceive
+      (
+          context: TypedActorContext[String],
+          message: String,
+          target: ReceiveTarget[String])
+      : Behavior[String] = {
       probe ! ("before " + message)
       val b = target(context, message)
       probe ! ("after " + message)
@@ -158,7 +164,9 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     "intercept messages keeping all different interceptors (initially)" in {
       val probe = TestProbe[String]()
 
-      def intercept(beh: Behavior[String]): Behavior[String] =
+      def intercept
+        (beh: Behavior[String])
+        : Behavior[String] =
         // a new interceptor instance every call
         Behaviors.intercept(() => snitchingInterceptor(probe.ref))(beh)
 
@@ -199,16 +207,20 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     "allow an interceptor to replace started behavior" in {
       val interceptor = new BehaviorInterceptor[String, String] {
 
-        override def aroundStart(
-            context: TypedActorContext[String],
-            target: PreStartTarget[String]): Behavior[String] = {
+        override def aroundStart
+          (
+              context: TypedActorContext[String],
+              target: PreStartTarget[String])
+          : Behavior[String] = {
           Behaviors.stopped
         }
 
-        def aroundReceive(
-            context: TypedActorContext[String],
-            message: String,
-            target: ReceiveTarget[String]): Behavior[String] =
+        def aroundReceive
+          (
+              context: TypedActorContext[String],
+              message: String,
+              target: ReceiveTarget[String])
+          : Behavior[String] =
           target(context, message)
       }
 
@@ -325,10 +337,12 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
       }
 
       val poisonInterceptor = new BehaviorInterceptor[Any, Msg] {
-        override def aroundReceive(
-            context: TypedActorContext[Any],
-            message: Any,
-            target: ReceiveTarget[Msg]): Behavior[Msg] =
+        override def aroundReceive
+          (
+              context: TypedActorContext[Any],
+              message: Any,
+              target: ReceiveTarget[Msg])
+          : Behavior[Msg] =
           message match {
             case MyPoisonPill => Behaviors.stopped
             case m: Msg       => target(context, m)
@@ -362,10 +376,12 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
       val interceptor: BehaviorInterceptor[Message, Message] =
         new BehaviorInterceptor[Message, Message] {
 
-          override def aroundReceive(
-              ctx: TypedActorContext[Message],
-              msg: Message,
-              target: ReceiveTarget[Message]): Behavior[Message] = {
+          override def aroundReceive
+            (
+                ctx: TypedActorContext[Message],
+                msg: Message,
+                target: ReceiveTarget[Message])
+            : Behavior[Message] = {
             interceptProbe.ref ! msg
             target(ctx, msg)
           }
@@ -390,10 +406,12 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     "intercept PostStop" in {
       val probe = TestProbe[String]()
       val postStopInterceptor = new BehaviorSignalInterceptor[String] {
-        override def aroundSignal(
-            ctx: TypedActorContext[String],
-            signal: Signal,
-            target: SignalTarget[String]): Behavior[String] = {
+        override def aroundSignal
+          (
+              ctx: TypedActorContext[String],
+              signal: Signal,
+              target: SignalTarget[String])
+          : Behavior[String] = {
           signal match {
             case PostStop =>
               probe.ref ! "interceptor-post-stop"
@@ -451,10 +469,12 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
       val probe = createTestProbe[String]()
 
       val toUpper = new BehaviorInterceptor[Command, Command] {
-        override def aroundReceive(
-            ctx: TypedActorContext[Command],
-            msg: Command,
-            target: BehaviorInterceptor.ReceiveTarget[Command]): Behavior[Command] = {
+        override def aroundReceive
+          (
+              ctx: TypedActorContext[Command],
+              msg: Command,
+              target: BehaviorInterceptor.ReceiveTarget[Command])
+          : Behavior[Command] = {
           target(ctx, Command(msg.s.toUpperCase()))
         }
 

@@ -426,11 +426,13 @@ object Receptionist extends ExtensionId[Receptionist] {
       apply(key, serviceInstances, serviceInstances, servicesWereAddedOrRemoved = true)
 
     /** Scala API: */
-    def apply[T](
-        key: ServiceKey[T],
-        serviceInstances: Set[ActorRef[T]],
-        allServiceInstances: Set[ActorRef[T]],
-        servicesWereAddedOrRemoved: Boolean): Listing =
+    def apply[T]
+      (
+          key: ServiceKey[T],
+          serviceInstances: Set[ActorRef[T]],
+          allServiceInstances: Set[ActorRef[T]],
+          servicesWereAddedOrRemoved: Boolean)
+      : Listing =
       new ReceptionistMessages.Listing[T](key, serviceInstances, allServiceInstances, servicesWereAddedOrRemoved)
   }
 
@@ -443,11 +445,13 @@ object Receptionist extends ExtensionId[Receptionist] {
   /**
    * Java API: Sent by the receptionist, available here for easier testing
    */
-  def listing[T](
-      key: ServiceKey[T],
-      serviceInstances: java.util.Set[ActorRef[T]],
-      allServiceInstances: java.util.Set[ActorRef[T]],
-      servicesWereAddedOrRemoved: Boolean): Listing =
+  def listing[T]
+    (
+        key: ServiceKey[T],
+        serviceInstances: java.util.Set[ActorRef[T]],
+        allServiceInstances: java.util.Set[ActorRef[T]],
+        servicesWereAddedOrRemoved: Boolean)
+    : Listing =
     Listing(key, serviceInstances.asScala.toSet, allServiceInstances.asScala.toSet, servicesWereAddedOrRemoved)
 
 }

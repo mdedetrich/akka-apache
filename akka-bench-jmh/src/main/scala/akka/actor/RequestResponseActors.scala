@@ -71,8 +71,10 @@ object RequestResponseActors {
     }
   }
 
-  def startUserQueryActorPairs(numActors: Int, numQueriesPerActor: Int, numUsersInDBPerActor: Int, dispatcher: String)(
-      implicit system: ActorSystem) = {
+  def startUserQueryActorPairs
+    (numActors: Int, numQueriesPerActor: Int, numUsersInDBPerActor: Int, dispatcher: String)
+    (
+        implicit system: ActorSystem) = {
     val fullPathToDispatcher = "akka.actor." + dispatcher
     val latch = new CountDownLatch(numActors)
     val actorsPairs = for {

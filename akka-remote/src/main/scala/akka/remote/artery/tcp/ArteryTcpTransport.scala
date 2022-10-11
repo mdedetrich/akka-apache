@@ -68,10 +68,11 @@ private[remote] object ArteryTcpTransport {
  * INTERNAL API
  */
 @ccompatUsedUntil213
-private[remote] class ArteryTcpTransport(
-    _system: ExtendedActorSystem,
-    _provider: RemoteActorRefProvider,
-    tlsEnabled: Boolean)
+private[remote] class ArteryTcpTransport
+  (
+      _system: ExtendedActorSystem,
+      _provider: RemoteActorRefProvider,
+      tlsEnabled: Boolean)
     extends ArteryTransport(_system, _provider) {
   import ArteryTcpTransport._
   import ArteryTransport._
@@ -112,10 +113,12 @@ private[remote] class ArteryTcpTransport(
     // nothing specific here
   }
 
-  override protected def outboundTransportSink(
-      outboundContext: OutboundContext,
-      streamId: Int,
-      bufferPool: EnvelopeBufferPool): Sink[EnvelopeBuffer, Future[Done]] = {
+  override protected def outboundTransportSink
+    (
+        outboundContext: OutboundContext,
+        streamId: Int,
+        bufferPool: EnvelopeBufferPool)
+    : Sink[EnvelopeBuffer, Future[Done]] = {
 
     val host = outboundContext.remoteAddress.host.get
     val port = outboundContext.remoteAddress.port.get

@@ -53,10 +53,12 @@ private[akka] object ShardingDirectReplication {
 
   private final case class WrappedPublishedEvent(publishedEvent: PublishedEvent) extends Command
 
-  def apply[T](
-      typeName: String,
-      selfReplica: Option[ReplicaId],
-      replicaShardingProxies: Map[ReplicaId, ActorRef[T]]): Behavior[Command] =
+  def apply[T]
+    (
+        typeName: String,
+        selfReplica: Option[ReplicaId],
+        replicaShardingProxies: Map[ReplicaId, ActorRef[T]])
+    : Behavior[Command] =
     Behaviors.setup[Command] { context =>
       context.log.debug(
         "Subscribing to event stream to forward events to [{}] sharded replicas",

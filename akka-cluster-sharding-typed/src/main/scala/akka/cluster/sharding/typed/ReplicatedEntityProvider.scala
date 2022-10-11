@@ -29,12 +29,13 @@ object ReplicatedEntityProvider {
    *
    * @tparam M The type of messages the replicated entity accepts
    */
-  def create[M](
-      messageClass: Class[M],
-      typeName: String,
-      allReplicaIds: JSet[ReplicaId],
-      settingsPerReplicaFactory: akka.japi.function.Function2[JEntityTypeKey[M], ReplicaId, ReplicatedEntity[M]])
-      : ReplicatedEntityProvider[M] = {
+  def create[M]
+    (
+        messageClass: Class[M],
+        typeName: String,
+        allReplicaIds: JSet[ReplicaId],
+        settingsPerReplicaFactory: akka.japi.function.Function2[JEntityTypeKey[M], ReplicaId, ReplicatedEntity[M]])
+    : ReplicatedEntityProvider[M] = {
     implicit val classTag: ClassTag[M] = ClassTag(messageClass)
     apply[M](typeName, allReplicaIds.asScala.toSet)((key, replica) =>
       settingsPerReplicaFactory(key.asInstanceOf[EntityTypeKeyImpl[M]], replica))
@@ -49,8 +50,11 @@ object ReplicatedEntityProvider {
    * @param typeName The type name used in the [[EntityTypeKey]]
    * @tparam M The type of messages the replicated entity accepts
    */
-  def apply[M: ClassTag](typeName: String, allReplicaIds: Set[ReplicaId])(
-      settingsPerReplicaFactory: (EntityTypeKey[M], ReplicaId) => ReplicatedEntity[M]): ReplicatedEntityProvider[M] = {
+  def apply[M: ClassTag]
+    (typeName: String, allReplicaIds: Set[ReplicaId])
+    (
+        settingsPerReplicaFactory: (EntityTypeKey[M], ReplicaId) => ReplicatedEntity[M])
+    : ReplicatedEntityProvider[M] = {
     new ReplicatedEntityProvider(
       allReplicaIds.map { replicaId =>
         if (typeName.contains(Separator))
@@ -69,8 +73,11 @@ object ReplicatedEntityProvider {
    * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding. A replica will be run per data center.
    */
-  def perDataCenter[M: ClassTag, E](typeName: String, allReplicaIds: Set[ReplicaId])(
-      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] = {
+  def perDataCenter[M: ClassTag, E]
+    (typeName: String, allReplicaIds: Set[ReplicaId])
+    (
+        create: ReplicationId => Behavior[M])
+    : ReplicatedEntityProvider[M] = {
     apply(typeName, allReplicaIds) { (typeKey, replicaId) =>
       ReplicatedEntity(
         replicaId,
@@ -87,8 +94,11 @@ object ReplicatedEntityProvider {
    * ClusterSharding. The replicas in allReplicaIds should be roles used by nodes. A replica for each
    * entity will run on each role.
    */
-  def perRole[M: ClassTag, E](typeName: String, allReplicaIds: Set[ReplicaId])(
-      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] = {
+  def perRole[M: ClassTag, E]
+    (typeName: String, allReplicaIds: Set[ReplicaId])
+    (
+        create: ReplicationId => Behavior[M])
+    : ReplicatedEntityProvider[M] = {
     apply(typeName, allReplicaIds) { (typeKey, replicaId) =>
       ReplicatedEntity(
         replicaId,
@@ -104,11 +114,13 @@ object ReplicatedEntityProvider {
    * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding. A replica will be run per data center.
    */
-  def createPerDataCenter[M](
-      messageClass: Class[M],
-      typeName: String,
-      allReplicaIds: JSet[ReplicaId],
-      createBehavior: java.util.function.Function[ReplicationId, Behavior[M]]): ReplicatedEntityProvider[M] = {
+  def createPerDataCenter[M]
+    (
+        messageClass: Class[M],
+        typeName: String,
+        allReplicaIds: JSet[ReplicaId],
+        createBehavior: java.util.function.Function[ReplicationId, Behavior[M]])
+    : ReplicatedEntityProvider[M] = {
     implicit val classTag: ClassTag[M] = ClassTag(messageClass)
     apply(typeName, allReplicaIds.asScala.toSet) { (typeKey, replicaId) =>
       ReplicatedEntity(
@@ -127,11 +139,13 @@ object ReplicatedEntityProvider {
    *
    * Map replicas to roles and then there will be a replica per role e.g. to match to availability zones/racks
    */
-  def createPerRole[M](
-      messageClass: Class[M],
-      typeName: String,
-      allReplicaIds: JSet[ReplicaId],
-      createBehavior: akka.japi.function.Function[ReplicationId, Behavior[M]]): ReplicatedEntityProvider[M] = {
+  def createPerRole[M]
+    (
+        messageClass: Class[M],
+        typeName: String,
+        allReplicaIds: JSet[ReplicaId],
+        createBehavior: akka.japi.function.Function[ReplicationId, Behavior[M]])
+    : ReplicatedEntityProvider[M] = {
     implicit val classTag: ClassTag[M] = ClassTag(messageClass)
     apply(typeName, allReplicaIds.asScala.toSet) { (typeKey, replicaId) =>
       ReplicatedEntity(

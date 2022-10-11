@@ -14,10 +14,11 @@ import akka.stream.stage.{ GraphStage, GraphStageLogic, InHandler, StageLogging 
  * INTERNAL API
  */
 @InternalApi
-final private[akka] class ActorRefSinkStage[T](
-    ref: ActorRef,
-    onCompleteMessage: Any,
-    onFailureMessage: Throwable => Any)
+final private[akka] class ActorRefSinkStage[T]
+  (
+      ref: ActorRef,
+      onCompleteMessage: Any,
+      onFailureMessage: Throwable => Any)
     extends GraphStage[SinkShape[T]] {
 
   val in: Inlet[T] = Inlet("ActorRefSink.in")

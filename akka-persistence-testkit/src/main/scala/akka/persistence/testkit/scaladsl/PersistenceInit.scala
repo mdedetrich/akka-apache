@@ -36,11 +36,13 @@ object PersistenceInit {
    *
    * @return a `Future` that is completed when the initialization has completed
    */
-  def initializePlugins(
-      system: ClassicActorSystemProvider,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      timeout: FiniteDuration): Future[Done] = {
+  def initializePlugins
+    (
+        system: ClassicActorSystemProvider,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        timeout: FiniteDuration)
+    : Future[Done] = {
     val persistenceId: String = s"persistenceInit-${UUID.randomUUID()}"
     val extSystem = system.classicSystem.asInstanceOf[ExtendedActorSystem]
     val ref =

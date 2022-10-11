@@ -304,10 +304,12 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
    * Wait until the expected number of members has status Up has been reached.
    * Also asserts that nodes in the 'canNotBePartOfMemberRing' are *not* part of the cluster ring.
    */
-  def awaitMembersUp(
-      numberOfMembers: Int,
-      canNotBePartOfMemberRing: Set[Address] = Set.empty,
-      timeout: FiniteDuration = 25.seconds): Unit = {
+  def awaitMembersUp
+    (
+        numberOfMembers: Int,
+        canNotBePartOfMemberRing: Set[Address] = Set.empty,
+        timeout: FiniteDuration = 25.seconds)
+    : Unit = {
     within(timeout) {
       if (!canNotBePartOfMemberRing.isEmpty) // don't run this on an empty set
         awaitAssert(canNotBePartOfMemberRing.foreach(a => clusterView.members.map(_.address) should not contain a))

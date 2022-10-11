@@ -70,10 +70,11 @@ private[akka] final class BalancingRoutingLogic extends RoutingLogic {
  *   supervision, death watch and router management messages
  */
 @SerialVersionUID(1L)
-final case class BalancingPool(
-    nrOfInstances: Int,
-    override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
+final case class BalancingPool
+  (
+      nrOfInstances: Int,
+      override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
     extends Pool {
 
   def this(config: Config) =

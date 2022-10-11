@@ -26,10 +26,11 @@ private[akka] object JournalInteractions {
 
   type EventOrTaggedOrReplicated = Any // `Any` since can be `E` or `Tagged` or a `ReplicatedEvent`
 
-  final case class EventToPersist(
-      adaptedEvent: EventOrTaggedOrReplicated,
-      manifest: String,
-      metadata: Option[ReplicatedEventMetadata])
+  final case class EventToPersist
+    (
+        adaptedEvent: EventOrTaggedOrReplicated,
+        manifest: String,
+        metadata: Option[ReplicatedEventMetadata])
 
 }
 
@@ -41,13 +42,15 @@ private[akka] trait JournalInteractions[C, E, S] {
 
   def setup: BehaviorSetup[C, E, S]
 
-  protected def internalPersist(
-      ctx: ActorContext[_],
-      cmd: Any,
-      state: Running.RunningState[S],
-      event: EventOrTaggedOrReplicated,
-      eventAdapterManifest: String,
-      metadata: OptionVal[Any]): Running.RunningState[S] = {
+  protected def internalPersist
+    (
+        ctx: ActorContext[_],
+        cmd: Any,
+        state: Running.RunningState[S],
+        event: EventOrTaggedOrReplicated,
+        eventAdapterManifest: String,
+        metadata: OptionVal[Any])
+    : Running.RunningState[S] = {
 
     val newRunningState = state.nextSequenceNr()
 
@@ -75,16 +78,20 @@ private[akka] trait JournalInteractions[C, E, S] {
   }
 
   @InternalStableApi
-  private[akka] def onWriteInitiated(
-      @unused ctx: ActorContext[_],
-      @unused cmd: Any,
-      @unused repr: PersistentRepr): Unit = ()
+  private[akka] def onWriteInitiated
+    (
+        @unused ctx: ActorContext[_],
+        @unused cmd: Any,
+        @unused repr: PersistentRepr)
+    : Unit = ()
 
-  protected def internalPersistAll(
-      ctx: ActorContext[_],
-      cmd: Any,
-      state: Running.RunningState[S],
-      events: immutable.Seq[EventToPersist]): Running.RunningState[S] = {
+  protected def internalPersistAll
+    (
+        ctx: ActorContext[_],
+        cmd: Any,
+        state: Running.RunningState[S],
+        events: immutable.Seq[EventToPersist])
+    : Running.RunningState[S] = {
     if (events.nonEmpty) {
       var newState = state
 
@@ -116,10 +123,12 @@ private[akka] trait JournalInteractions[C, E, S] {
   }
 
   @InternalStableApi
-  private[akka] def onWritesInitiated(
-      @unused ctx: ActorContext[_],
-      @unused cmd: Any,
-      @unused repr: immutable.Seq[PersistentRepr]): Unit = ()
+  private[akka] def onWritesInitiated
+    (
+        @unused ctx: ActorContext[_],
+        @unused cmd: Any,
+        @unused repr: immutable.Seq[PersistentRepr])
+    : Unit = ()
 
   protected def replayEvents(fromSeqNr: Long, toSeqNr: Long): Unit = {
     setup.internalLogger.debug2("Replaying events: from: {}, to: {}", fromSeqNr, toSeqNr)
@@ -134,7 +143,7 @@ private[akka] trait JournalInteractions[C, E, S] {
 
   /** Intended to be used in .onSignal(returnPermitOnStop) by behaviors */
   protected def returnPermitOnStop
-      : PartialFunction[(ActorContext[InternalProtocol], Signal), Behavior[InternalProtocol]] = {
+    : PartialFunction[(ActorContext[InternalProtocol], Signal), Behavior[InternalProtocol]] = {
     case (_, PostStop) =>
       tryReturnRecoveryPermit("PostStop")
       Behaviors.stopped

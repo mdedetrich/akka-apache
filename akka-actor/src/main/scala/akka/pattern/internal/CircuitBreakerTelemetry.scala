@@ -130,10 +130,11 @@ trait CircuitBreakerTelemetry {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class CircuitBreakerEnsembleTelemetry(
-    telemetryFqcns: Seq[String],
-    breakerId: String,
-    system: ExtendedActorSystem)
+@InternalApi private[akka] class CircuitBreakerEnsembleTelemetry
+  (
+      telemetryFqcns: Seq[String],
+      breakerId: String,
+      system: ExtendedActorSystem)
     extends CircuitBreakerTelemetry {
 
   private val telemetries = telemetryFqcns.map(fqcn => CircuitBreakerTelemetryProvider.create(breakerId, system, fqcn))

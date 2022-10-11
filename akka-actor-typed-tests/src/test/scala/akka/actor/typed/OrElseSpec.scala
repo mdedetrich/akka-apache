@@ -118,10 +118,12 @@ object OrElseSpec {
 
       private var handlers: Vector[Behavior[Ping]] = initialHandlers
 
-      override def aroundReceive(
-          ctx: TypedActorContext[Ping],
-          msg: Ping,
-          target: BehaviorInterceptor.ReceiveTarget[Ping]): Behavior[Ping] = {
+      override def aroundReceive
+        (
+            ctx: TypedActorContext[Ping],
+            msg: Ping,
+            target: BehaviorInterceptor.ReceiveTarget[Ping])
+        : Behavior[Ping] = {
 
         @tailrec def handle(i: Int): Behavior[Ping] = {
           if (i == handlers.size)

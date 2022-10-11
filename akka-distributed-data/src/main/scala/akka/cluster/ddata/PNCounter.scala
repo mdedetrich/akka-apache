@@ -41,7 +41,7 @@ object PNCounter {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class PNCounter private[akka] (private[akka] val increments: GCounter, private[akka] val decrements: GCounter)
+final class PNCounter private[akka](private[akka] val increments: GCounter, private[akka] val decrements: GCounter)
     extends DeltaReplicatedData
     with ReplicatedDelta
     with ReplicatedDataSerialization

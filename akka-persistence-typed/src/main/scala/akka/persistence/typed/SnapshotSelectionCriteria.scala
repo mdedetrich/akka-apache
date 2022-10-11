@@ -37,11 +37,12 @@ object SnapshotSelectionCriteria {
 /**
  * Selection criteria for loading and deleting snapshots.
  */
-final class SnapshotSelectionCriteria @InternalApi private[akka] (
-    val maxSequenceNr: Long,
-    val maxTimestamp: Long,
-    val minSequenceNr: Long,
-    val minTimestamp: Long) {
+final class SnapshotSelectionCriteria @InternalApi private[akka]
+  (
+      val maxSequenceNr: Long,
+      val maxTimestamp: Long,
+      val minSequenceNr: Long,
+      val minTimestamp: Long) {
 
   /**
    * upper bound for a selected snapshot's sequence number
@@ -69,11 +70,13 @@ final class SnapshotSelectionCriteria @InternalApi private[akka] (
   def withMinTimestamp(newMinTimestamp: Long): SnapshotSelectionCriteria =
     copy(minTimestamp = newMinTimestamp)
 
-  private def copy(
-      maxSequenceNr: Long = maxSequenceNr,
-      maxTimestamp: Long = maxTimestamp,
-      minSequenceNr: Long = minSequenceNr,
-      minTimestamp: Long = minTimestamp): SnapshotSelectionCriteria =
+  private def copy
+    (
+        maxSequenceNr: Long = maxSequenceNr,
+        maxTimestamp: Long = maxTimestamp,
+        minSequenceNr: Long = minSequenceNr,
+        minTimestamp: Long = minTimestamp)
+    : SnapshotSelectionCriteria =
     new SnapshotSelectionCriteria(maxSequenceNr, maxTimestamp, minSequenceNr, minTimestamp)
 
   override def toString: String =

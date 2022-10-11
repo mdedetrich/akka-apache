@@ -38,22 +38,25 @@ class ClusterShardingInternalsSpec extends AkkaSpec("""
     |""".stripMargin) with WithLogCapturing {
   import ClusterShardingInternalsSpec._
 
-  case class StartingProxy(
-      typeName: String,
-      role: Option[String],
-      dataCenter: Option[DataCenter],
-      extractEntityId: ExtractEntityId,
-      extractShardId: ExtractShardId)
-
-  val probe = TestProbe()
-
-  val clusterSharding = new ClusterSharding(system.asInstanceOf[ExtendedActorSystem]) {
-    override def startProxy(
+  case class StartingProxy
+    (
         typeName: String,
         role: Option[String],
         dataCenter: Option[DataCenter],
         extractEntityId: ExtractEntityId,
-        extractShardId: ExtractShardId): ActorRef = {
+        extractShardId: ExtractShardId)
+
+  val probe = TestProbe()
+
+  val clusterSharding = new ClusterSharding(system.asInstanceOf[ExtendedActorSystem]) {
+    override def startProxy
+      (
+          typeName: String,
+          role: Option[String],
+          dataCenter: Option[DataCenter],
+          extractEntityId: ExtractEntityId,
+          extractShardId: ExtractShardId)
+      : ActorRef = {
       probe.ref ! StartingProxy(typeName, role, dataCenter, extractEntityId, extractShardId)
       ActorRef.noSender
     }

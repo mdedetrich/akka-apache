@@ -49,10 +49,12 @@ private[akka] object ActorTestKitGuardian {
       Behaviors.same
   }
 
-  private def handleSpawnException[T](
-      context: ActorContext[ActorTestKitGuardian.TestKitCommand],
-      reply: ActorRef[ActorRef[T]],
-      props: Props): Catcher[Behavior[TestKitCommand]] = {
+  private def handleSpawnException[T]
+    (
+        context: ActorContext[ActorTestKitGuardian.TestKitCommand],
+        reply: ActorRef[ActorRef[T]],
+        props: Props)
+    : Catcher[Behavior[TestKitCommand]] = {
     case NonFatal(e) =>
       context.log.error(s"Spawn failed, props [$props]", e)
       reply ! context.spawnAnonymous(Behaviors.stopped)

@@ -46,7 +46,7 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
    *
    * Not indented for user construction
    */
-  final class ServerBinding @InternalApi private[akka] (delegate: scaladsl.Tcp.ServerBinding) {
+  final class ServerBinding @InternalApi private[akka](delegate: scaladsl.Tcp.ServerBinding) {
 
     /**
      * The local address of the endpoint bound by the materialization of the `connections` [[Source]].
@@ -70,7 +70,7 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
   /**
    * Represents an accepted incoming TCP connection.
    */
-  class IncomingConnection private[akka] (delegate: scaladsl.Tcp.IncomingConnection) {
+  class IncomingConnection private[akka](delegate: scaladsl.Tcp.IncomingConnection) {
 
     /**
      * The local address this connection is bound to.
@@ -114,7 +114,7 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
   /**
    * Represents a prospective outgoing TCP connection.
    */
-  class OutgoingConnection private[akka] (delegate: scaladsl.Tcp.OutgoingConnection) {
+  class OutgoingConnection private[akka](delegate: scaladsl.Tcp.OutgoingConnection) {
 
     /**
      * The remote address this connection is or will be bound to.
@@ -164,13 +164,15 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *                  independently whether the client is still attempting to write. This setting is recommended
    *                  for servers, and therefore it is the default setting.
    */
-  def bind(
-      interface: String,
-      port: Int,
-      backlog: Int,
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      idleTimeout: Optional[java.time.Duration]): Source[IncomingConnection, CompletionStage[ServerBinding]] =
+  def bind
+    (
+        interface: String,
+        port: Int,
+        backlog: Int,
+        options: JIterable[SocketOption],
+        halfClose: Boolean,
+        idleTimeout: Optional[java.time.Duration])
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bind(interface, port, backlog, immutableSeq(options), halfClose, optionalDurationToScala(idleTimeout))
@@ -199,13 +201,15 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *                  for servers, and therefore it is the default setting.
    */
   @deprecated("Use bind that takes a java.time.Duration parameter instead.", "2.6.0")
-  def bind(
-      interface: String,
-      port: Int,
-      backlog: Int,
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      idleTimeout: Duration): Source[IncomingConnection, CompletionStage[ServerBinding]] =
+  def bind
+    (
+        interface: String,
+        port: Int,
+        backlog: Int,
+        options: JIterable[SocketOption],
+        halfClose: Boolean,
+        idleTimeout: Duration)
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     bind(interface, port, backlog, options, halfClose, durationToJavaOptional(idleTimeout))
 
   /**
@@ -243,13 +247,15 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *                  If set to false, the connection will immediately closed once the client closes its write side,
    *                  independently whether the server is still attempting to write.
    */
-  def outgoingConnection(
-      remoteAddress: InetSocketAddress,
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      connectTimeout: Optional[java.time.Duration],
-      idleTimeout: Optional[java.time.Duration]): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+  def outgoingConnection
+    (
+        remoteAddress: InetSocketAddress,
+        localAddress: Optional[InetSocketAddress],
+        options: JIterable[SocketOption],
+        halfClose: Boolean,
+        connectTimeout: Optional[java.time.Duration],
+        idleTimeout: Optional[java.time.Duration])
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnection(
@@ -282,13 +288,15 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *                  independently whether the server is still attempting to write.
    */
   @deprecated("Use bind that takes a java.time.Duration parameter instead.", "2.6.0")
-  def outgoingConnection(
-      remoteAddress: InetSocketAddress,
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      halfClose: Boolean,
-      connectTimeout: Duration,
-      idleTimeout: Duration): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+  def outgoingConnection
+    (
+        remoteAddress: InetSocketAddress,
+        localAddress: Optional[InetSocketAddress],
+        options: JIterable[SocketOption],
+        halfClose: Boolean,
+        connectTimeout: Duration,
+        idleTimeout: Duration)
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     outgoingConnection(
       remoteAddress,
       localAddress,
@@ -322,11 +330,13 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
     "2.6.0")
-  def outgoingTlsConnection(
-      host: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+  def outgoingTlsConnection
+    (
+        host: String,
+        port: Int,
+        sslContext: SSLContext,
+        negotiateNewSession: NegotiateNewSession)
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingTlsConnection(host, port, sslContext, negotiateNewSession)
@@ -345,14 +355,16 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
     "2.6.0")
-  def outgoingTlsConnection(
-      remoteAddress: InetSocketAddress,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession,
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      connectTimeout: Duration,
-      idleTimeout: Duration): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+  def outgoingTlsConnection
+    (
+        remoteAddress: InetSocketAddress,
+        sslContext: SSLContext,
+        negotiateNewSession: NegotiateNewSession,
+        localAddress: Optional[InetSocketAddress],
+        options: JIterable[SocketOption],
+        connectTimeout: Duration,
+        idleTimeout: Duration)
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingTlsConnection(
@@ -375,9 +387,11 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *
    * @see [[Tcp.outgoingConnection]]
    */
-  def outgoingConnectionWithTls(
-      remoteAddress: InetSocketAddress,
-      createSSLEngine: Supplier[SSLEngine]): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
+  def outgoingConnectionWithTls
+    (
+        remoteAddress: InetSocketAddress,
+        createSSLEngine: Supplier[SSLEngine])
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] =
     Flow.fromGraph(
       delegate
         .outgoingConnectionWithTls(remoteAddress, createSSLEngine = () => createSSLEngine.get())
@@ -393,15 +407,17 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *
    * @see [[Tcp.outgoingConnection]]
    */
-  def outgoingConnectionWithTls(
-      remoteAddress: InetSocketAddress,
-      createSSLEngine: Supplier[SSLEngine],
-      localAddress: Optional[InetSocketAddress],
-      options: JIterable[SocketOption],
-      connectTimeout: Optional[java.time.Duration],
-      idleTimeout: Optional[java.time.Duration],
-      verifySession: JFunction[SSLSession, Optional[Throwable]],
-      closing: TLSClosing): Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] = {
+  def outgoingConnectionWithTls
+    (
+        remoteAddress: InetSocketAddress,
+        createSSLEngine: Supplier[SSLEngine],
+        localAddress: Optional[InetSocketAddress],
+        options: JIterable[SocketOption],
+        connectTimeout: Optional[java.time.Duration],
+        idleTimeout: Optional[java.time.Duration],
+        verifySession: JFunction[SSLSession, Optional[Throwable]],
+        closing: TLSClosing)
+    : Flow[ByteString, ByteString, CompletionStage[OutgoingConnection]] = {
     Flow.fromGraph(
       delegate
         .outgoingConnectionWithTls(
@@ -433,16 +449,18 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
     "Use bindWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
     "2.6.0")
-  def bindTls(
-      interface: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession,
-      backlog: Int,
-      options: JIterable[SocketOption],
-      @nowarn // unused #26689
-      halfClose: Boolean,
-      idleTimeout: Duration): Source[IncomingConnection, CompletionStage[ServerBinding]] =
+  def bindTls
+    (
+        interface: String,
+        port: Int,
+        sslContext: SSLContext,
+        negotiateNewSession: NegotiateNewSession,
+        backlog: Int,
+        options: JIterable[SocketOption],
+        @nowarn // unused #26689
+        halfClose: Boolean,
+        idleTimeout: Duration)
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bindTls(interface, port, sslContext, negotiateNewSession, backlog, immutableSeq(options), idleTimeout)
@@ -459,11 +477,13 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
     "Use bindWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
     "2.6.0")
-  def bindTls(
-      interface: String,
-      port: Int,
-      sslContext: SSLContext,
-      negotiateNewSession: NegotiateNewSession): Source[IncomingConnection, CompletionStage[ServerBinding]] =
+  def bindTls
+    (
+        interface: String,
+        port: Int,
+        sslContext: SSLContext,
+        negotiateNewSession: NegotiateNewSession)
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] =
     Source.fromGraph(
       delegate
         .bindTls(interface, port, sslContext, negotiateNewSession)
@@ -476,10 +496,12 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *
    * @see [[Tcp.bind]]
    */
-  def bindWithTls(
-      interface: String,
-      port: Int,
-      createSSLEngine: Supplier[SSLEngine]): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+  def bindWithTls
+    (
+        interface: String,
+        port: Int,
+        createSSLEngine: Supplier[SSLEngine])
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate
         .bindWithTls(interface, port, createSSLEngine = () => createSSLEngine.get())
@@ -493,15 +515,17 @@ class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
    *
    * @see [[Tcp.bind]]
    */
-  def bindWithTls(
-      interface: String,
-      port: Int,
-      createSSLEngine: Supplier[SSLEngine],
-      backlog: Int,
-      options: JIterable[SocketOption],
-      idleTimeout: Optional[java.time.Duration],
-      verifySession: JFunction[SSLSession, Optional[Throwable]],
-      closing: TLSClosing): Source[IncomingConnection, CompletionStage[ServerBinding]] = {
+  def bindWithTls
+    (
+        interface: String,
+        port: Int,
+        createSSLEngine: Supplier[SSLEngine],
+        backlog: Int,
+        options: JIterable[SocketOption],
+        idleTimeout: Optional[java.time.Duration],
+        verifySession: JFunction[SSLSession, Optional[Throwable]],
+        closing: TLSClosing)
+    : Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     Source.fromGraph(
       delegate
         .bindWithTls(

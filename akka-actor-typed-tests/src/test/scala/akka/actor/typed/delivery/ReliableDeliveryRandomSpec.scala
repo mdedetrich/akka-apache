@@ -37,10 +37,12 @@ object ReliableDeliveryRandomSpec {
   }
 
   class RandomFlakyNetwork(rnd: Random, dropProbability: Any => Double) extends BehaviorInterceptor[Any, Any] {
-    override def aroundReceive(
-        ctx: TypedActorContext[Any],
-        msg: Any,
-        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] = {
+    override def aroundReceive
+      (
+          ctx: TypedActorContext[Any],
+          msg: Any,
+          target: BehaviorInterceptor.ReceiveTarget[Any])
+      : Behavior[Any] = {
       if (rnd.nextDouble() < dropProbability(msg)) {
         ctx.asScala.log.info("dropped {}", msg)
         Behaviors.same
@@ -68,14 +70,16 @@ class ReliableDeliveryRandomSpec(config: Config)
 
   private def producerId: String = s"p-$idCount"
 
-  private def test(
-      rndSeed: Long,
-      rnd: Random,
-      numberOfMessages: Int,
-      producerDropProbability: Double,
-      consumerDropProbability: Double,
-      durableFailProbability: Option[Double],
-      resendLost: Boolean): Unit = {
+  private def test
+    (
+        rndSeed: Long,
+        rnd: Random,
+        numberOfMessages: Int,
+        producerDropProbability: Double,
+        consumerDropProbability: Double,
+        durableFailProbability: Option[Double],
+        resendLost: Boolean)
+    : Unit = {
 
     val consumerControllerSettings = ConsumerController.Settings(system).withOnlyFlowControl(!resendLost)
 

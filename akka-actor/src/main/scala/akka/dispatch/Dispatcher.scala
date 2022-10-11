@@ -29,13 +29,14 @@ import akka.event.Logging.Error
  *                   always continues until the mailbox is empty.
  *                   Larger values (or zero or negative) increase throughput, smaller values increase fairness
  */
-class Dispatcher(
-    _configurator: MessageDispatcherConfigurator,
-    val id: String,
-    val throughput: Int,
-    val throughputDeadlineTime: Duration,
-    executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
-    val shutdownTimeout: FiniteDuration)
+class Dispatcher
+  (
+      _configurator: MessageDispatcherConfigurator,
+      val id: String,
+      val throughput: Int,
+      val throughputDeadlineTime: Duration,
+      executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
+      val shutdownTimeout: FiniteDuration)
     extends MessageDispatcher(_configurator) {
 
   import configurator.prerequisites._
@@ -117,10 +118,12 @@ class Dispatcher(
    *
    * INTERNAL API
    */
-  protected[akka] override def registerForExecution(
-      mbox: Mailbox,
-      hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = {
+  protected[akka] override def registerForExecution
+    (
+        mbox: Mailbox,
+        hasMessageHint: Boolean,
+        hasSystemMessageHint: Boolean)
+    : Boolean = {
     if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { // This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {

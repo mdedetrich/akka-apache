@@ -43,11 +43,13 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
     private case class WrappedRequestNext(r: ProducerController.RequestNext[Consumer.TheMessage]) extends Command
     private case class SendNext(to: ActorRef[Consumer.TheMessage]) extends Command
 
-    def apply(
-        numberOfMessages: Int,
-        large: Boolean,
-        delay: FiniteDuration,
-        producerController: ActorRef[ProducerController.Command[Consumer.TheMessage]]): Behavior[Command] = {
+    def apply
+      (
+          numberOfMessages: Int,
+          large: Boolean,
+          delay: FiniteDuration,
+          producerController: ActorRef[ProducerController.Command[Consumer.TheMessage]])
+      : Behavior[Command] = {
 
       Behaviors.setup { context =>
         val requestNextAdapter =

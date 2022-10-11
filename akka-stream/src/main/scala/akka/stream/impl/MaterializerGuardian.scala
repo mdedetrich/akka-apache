@@ -39,9 +39,10 @@ private[akka] object MaterializerGuardian {
  */
 @nowarn("msg=deprecated")
 @InternalApi
-private[akka] final class MaterializerGuardian(
-    systemMaterializerPromise: Promise[Materializer],
-    materializerSettings: ActorMaterializerSettings)
+private[akka] final class MaterializerGuardian
+  (
+      systemMaterializerPromise: Promise[Materializer],
+      materializerSettings: ActorMaterializerSettings)
     extends Actor {
   import MaterializerGuardian._
 

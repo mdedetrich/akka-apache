@@ -211,7 +211,9 @@ private[remote] final class SerializationFormatCache
   // Refs with ActorCell.undefinedUid will now collide all the time, but this is not a usual scenario anyway.
   override protected def hash(ref: ActorRef): Int = ref.path.uid
 
-  override protected def isKeyCacheable(k: ActorRef): Boolean =
+  override protected def isKeyCacheable
+    (k: ActorRef)
+    : Boolean =
     // "temp" only for one request-response interaction so don't cache
     !InternalActorRef.isTemporaryRef(k)
 
@@ -221,10 +223,11 @@ private[remote] final class SerializationFormatCache
 /**
  * INTERNAL API
  */
-private[remote] final class HeaderBuilderImpl(
-    inboundCompression: InboundCompressions,
-    var _outboundActorRefCompression: CompressionTable[ActorRef],
-    var _outboundClassManifestCompression: CompressionTable[String])
+private[remote] final class HeaderBuilderImpl
+  (
+      inboundCompression: InboundCompressions,
+      var _outboundActorRefCompression: CompressionTable[ActorRef],
+      var _outboundClassManifestCompression: CompressionTable[String])
     extends HeaderBuilder {
   import HeaderBuilder.DeadLettersCode
 

@@ -58,17 +58,21 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
     case payload            => payload
   }
 
-  override def eventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long = 0,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+  override def eventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long = 0,
+        toSequenceNr: Long = Long.MaxValue)
+    : Source[EventEnvelope, NotUsed] = {
     Source.fromGraph(new EventsByPersistenceIdStage(persistenceId, fromSequenceNr, toSequenceNr, storage))
   }
 
-  override def currentEventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long = 0,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+  override def currentEventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long = 0,
+        toSequenceNr: Long = Long.MaxValue)
+    : Source[EventEnvelope, NotUsed] = {
     Source(storage.tryRead(persistenceId, fromSequenceNr, toSequenceNr, Long.MaxValue)).map { pr =>
       EventEnvelope(
         Sequence(pr.sequenceNr),
@@ -97,11 +101,13 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
     }
   }
 
-  override def currentEventsBySlices[Event](
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[typed.EventEnvelope[Event], NotUsed] = {
+  override def currentEventsBySlices[Event]
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[typed.EventEnvelope[Event], NotUsed] = {
     offset match {
       case NoOffset =>
       case _ =>

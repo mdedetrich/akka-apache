@@ -127,9 +127,10 @@ class GraphMergePrioritizedNSpec extends StreamSpec {
     }
   }
 
-  private def threeSourceMerge[T](
-      sourceAndPriorities: immutable.Seq[(Source[T, NotUsed], Int)],
-      probe: ManualProbe[T]) = {
+  private def threeSourceMerge[T]
+    (
+        sourceAndPriorities: immutable.Seq[(Source[T, NotUsed], Int)],
+        probe: ManualProbe[T]) = {
 
     Source
       .mergePrioritizedN(sourceAndPriorities, eagerComplete = false)

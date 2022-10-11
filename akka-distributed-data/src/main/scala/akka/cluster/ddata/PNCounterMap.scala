@@ -41,7 +41,7 @@ object PNCounterMap {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class PNCounterMap[A] private[akka] (private[akka] val underlying: ORMap[A, PNCounter])
+final class PNCounterMap[A] private[akka](private[akka] val underlying: ORMap[A, PNCounter])
     extends DeltaReplicatedData
     with ReplicatedDataSerialization
     with RemovedNodePruning {

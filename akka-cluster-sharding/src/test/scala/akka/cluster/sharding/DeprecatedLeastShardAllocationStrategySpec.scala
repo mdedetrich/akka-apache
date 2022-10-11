@@ -37,7 +37,8 @@ class DeprecatedLeastShardAllocationStrategySpec extends AkkaSpec {
       regionC -> shards.takeRight(cCount).toVector)
   }
 
-  private def allocationStrategyWithFakeCluster(rebalanceThreshold: Int, maxSimultaneousRebalance: Int) =
+  private def allocationStrategyWithFakeCluster
+    (rebalanceThreshold: Int, maxSimultaneousRebalance: Int) =
     // we don't really "start" it as we fake the cluster access
     new ShardCoordinator.LeastShardAllocationStrategy(rebalanceThreshold, maxSimultaneousRebalance) {
       override protected def clusterState: CurrentClusterState =

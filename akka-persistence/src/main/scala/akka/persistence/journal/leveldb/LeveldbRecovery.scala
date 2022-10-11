@@ -28,14 +28,20 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
     Future(readHighestSequenceNr(nid))(replayDispatcher)
   }
 
-  def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: PersistentRepr => Unit): Future[Unit] = {
+  def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: PersistentRepr => Unit)
+    : Future[Unit] = {
     val nid = numericId(persistenceId)
     Future(replayMessages(nid, fromSequenceNr: Long, toSequenceNr, max: Long)(replayCallback))(replayDispatcher)
   }
 
-  def replayMessages(persistenceId: Int, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: PersistentRepr => Unit): Unit = {
+  def replayMessages
+    (persistenceId: Int, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: PersistentRepr => Unit)
+    : Unit = {
     @scala.annotation.tailrec
     def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: PersistentRepr => Unit): Unit = {
       if (iter.hasNext) {
@@ -78,15 +84,21 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
     }
   }
 
-  def asyncReplayTaggedMessages(tag: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: ReplayedTaggedMessage => Unit): Future[Unit] = {
+  def asyncReplayTaggedMessages
+    (tag: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: ReplayedTaggedMessage => Unit)
+    : Future[Unit] = {
     val tagNid = tagNumericId(tag)
     Future(replayTaggedMessages(tag, tagNid, fromSequenceNr: Long, toSequenceNr, max: Long)(replayCallback))(
       replayDispatcher)
   }
 
-  def replayTaggedMessages(tag: String, tagNid: Int, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: ReplayedTaggedMessage => Unit): Unit = {
+  def replayTaggedMessages
+    (tag: String, tagNid: Int, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: ReplayedTaggedMessage => Unit)
+    : Unit = {
 
     @scala.annotation.tailrec
     def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: ReplayedTaggedMessage => Unit): Unit = {

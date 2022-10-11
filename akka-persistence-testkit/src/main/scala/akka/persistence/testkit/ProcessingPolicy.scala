@@ -50,18 +50,20 @@ object ProcessingPolicy {
 
     }
 
-    class RejectNextNCond(
-        _numberToFail: Int,
-        _failureException: Throwable,
-        cond: (String, U) => Boolean,
-        onLimitExceed: => Unit = ())
+    class RejectNextNCond
+      (
+          _numberToFail: Int,
+          _failureException: Throwable,
+          cond: (String, U) => Boolean,
+          onLimitExceed: => Unit = ())
         extends CountNextNCond(_numberToFail, Reject(_failureException), ProcessingSuccess, cond, onLimitExceed)
 
-    class FailNextNCond(
-        _numberToFail: Int,
-        _failureException: Throwable,
-        cond: (String, U) => Boolean,
-        onLimitExceed: => Unit = ())
+    class FailNextNCond
+      (
+          _numberToFail: Int,
+          _failureException: Throwable,
+          cond: (String, U) => Boolean,
+          onLimitExceed: => Unit = ())
         extends CountNextNCond(_numberToFail, StorageFailure(_failureException), ProcessingSuccess, cond, onLimitExceed)
 
     class FailNextN(_numberToFail: Int, _failureException: Throwable, onLimitExceed: => Unit = ())
@@ -80,10 +82,11 @@ object ProcessingPolicy {
           (_, _) => true,
           onLimitExceed)
 
-    class ReturnAfterNextNCond(
-        returnOnTrigger: => ProcessingResult,
-        returnNonTrigger: => ProcessingResult,
-        cond: (String, U) => Boolean)
+    class ReturnAfterNextNCond
+      (
+          returnOnTrigger: => ProcessingResult,
+          returnNonTrigger: => ProcessingResult,
+          cond: (String, U) => Boolean)
         extends PolicyType {
 
       override def tryProcess(persistenceId: String, processingUnit: U): ProcessingResult = {
@@ -96,12 +99,13 @@ object ProcessingPolicy {
 
     }
 
-    class CountNextNCond(
-        numberToCount: Int,
-        returnOnTrigger: => ProcessingResult,
-        returnNonTrigger: => ProcessingResult,
-        cond: (String, U) => Boolean,
-        onLimitExceed: => Unit)
+    class CountNextNCond
+      (
+          numberToCount: Int,
+          returnOnTrigger: => ProcessingResult,
+          returnNonTrigger: => ProcessingResult,
+          cond: (String, U) => Boolean,
+          onLimitExceed: => Unit)
         extends ReturnAfterNextNCond(
           returnOnTrigger,
           returnNonTrigger,

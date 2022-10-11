@@ -50,16 +50,17 @@ import scala.collection.immutable
 private[akka] object ReplayingEvents {
 
   @InternalApi
-  private[akka] final case class ReplayingState[State](
-      seqNr: Long,
-      state: State,
-      eventSeenInInterval: Boolean,
-      toSeqNr: Long,
-      receivedPoisonPill: Boolean,
-      recoveryStartTime: Long,
-      version: VersionVector,
-      seenSeqNrPerReplica: Map[ReplicaId, Long],
-      eventsReplayed: Long)
+  private[akka] final case class ReplayingState[State]
+    (
+        seqNr: Long,
+        state: State,
+        eventSeenInInterval: Boolean,
+        toSeqNr: Long,
+        receivedPoisonPill: Boolean,
+        recoveryStartTime: Long,
+        version: VersionVector,
+        seenSeqNrPerReplica: Map[ReplicaId, Long],
+        eventsReplayed: Long)
 
   def apply[C, E, S](setup: BehaviorSetup[C, E, S], state: ReplayingState[S]): Behavior[InternalProtocol] =
     Behaviors.setup { _ =>
@@ -71,9 +72,10 @@ private[akka] object ReplayingEvents {
 }
 
 @InternalApi
-private[akka] final class ReplayingEvents[C, E, S](
-    override val setup: BehaviorSetup[C, E, S],
-    var state: ReplayingState[S])
+private[akka] final class ReplayingEvents[C, E, S]
+  (
+      override val setup: BehaviorSetup[C, E, S],
+      var state: ReplayingState[S])
     extends AbstractBehavior[InternalProtocol](setup.context)
     with JournalInteractions[C, E, S]
     with SnapshotInteractions[C, E, S]

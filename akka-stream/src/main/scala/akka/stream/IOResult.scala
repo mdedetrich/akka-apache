@@ -18,9 +18,10 @@ import akka.Done
  * @param status Status of the result. Can be either [[akka.Done]] or an exception.
  */
 @nowarn("msg=deprecated") // Status
-final case class IOResult(
-    count: Long,
-    @deprecated("status is always set to Success(Done)", "2.6.0") status: Try[Done]) {
+final case class IOResult
+  (
+      count: Long,
+      @deprecated("status is always set to Success(Done)", "2.6.0") status: Try[Done]) {
 
   def withCount(value: Long): IOResult = copy(count = value)
 

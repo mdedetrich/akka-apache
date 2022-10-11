@@ -50,14 +50,15 @@ private[remote] object OutboundHandshake {
 /**
  * INTERNAL API
  */
-private[remote] class OutboundHandshake(
-    @unused system: ActorSystem,
-    outboundContext: OutboundContext,
-    outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
-    timeout: FiniteDuration,
-    retryInterval: FiniteDuration,
-    injectHandshakeInterval: FiniteDuration,
-    livenessProbeInterval: Duration)
+private[remote] class OutboundHandshake
+  (
+      @unused system: ActorSystem,
+      outboundContext: OutboundContext,
+      outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
+      timeout: FiniteDuration,
+      retryInterval: FiniteDuration,
+      injectHandshakeInterval: FiniteDuration,
+      livenessProbeInterval: Duration)
     extends GraphStage[FlowShape[OutboundEnvelope, OutboundEnvelope]] {
 
   val in: Inlet[OutboundEnvelope] = Inlet("OutboundHandshake.in")

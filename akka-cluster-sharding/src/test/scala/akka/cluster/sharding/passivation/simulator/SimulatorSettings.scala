@@ -24,12 +24,13 @@ object SimulatorSettings {
     SimulatorSettings(runs, printDetailedStats)
   }
 
-  final case class RunSettings(
-      name: String,
-      shards: Int,
-      regions: Int,
-      strategy: StrategySettings,
-      pattern: PatternSettings)
+  final case class RunSettings
+    (
+        name: String,
+        shards: Int,
+        regions: Int,
+        strategy: StrategySettings,
+        pattern: PatternSettings)
 
   object RunSettings {
     def apply(simulatorConfig: Config, runConfig: Config): RunSettings = {
@@ -51,15 +52,16 @@ object SimulatorSettings {
     final case class LeastFrequentlyUsed(perRegionLimit: Int, dynamicAging: Boolean) extends StrategySettings
     case object NoStrategy extends StrategySettings
 
-    final case class Composite(
-        perRegionLimit: Int,
-        main: StrategySettings,
-        window: StrategySettings,
-        initialWindowProportion: Double,
-        minimumWindowProportion: Double,
-        maximumWindowProportion: Double,
-        filter: AdmissionFilterSettings,
-        optimizer: AdmissionOptimizerSettings)
+    final case class Composite
+      (
+          perRegionLimit: Int,
+          main: StrategySettings,
+          window: StrategySettings,
+          initialWindowProportion: Double,
+          minimumWindowProportion: Double,
+          maximumWindowProportion: Double,
+          filter: AdmissionFilterSettings,
+          optimizer: AdmissionOptimizerSettings)
         extends StrategySettings
 
     def apply(simulatorConfig: Config, strategy: String): StrategySettings = {
@@ -109,11 +111,12 @@ object SimulatorSettings {
 
     object AdmissionFilterSettings {
       object NoFilter extends AdmissionFilterSettings
-      final case class FrequencySketchFilter(
-          widthMultiplier: Int,
-          resetMultiplier: Double,
-          depth: Int,
-          counterBits: Int)
+      final case class FrequencySketchFilter
+        (
+            widthMultiplier: Int,
+            resetMultiplier: Double,
+            depth: Int,
+            counterBits: Int)
           extends AdmissionFilterSettings
 
       def apply(config: Config): AdmissionFilterSettings = {
@@ -133,11 +136,12 @@ object SimulatorSettings {
 
     object AdmissionOptimizerSettings {
       object NoOptimizer extends AdmissionOptimizerSettings
-      final case class HillClimbingOptimizer(
-          adjustMultiplier: Double,
-          initialStep: Double,
-          restartThreshold: Double,
-          stepDecay: Double)
+      final case class HillClimbingOptimizer
+        (
+            adjustMultiplier: Double,
+            initialStep: Double,
+            restartThreshold: Double,
+            stepDecay: Double)
           extends AdmissionOptimizerSettings
 
       def apply(config: Config): AdmissionOptimizerSettings = {

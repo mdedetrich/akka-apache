@@ -105,11 +105,13 @@ abstract class ClusterWatcherNoClusterWatcheeSpec(multiNodeConfig: ClusterWatche
   protected def identify(role: RoleName, actorName: String, within: FiniteDuration = 10.seconds): ActorRef =
     identifyWithPath(role, "user", actorName, within)
 
-  protected def identifyWithPath(
-      role: RoleName,
-      path: String,
-      actorName: String,
-      within: FiniteDuration = 10.seconds): ActorRef = {
+  protected def identifyWithPath
+    (
+        role: RoleName,
+        path: String,
+        actorName: String,
+        within: FiniteDuration = 10.seconds)
+    : ActorRef = {
     system.actorSelection(node(role) / path / actorName) ! Identify(actorName)
     val id = expectMsgType[ActorIdentity](within)
     assert(id.ref.isDefined, s"Unable to Identify actor [$actorName] on node [$role].")

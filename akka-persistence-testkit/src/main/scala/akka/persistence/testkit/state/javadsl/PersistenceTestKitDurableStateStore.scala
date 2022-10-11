@@ -47,18 +47,22 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
     stateStore.currentChanges(tag, offset).asJava
   }
 
-  override def currentChangesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed] =
+  override def currentChangesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed] =
     stateStore.currentChangesBySlices(entityType, minSlice, maxSlice, offset).asJava
 
-  override def changesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed] =
+  override def changesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed] =
     stateStore.changesBySlices(entityType, minSlice, maxSlice, offset).asJava
 
   override def sliceForPersistenceId(persistenceId: String): Int =

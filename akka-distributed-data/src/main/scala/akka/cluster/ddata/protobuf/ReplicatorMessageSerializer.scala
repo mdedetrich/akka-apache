@@ -521,8 +521,10 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     DataEnvelope(data, pruning, deltaVersions)
   }
 
-  private def pruningFromProto(
-      pruningEntries: java.util.List[dm.DataEnvelope.PruningEntry]): Map[UniqueAddress, PruningState] = {
+  private def pruningFromProto
+    (
+        pruningEntries: java.util.List[dm.DataEnvelope.PruningEntry])
+    : Map[UniqueAddress, PruningState] = {
     if (pruningEntries.isEmpty)
       Map.empty
     else

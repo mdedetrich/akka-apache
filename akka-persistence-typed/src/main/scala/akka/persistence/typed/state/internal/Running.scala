@@ -103,10 +103,12 @@ private[akka] object Running {
       this
     }
 
-    private def handlePersist(
-        newState: S,
-        cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+    private def handlePersist
+      (
+          newState: S,
+          cmd: Any,
+          sideEffects: immutable.Seq[SideEffect[S]])
+      : (Behavior[InternalProtocol], Boolean) = {
       _currentRevision = state.revision + 1
 
       val stateAfterApply = state.applyState(setup, newState)
@@ -118,11 +120,13 @@ private[akka] object Running {
       (persistingState(newState2, state, sideEffects), false)
     }
 
-    @tailrec def applyEffects(
-        msg: Any,
-        state: RunningState[S],
-        effect: Effect[S],
-        sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
+    @tailrec def applyEffects
+      (
+          msg: Any,
+          state: RunningState[S],
+          effect: Effect[S],
+          sideEffects: immutable.Seq[SideEffect[S]] = Nil)
+      : (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
@@ -171,20 +175,23 @@ private[akka] object Running {
 
   // ===============================================
 
-  def persistingState(
-      state: RunningState[S],
-      visibleState: RunningState[S], // previous state until write success
-      sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
+  def persistingState
+    (
+        state: RunningState[S],
+        visibleState: RunningState[S], // previous state until write success
+        sideEffects: immutable.Seq[SideEffect[S]])
+    : Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingState)
     new PersistingState(state, visibleState, sideEffects)
   }
 
   /** INTERNAL API */
-  @InternalApi private[akka] class PersistingState(
-      var state: RunningState[S],
-      var visibleState: RunningState[S], // previous state until write success
-      var sideEffects: immutable.Seq[SideEffect[S]],
-      persistStartTime: Long = System.nanoTime())
+  @InternalApi private[akka] class PersistingState
+    (
+        var state: RunningState[S],
+        var visibleState: RunningState[S], // previous state until write success
+        var sideEffects: immutable.Seq[SideEffect[S]],
+        persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithRevisionAccessible {
 
@@ -265,10 +272,12 @@ private[akka] object Running {
       behavior
   }
 
-  def applySideEffect(
-      effect: SideEffect[S],
-      state: RunningState[S],
-      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
+  def applySideEffect
+    (
+        effect: SideEffect[S],
+        state: RunningState[S],
+        behavior: Behavior[InternalProtocol])
+    : Behavior[InternalProtocol] = {
     effect match {
       case _: Stop.type @unchecked =>
         Behaviors.stopped

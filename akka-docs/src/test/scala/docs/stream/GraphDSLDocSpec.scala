@@ -116,9 +116,11 @@ class GraphDSLDocSpec extends AkkaSpec {
 
     // #graph-dsl-components-create
     object PriorityWorkerPool {
-      def apply[In, Out](
-          worker: Flow[In, Out, Any],
-          workerCount: Int): Graph[PriorityWorkerPoolShape[In, Out], NotUsed] = {
+      def apply[In, Out]
+        (
+            worker: Flow[In, Out, Any],
+            workerCount: Int)
+        : Graph[PriorityWorkerPoolShape[In, Out], NotUsed] = {
 
         GraphDSL.create() { implicit b =>
           import GraphDSL.Implicits._

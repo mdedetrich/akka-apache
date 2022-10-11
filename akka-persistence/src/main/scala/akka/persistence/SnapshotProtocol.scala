@@ -14,11 +14,12 @@ import scala.runtime.AbstractFunction3
  * @param metadata a journal can optionally support persisting metadata separate to the domain state, used for Replicated Event Sourcing support
  */
 @SerialVersionUID(1L)
-final class SnapshotMetadata(
-    val persistenceId: String,
-    val sequenceNr: Long,
-    val timestamp: Long,
-    val metadata: Option[Any])
+final class SnapshotMetadata
+  (
+      val persistenceId: String,
+      val sequenceNr: Long,
+      val timestamp: Long,
+      val metadata: Option[Any])
     extends Product3[String, Long, Long]
     with Serializable {
 
@@ -34,10 +35,12 @@ final class SnapshotMetadata(
     new SnapshotMetadata(persistenceId, sequenceNr, timestamp, Some(metadata))
 
   // for bincompat, used to be a case class
-  def copy(
-      persistenceId: String = this.persistenceId,
-      sequenceNr: Long = this.sequenceNr,
-      timestamp: Long = this.timestamp): SnapshotMetadata =
+  def copy
+    (
+        persistenceId: String = this.persistenceId,
+        sequenceNr: Long = this.sequenceNr,
+        timestamp: Long = this.timestamp)
+    : SnapshotMetadata =
     SnapshotMetadata(persistenceId, sequenceNr, timestamp, metadata)
 
   override def toString = s"SnapshotMetadata($persistenceId, $sequenceNr, $timestamp, $metadata)"
@@ -162,11 +165,12 @@ final case class SnapshotOffer(metadata: SnapshotMetadata, snapshot: Any)
  * @see [[Recovery]]
  */
 @SerialVersionUID(1L)
-final case class SnapshotSelectionCriteria(
-    maxSequenceNr: Long = Long.MaxValue,
-    maxTimestamp: Long = Long.MaxValue,
-    minSequenceNr: Long = 0L,
-    minTimestamp: Long = 0L) {
+final case class SnapshotSelectionCriteria
+  (
+      maxSequenceNr: Long = Long.MaxValue,
+      maxTimestamp: Long = Long.MaxValue,
+      minSequenceNr: Long = 0L,
+      minTimestamp: Long = 0L) {
 
   /**
    * INTERNAL API.

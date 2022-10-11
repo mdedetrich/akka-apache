@@ -126,8 +126,11 @@ class RememberEntitiesShardIdExtractorChangeSpec
       }
     }
 
-    def withSystem(systemName: String, extractShardId: ShardRegion.ExtractShardId)(
-        f: (ActorSystem, ActorRef) => Unit): Unit = {
+    def withSystem
+      (systemName: String, extractShardId: ShardRegion.ExtractShardId)
+      (
+          f: (ActorSystem, ActorRef) => Unit)
+      : Unit = {
       val system = ActorSystem(systemName, config)
       Cluster(system).join(Cluster(system).selfAddress)
       try {

@@ -63,13 +63,14 @@ object Configuration {
     akka.actor.warn-about-java-serializer-usage = off
                      """
 
-  final case class CipherConfig(
-      runTest: Boolean,
-      config: Config,
-      cipher: String,
-      localPort: Int,
-      remotePort: Int,
-      provider: Option[ConfigSSLEngineProvider])
+  final case class CipherConfig
+    (
+        runTest: Boolean,
+        config: Config,
+        cipher: String,
+        localPort: Int,
+        remotePort: Int,
+        provider: Option[ConfigSSLEngineProvider])
 
   def getCipherConfig(cipher: String, enabled: String*): CipherConfig = {
     val ports = SocketUtil.temporaryServerAddresses(2, "127.0.0.1").map(_.getPort)

@@ -17,11 +17,13 @@ import akka.actor.typed.scaladsl.TimerScheduler
 //#query-outline
 object DeviceGroupQuery {
 
-  def apply(
-      deviceIdToActor: Map[String, ActorRef[Device.Command]],
-      requestId: Long,
-      requester: ActorRef[DeviceManager.RespondAllTemperatures],
-      timeout: FiniteDuration): Behavior[Command] = {
+  def apply
+    (
+        deviceIdToActor: Map[String, ActorRef[Device.Command]],
+        requestId: Long,
+        requester: ActorRef[DeviceManager.RespondAllTemperatures],
+        timeout: FiniteDuration)
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       Behaviors.withTimers { timers =>
         new DeviceGroupQuery(deviceIdToActor, requestId, requester, timeout, context, timers)
@@ -38,13 +40,14 @@ object DeviceGroupQuery {
   private final case class DeviceTerminated(deviceId: String) extends Command
 }
 
-class DeviceGroupQuery(
-    deviceIdToActor: Map[String, ActorRef[Device.Command]],
-    requestId: Long,
-    requester: ActorRef[DeviceManager.RespondAllTemperatures],
-    timeout: FiniteDuration,
-    context: ActorContext[DeviceGroupQuery.Command],
-    timers: TimerScheduler[DeviceGroupQuery.Command])
+class DeviceGroupQuery
+  (
+      deviceIdToActor: Map[String, ActorRef[Device.Command]],
+      requestId: Long,
+      requester: ActorRef[DeviceManager.RespondAllTemperatures],
+      timeout: FiniteDuration,
+      context: ActorContext[DeviceGroupQuery.Command],
+      timers: TimerScheduler[DeviceGroupQuery.Command])
     extends AbstractBehavior[DeviceGroupQuery.Command](context) {
 
   import DeviceGroupQuery._

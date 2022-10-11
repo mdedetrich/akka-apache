@@ -77,11 +77,12 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
    *                   for a key.
    * @param subscriptions Locally subscriptions, not replicated
    */
-  final case class State(
-      registry: ShardedServiceRegistry,
-      servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
-      tombstones: Map[ActorRef[_], Set[(AbstractServiceKey, Deadline)]],
-      subscriptions: SubscriptionRegistry) {
+  final case class State
+    (
+        registry: ShardedServiceRegistry,
+        servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
+        tombstones: Map[ActorRef[_], Set[(AbstractServiceKey, Deadline)]],
+        subscriptions: SubscriptionRegistry) {
 
     /** tombstone all services actor is registered for */
     def addTombstone(actor: ActorRef[_], deadline: Deadline): State = {
@@ -120,9 +121,11 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
     /**
      * @return (reachable-nodes, all)
      */
-    def activeActorRefsFor[T](
-        key: ServiceKey[T],
-        selfUniqueAddress: UniqueAddress): (Set[ActorRef[T]], Set[ActorRef[T]]) = {
+    def activeActorRefsFor[T]
+      (
+          key: ServiceKey[T],
+          selfUniqueAddress: UniqueAddress)
+      : (Set[ActorRef[T]], Set[ActorRef[T]]) = {
       val ddataKey = registry.ddataKeyFor(key)
       val entries = registry.serviceRegistries(ddataKey).entriesFor(key)
       val selfAddress = selfUniqueAddress.address
@@ -312,10 +315,12 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
         notifySubscribers(keysForNode, servicesWereAddedOrRemoved = false, newState)
       }
 
-      def notifySubscribers(
-          changedKeys: Set[AbstractServiceKey],
-          servicesWereAddedOrRemoved: Boolean,
-          newState: State): Unit = {
+      def notifySubscribers
+        (
+            changedKeys: Set[AbstractServiceKey],
+            servicesWereAddedOrRemoved: Boolean,
+            newState: State)
+        : Unit = {
         changedKeys.foreach { changedKey =>
           val serviceKey = changedKey.asServiceKey
 

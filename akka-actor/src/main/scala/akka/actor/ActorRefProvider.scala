@@ -118,15 +118,17 @@ import akka.util.OptionVal
    * but it should be overridable from external configuration; the lookup of
    * the latter can be suppressed by setting ``lookupDeploy`` to ``false``.
    */
-  private[akka] def actorOf(
-      system: ActorSystemImpl,
-      props: Props,
-      supervisor: InternalActorRef,
-      path: ActorPath,
-      systemService: Boolean,
-      deploy: Option[Deploy],
-      lookupDeploy: Boolean,
-      async: Boolean): InternalActorRef
+  private[akka] def actorOf
+    (
+        system: ActorSystemImpl,
+        props: Props,
+        supervisor: InternalActorRef,
+        path: ActorPath,
+        systemService: Boolean,
+        deploy: Option[Deploy],
+        lookupDeploy: Boolean,
+        async: Boolean)
+    : InternalActorRef
 
   /**
    * Create actor reference for a specified path. If no such
@@ -372,21 +374,23 @@ private[akka] object LocalActorRefProvider {
  *
  * Depending on this class is not supported, only the [[ActorRefProvider]] interface is supported.
  */
-private[akka] class LocalActorRefProvider private[akka] (
-    _systemName: String,
-    override val settings: ActorSystem.Settings,
-    val eventStream: EventStream,
-    val dynamicAccess: DynamicAccess,
-    override val deployer: Deployer,
-    _deadLetters: Option[ActorPath => InternalActorRef])
+private[akka] class LocalActorRefProvider private[akka]
+  (
+      _systemName: String,
+      override val settings: ActorSystem.Settings,
+      val eventStream: EventStream,
+      val dynamicAccess: DynamicAccess,
+      override val deployer: Deployer,
+      _deadLetters: Option[ActorPath => InternalActorRef])
     extends ActorRefProvider {
 
   // this is the constructor needed for reflectively instantiating the provider
-  def this(
-      _systemName: String,
-      settings: ActorSystem.Settings,
-      eventStream: EventStream,
-      dynamicAccess: DynamicAccess) =
+  def this
+    (
+        _systemName: String,
+        settings: ActorSystem.Settings,
+        eventStream: EventStream,
+        dynamicAccess: DynamicAccess) =
     this(_systemName, settings, eventStream, dynamicAccess, new Deployer(settings, dynamicAccess), None)
 
   override val rootPath: ActorPath = RootActorPath(Address("akka", _systemName))
@@ -647,15 +651,17 @@ private[akka] class LocalActorRefProvider private[akka] (
         case x => x
       }
 
-  def actorOf(
-      system: ActorSystemImpl,
-      props: Props,
-      supervisor: InternalActorRef,
-      path: ActorPath,
-      systemService: Boolean,
-      deploy: Option[Deploy],
-      lookupDeploy: Boolean,
-      async: Boolean): InternalActorRef = {
+  def actorOf
+    (
+        system: ActorSystemImpl,
+        props: Props,
+        supervisor: InternalActorRef,
+        path: ActorPath,
+        systemService: Boolean,
+        deploy: Option[Deploy],
+        lookupDeploy: Boolean,
+        async: Boolean)
+    : InternalActorRef = {
     props.deploy.routerConfig match {
       case NoRouter =>
         if (settings.DebugRouterMisconfiguration) {

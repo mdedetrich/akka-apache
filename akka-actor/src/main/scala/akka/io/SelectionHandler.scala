@@ -83,10 +83,11 @@ private[io] object SelectionHandler {
     def failureMessage: Any
   }
 
-  final case class WorkerForCommand(
-      apiCommand: HasFailureMessage,
-      commander: ActorRef,
-      childProps: ChannelRegistry => Props)
+  final case class WorkerForCommand
+    (
+        apiCommand: HasFailureMessage,
+        commander: ActorRef,
+        childProps: ChannelRegistry => Props)
       extends NoSerializationVerificationNeeded
 
   final case class Retry(command: WorkerForCommand, retriesLeft: Int) extends NoSerializationVerificationNeeded {
@@ -125,11 +126,13 @@ private[io] object SelectionHandler {
    */
   private[io] final val connectionSupervisorStrategy: SupervisorStrategy =
     new OneForOneStrategy()(SupervisorStrategy.stoppingStrategy.decider) {
-      override def logFailure(
-          context: ActorContext,
-          child: ActorRef,
-          cause: Throwable,
-          decision: SupervisorStrategy.Directive): Unit =
+      override def logFailure
+        (
+            context: ActorContext,
+            child: ActorRef,
+            cause: Throwable,
+            decision: SupervisorStrategy.Directive)
+        : Unit =
         if (cause.isInstanceOf[DeathPactException]) {
           try context.system.eventStream.publish {
               Logging.Debug(child.path.toString, getClass, "Closed after handler termination")
@@ -138,10 +141,11 @@ private[io] object SelectionHandler {
         } else super.logFailure(context, child, cause, decision)
     }
 
-  private class ChannelRegistryImpl(
-      executionContext: ExecutionContext,
-      settings: SelectionHandlerSettings,
-      log: LoggingAdapter)
+  private class ChannelRegistryImpl
+    (
+        executionContext: ExecutionContext,
+        settings: SelectionHandlerSettings,
+        log: LoggingAdapter)
       extends ChannelRegistry {
     private[this] val selector = SelectorProvider.provider.openSelector
     private[this] val wakeUp = new AtomicBoolean(false)
@@ -333,11 +337,13 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
       case _: Exception => SupervisorStrategy.Stop
     }
     new OneForOneStrategy()(stoppingDecider) {
-      override def logFailure(
-          context: ActorContext,
-          child: ActorRef,
-          cause: Throwable,
-          decision: SupervisorStrategy.Directive): Unit =
+      override def logFailure
+        (
+            context: ActorContext,
+            child: ActorRef,
+            cause: Throwable,
+            decision: SupervisorStrategy.Directive)
+        : Unit =
         try {
           val logMessage = cause match {
             case e: ActorInitializationException if (e.getCause ne null) && (e.getCause.getMessage ne null) =>

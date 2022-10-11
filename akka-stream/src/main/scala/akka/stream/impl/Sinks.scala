@@ -117,10 +117,11 @@ import akka.util.ccompat._
  * INTERNAL API
  * Attaches a subscriber to this stream.
  */
-@InternalApi private[akka] final class SubscriberSink[In](
-    subscriber: Subscriber[In],
-    val attributes: Attributes,
-    shape: SinkShape[In])
+@InternalApi private[akka] final class SubscriberSink[In]
+  (
+      subscriber: Subscriber[In],
+      val attributes: Attributes,
+      shape: SinkShape[In])
     extends SinkModule[In, NotUsed](shape) {
 
   override def create(context: MaterializationContext) = (subscriber, NotUsed)
@@ -405,8 +406,9 @@ import akka.util.ccompat._
  *
  * Helper class to be able to express collection as a fold using mutable data
  */
-@InternalApi private[akka] final class FirstCollectorState[T, R](
-    collectorFactory: () => java.util.stream.Collector[T, Any, R])
+@InternalApi private[akka] final class FirstCollectorState[T, R]
+  (
+      collectorFactory: () => java.util.stream.Collector[T, Any, R])
     extends CollectorState[T, R] {
 
   override def update(elem: T): CollectorState[T, R] = {
@@ -437,10 +439,11 @@ import akka.util.ccompat._
  *
  * Helper class to be able to express collection as a fold using mutable data
  */
-@InternalApi private[akka] final class MutableCollectorState[T, R](
-    collector: java.util.stream.Collector[T, Any, R],
-    accumulator: java.util.function.BiConsumer[Any, T],
-    _accumulated: Any)
+@InternalApi private[akka] final class MutableCollectorState[T, R]
+  (
+      collector: java.util.stream.Collector[T, Any, R],
+      accumulator: java.util.function.BiConsumer[Any, T],
+      _accumulated: Any)
     extends CollectorState[T, R] {
 
   override def accumulated(): Any = _accumulated
@@ -472,8 +475,9 @@ import akka.util.ccompat._
  *
  * Helper class to be able to express reduce as a fold for parallel collector
  */
-@InternalApi private[akka] final class FirstReducerState[T, R](
-    collectorFactory: () => java.util.stream.Collector[T, Any, R])
+@InternalApi private[akka] final class FirstReducerState[T, R]
+  (
+      collectorFactory: () => java.util.stream.Collector[T, Any, R])
     extends ReducerState[T, R] {
 
   def update(batch: Any): ReducerState[T, R] = {
@@ -496,10 +500,11 @@ import akka.util.ccompat._
  *
  * Helper class to be able to express reduce as a fold for parallel collector
  */
-@InternalApi private[akka] final class MutableReducerState[T, R](
-    val collector: java.util.stream.Collector[T, Any, R],
-    val combiner: BinaryOperator[Any],
-    var reduced: Any)
+@InternalApi private[akka] final class MutableReducerState[T, R]
+  (
+      val collector: java.util.stream.Collector[T, Any, R],
+      val combiner: BinaryOperator[Any],
+      var reduced: Any)
     extends ReducerState[T, R] {
 
   def update(batch: Any): ReducerState[T, R] = {

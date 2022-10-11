@@ -82,7 +82,9 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
    * The stream is completed with failure if there is a failure in executing the query in the
    * backend journal.
    */
-  override def persistenceIds(): Source[String, NotUsed] =
+  override def persistenceIds
+    ()
+    : Source[String, NotUsed] =
     // no polling for this query, the write journal will push all changes, i.e. no refreshInterval
     Source
       .fromMaterializer { (mat, _) =>
@@ -132,10 +134,12 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
    * The stream is completed with failure if there is a failure in executing the query in the
    * backend journal.
    */
-  override def eventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long = 0L,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+  override def eventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long = 0L,
+        toSequenceNr: Long = Long.MaxValue)
+    : Source[EventEnvelope, NotUsed] = {
     Source
       .fromMaterializer { (mat, _) =>
         Source
@@ -158,10 +162,12 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
    * is completed immediately when it reaches the end of the "result set". Events that are
    * stored after the query is completed are not included in the event stream.
    */
-  override def currentEventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long = 0L,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+  override def currentEventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long = 0L,
+        toSequenceNr: Long = Long.MaxValue)
+    : Source[EventEnvelope, NotUsed] = {
     Source
       .fromMaterializer { (mat, _) =>
         Source

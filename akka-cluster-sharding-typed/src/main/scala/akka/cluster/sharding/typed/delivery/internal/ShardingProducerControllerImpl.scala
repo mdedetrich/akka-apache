@@ -69,14 +69,15 @@ import akka.util.Timeout
   private case object ResendFirstUnconfirmed extends InternalCommand
   private case object CleanupUnused extends InternalCommand
 
-  private final case class OutState[A](
-      entityId: EntityId,
-      producerController: ActorRef[ProducerController.Command[A]],
-      nextTo: Option[ProducerController.RequestNext[A]],
-      buffered: Vector[Buffered[A]],
-      seqNr: OutSeqNr,
-      unconfirmed: Vector[Unconfirmed[A]],
-      usedNanoTime: Long) {
+  private final case class OutState[A]
+    (
+        entityId: EntityId,
+        producerController: ActorRef[ProducerController.Command[A]],
+        nextTo: Option[ProducerController.RequestNext[A]],
+        buffered: Vector[Buffered[A]],
+        seqNr: OutSeqNr,
+        unconfirmed: Vector[Unconfirmed[A]],
+        usedNanoTime: Long) {
     if (nextTo.nonEmpty && buffered.nonEmpty)
       throw new IllegalStateException("nextTo and buffered shouldn't both be nonEmpty.")
   }
@@ -85,23 +86,26 @@ import akka.util.Timeout
 
   private final case class Unconfirmed[A](totalSeqNr: TotalSeqNr, outSeqNr: OutSeqNr, replyTo: Option[ActorRef[Done]])
 
-  private final case class State[A](
-      currentSeqNr: TotalSeqNr,
-      producer: ActorRef[ShardingProducerController.RequestNext[A]],
-      out: Map[OutKey, OutState[A]],
-      // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
-      replyAfterStore: Map[TotalSeqNr, ActorRef[Done]]) {
+  private final case class State[A]
+    (
+        currentSeqNr: TotalSeqNr,
+        producer: ActorRef[ShardingProducerController.RequestNext[A]],
+        out: Map[OutKey, OutState[A]],
+        // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
+        replyAfterStore: Map[TotalSeqNr, ActorRef[Done]]) {
 
     def bufferSize: Long = {
       out.valuesIterator.foldLeft(0L) { case (acc, outState) => acc + outState.buffered.size }
     }
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ShardingProducerController.Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: ShardingProducerController.Settings)
+    : Behavior[Command[A]] = {
     Behaviors
       .withStash[InternalCommand](settings.bufferSize) { stashBuffer =>
         Behaviors.setup[InternalCommand] { context =>
@@ -129,15 +133,17 @@ import akka.util.Timeout
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
   }
 
-  private def waitingForStart[A: ClassTag](
-      producerId: String,
-      context: ActorContext[InternalCommand],
-      stashBuffer: StashBuffer[InternalCommand],
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      producer: Option[ActorRef[RequestNext[A]]],
-      initialState: Option[DurableProducerQueue.State[A]],
-      settings: ShardingProducerController.Settings): Behavior[InternalCommand] = {
+  private def waitingForStart[A: ClassTag]
+    (
+        producerId: String,
+        context: ActorContext[InternalCommand],
+        stashBuffer: StashBuffer[InternalCommand],
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        producer: Option[ActorRef[RequestNext[A]]],
+        initialState: Option[DurableProducerQueue.State[A]],
+        settings: ShardingProducerController.Settings)
+    : Behavior[InternalCommand] = {
 
     def becomeActive(p: ActorRef[RequestNext[A]], s: DurableProducerQueue.State[A]): Behavior[InternalCommand] = {
       Behaviors.withTimers { timers =>
@@ -231,10 +237,12 @@ import akka.util.Timeout
       throw new IllegalArgumentException(s"Buffer is full, size [${stashBuffer.size}].")
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ShardingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: ShardingProducerController.Settings)
+    : Option[ActorRef[DurableProducerQueue.Command[A]]] = {
 
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
@@ -244,11 +252,13 @@ import akka.util.Timeout
     }
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: ShardingProducerController.Settings,
-      attempt: Int): Unit = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: ShardingProducerController.Settings,
+        attempt: Int)
+    : Unit = {
     implicit val loadTimeout: Timeout = settings.producerControllerSettings.durableQueueRequestTimeout
     durableQueue.foreach { ref =>
       context.ask[DurableProducerQueue.LoadState[A], DurableProducerQueue.State[A]](
@@ -262,13 +272,14 @@ import akka.util.Timeout
 
 }
 
-private class ShardingProducerControllerImpl[A: ClassTag](
-    context: ActorContext[ShardingProducerControllerImpl.InternalCommand],
-    producerId: String,
-    msgAdapter: ActorRef[ShardingEnvelope[A]],
-    region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-    durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-    settings: ShardingProducerController.Settings) {
+private class ShardingProducerControllerImpl[A: ClassTag]
+  (
+      context: ActorContext[ShardingProducerControllerImpl.InternalCommand],
+      producerId: String,
+      msgAdapter: ActorRef[ShardingEnvelope[A]],
+      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+      settings: ShardingProducerController.Settings) {
   import DurableProducerQueue.MessageSent
   import DurableProducerQueue.StoreMessageConfirmed
   import DurableProducerQueue.StoreMessageSent
@@ -289,12 +300,14 @@ private class ShardingProducerControllerImpl[A: ClassTag](
 
   private def active(s: State[A]): Behavior[InternalCommand] = {
 
-    def onMessage(
-        entityId: EntityId,
-        msg: A,
-        replyTo: Option[ActorRef[Done]],
-        totalSeqNr: TotalSeqNr,
-        newReplyAfterStore: Map[TotalSeqNr, ActorRef[Done]]): Behavior[InternalCommand] = {
+    def onMessage
+      (
+          entityId: EntityId,
+          msg: A,
+          replyTo: Option[ActorRef[Done]],
+          totalSeqNr: TotalSeqNr,
+          newReplyAfterStore: Map[TotalSeqNr, ActorRef[Done]])
+      : Behavior[InternalCommand] = {
 
       val outKey = s"$producerId-$entityId"
       val newState =
@@ -376,10 +389,12 @@ private class ShardingProducerControllerImpl[A: ClassTag](
       newUnconfirmed
     }
 
-    def receiveStoreMessageSentCompleted(
-        seqNr: SeqNr,
-        msg: A,
-        entityId: ConfirmationQualifier): Behavior[InternalCommand] = {
+    def receiveStoreMessageSentCompleted
+      (
+          seqNr: SeqNr,
+          msg: A,
+          entityId: ConfirmationQualifier)
+      : Behavior[InternalCommand] = {
       s.replyAfterStore.get(seqNr).foreach { replyTo =>
         context.log.info("Confirmation reply to [{}] after storage", seqNr)
         replyTo ! Done

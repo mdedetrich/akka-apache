@@ -25,11 +25,12 @@ private[sharding] object ShardingQueries {
    * @param timeout the timeout used to query the shards per region, for reporting metadata
    * @tparam B
    */
-  final case class ShardsQueryResult[B](
-      failed: Set[ShardRegion.ShardId],
-      responses: Seq[B],
-      total: Int,
-      timeout: FiniteDuration) {
+  final case class ShardsQueryResult[B]
+    (
+        failed: Set[ShardRegion.ShardId],
+        responses: Seq[B],
+        total: Int,
+        timeout: FiniteDuration) {
 
     /**
      * The number of shards queried, which could equal the `total` or,

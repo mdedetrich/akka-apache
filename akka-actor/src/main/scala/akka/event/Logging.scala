@@ -195,11 +195,13 @@ trait LoggingBus extends ActorEventBus {
   /**
    * INTERNAL API
    */
-  private def addLogger(
-      system: ActorSystemImpl,
-      clazz: Class[_ <: Actor],
-      level: LogLevel,
-      logName: String): ActorRef = {
+  private def addLogger
+    (
+        system: ActorSystemImpl,
+        clazz: Class[_ <: Actor],
+        level: LogLevel,
+        logName: String)
+    : ActorRef = {
     val name = "log" + LogExt(system).id() + "-" + simpleName(clazz)
     val actor = system.systemActorOf(Props(clazz).withDispatcher(system.settings.LoggersDispatcher), name)
     implicit def timeout: Timeout = system.settings.LoggerStartTimeout
@@ -777,13 +779,15 @@ object Logging {
       case level        => throw new IllegalArgumentException(s"Unsupported log level [$level]")
     }
 
-    def apply(
-        level: LogLevel,
-        logSource: String,
-        logClass: Class[_],
-        message: Any,
-        mdc: MDC,
-        marker: LogMarker): LogEvent = level match {
+    def apply
+      (
+          level: LogLevel,
+          logSource: String,
+          logClass: Class[_],
+          message: Any,
+          mdc: MDC,
+          marker: LogMarker)
+      : LogEvent = level match {
       case ErrorLevel   => Error(logSource, logClass, message, mdc, marker)
       case WarningLevel => Warning(logSource, logClass, message, mdc, marker)
       case InfoLevel    => Info(logSource, logClass, message, mdc, marker)
@@ -806,23 +810,25 @@ object Logging {
     def this(logSource: String, logClass: Class[_], message: Any) = this(Error.NoCause, logSource, logClass, message)
     override def level = ErrorLevel
   }
-  class Error2(
-      override val cause: Throwable,
-      logSource: String,
-      logClass: Class[_],
-      message: Any = "",
-      override val mdc: MDC)
+  class Error2
+    (
+        override val cause: Throwable,
+        logSource: String,
+        logClass: Class[_],
+        message: Any = "",
+        override val mdc: MDC)
       extends Error(cause, logSource, logClass, message) {
     def this(logSource: String, logClass: Class[_], message: Any, mdc: MDC) =
       this(Error.NoCause, logSource, logClass, message, mdc)
   }
-  class Error3(
-      override val cause: Throwable,
-      logSource: String,
-      logClass: Class[_],
-      message: Any,
-      override val mdc: MDC,
-      override val marker: LogMarker)
+  class Error3
+    (
+        override val cause: Throwable,
+        logSource: String,
+        logClass: Class[_],
+        message: Any,
+        override val mdc: MDC,
+        override val marker: LogMarker)
       extends Error2(cause, logSource, logClass, message, mdc)
       with LogEventWithMarker {
     def this(logSource: String, logClass: Class[_], message: Any, mdc: MDC, marker: LogMarker) =
@@ -858,21 +864,23 @@ object Logging {
   }
   class Warning2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
       extends Warning(logSource, logClass, message)
-  class Warning3(
-      logSource: String,
-      logClass: Class[_],
-      message: Any,
-      override val mdc: MDC,
-      override val marker: LogMarker)
+  class Warning3
+    (
+        logSource: String,
+        logClass: Class[_],
+        message: Any,
+        override val mdc: MDC,
+        override val marker: LogMarker)
       extends Warning2(logSource, logClass, message, mdc)
       with LogEventWithMarker
-  class Warning4(
-      logSource: String,
-      logClass: Class[_],
-      message: Any,
-      override val mdc: MDC,
-      override val marker: LogMarker,
-      override val cause: Throwable)
+  class Warning4
+    (
+        logSource: String,
+        logClass: Class[_],
+        message: Any,
+        override val mdc: MDC,
+        override val marker: LogMarker,
+        override val cause: Throwable)
       extends Warning2(logSource, logClass, message, mdc)
       with LogEventWithMarker
       with LogEventWithCause
@@ -896,12 +904,13 @@ object Logging {
   }
   class Info2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
       extends Info(logSource, logClass, message)
-  class Info3(
-      logSource: String,
-      logClass: Class[_],
-      message: Any,
-      override val mdc: MDC,
-      override val marker: LogMarker)
+  class Info3
+    (
+        logSource: String,
+        logClass: Class[_],
+        message: Any,
+        override val mdc: MDC,
+        override val marker: LogMarker)
       extends Info2(logSource, logClass, message, mdc)
       with LogEventWithMarker
   object Info {
@@ -919,12 +928,13 @@ object Logging {
   }
   class Debug2(logSource: String, logClass: Class[_], message: Any, override val mdc: MDC)
       extends Debug(logSource, logClass, message)
-  class Debug3(
-      logSource: String,
-      logClass: Class[_],
-      message: Any,
-      override val mdc: MDC,
-      override val marker: LogMarker)
+  class Debug3
+    (
+        logSource: String,
+        logClass: Class[_],
+        message: Any,
+        override val mdc: MDC,
+        override val marker: LogMarker)
       extends Debug2(logSource, logClass, message, mdc)
       with LogEventWithMarker
   object Debug {
@@ -1732,11 +1742,12 @@ object LogMarker {
 /**
  * [[LoggingAdapter]] extension which adds Marker support.
  */
-class MarkerLoggingAdapter(
-    override val bus: LoggingBus,
-    override val logSource: String,
-    override val logClass: Class[_],
-    loggingFilter: LoggingFilter)
+class MarkerLoggingAdapter
+  (
+      override val bus: LoggingBus,
+      override val logSource: String,
+      override val logClass: Class[_],
+      loggingFilter: LoggingFilter)
     extends BusLogging(bus, logSource, logClass, loggingFilter) {
   // TODO when breaking binary compatibility, these marker methods should become baked into LoggingAdapter itself
 
@@ -1996,11 +2007,12 @@ class MarkerLoggingAdapter(
   }
 }
 
-final class DiagnosticMarkerBusLoggingAdapter(
-    override val bus: LoggingBus,
-    override val logSource: String,
-    override val logClass: Class[_],
-    loggingFilter: LoggingFilter)
+final class DiagnosticMarkerBusLoggingAdapter
+  (
+      override val bus: LoggingBus,
+      override val logSource: String,
+      override val logClass: Class[_],
+      loggingFilter: LoggingFilter)
     extends MarkerLoggingAdapter(bus, logSource, logClass, loggingFilter)
     with DiagnosticLoggingAdapter
 
@@ -2085,21 +2097,25 @@ object NoMarkerLogging extends MarkerLoggingAdapter(null, "source", classOf[Stri
   final override def error(marker: LogMarker, cause: Throwable, message: String): Unit = ()
   final override def error(marker: LogMarker, cause: Throwable, template: String, arg1: Any): Unit = ()
   final override def error(marker: LogMarker, cause: Throwable, template: String, arg1: Any, arg2: Any): Unit = ()
-  final override def error(
-      marker: LogMarker,
-      cause: Throwable,
-      template: String,
-      arg1: Any,
-      arg2: Any,
-      arg3: Any): Unit = ()
-  final override def error(
-      marker: LogMarker,
-      cause: Throwable,
-      template: String,
-      arg1: Any,
-      arg2: Any,
-      arg3: Any,
-      arg4: Any): Unit = ()
+  final override def error
+    (
+        marker: LogMarker,
+        cause: Throwable,
+        template: String,
+        arg1: Any,
+        arg2: Any,
+        arg3: Any)
+    : Unit = ()
+  final override def error
+    (
+        marker: LogMarker,
+        cause: Throwable,
+        template: String,
+        arg1: Any,
+        arg2: Any,
+        arg3: Any,
+        arg4: Any)
+    : Unit = ()
   final override def error(marker: LogMarker, message: String): Unit = ()
   final override def error(marker: LogMarker, template: String, arg1: Any): Unit = ()
   final override def error(marker: LogMarker, template: String, arg1: Any, arg2: Any): Unit = ()

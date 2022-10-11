@@ -93,10 +93,11 @@ class PersistentActorWithAtLeastOnceDeliveryBenchmark {
   }
 }
 
-class NoPersistPersistentActorWithAtLeastOnceDelivery(
-    respondAfter: Int,
-    val upStream: ActorRef,
-    val downStream: ActorPath)
+class NoPersistPersistentActorWithAtLeastOnceDelivery
+  (
+      respondAfter: Int,
+      val upStream: ActorRef,
+      val downStream: ActorPath)
     extends PersistentActor
     with AtLeastOnceDelivery {
 
@@ -130,10 +131,11 @@ class NoPersistPersistentActorWithAtLeastOnceDelivery(
   }
 }
 
-class PersistPersistentActorWithAtLeastOnceDelivery(
-    respondAfter: Int,
-    val upStream: ActorRef,
-    val downStream: ActorPath)
+class PersistPersistentActorWithAtLeastOnceDelivery
+  (
+      respondAfter: Int,
+      val upStream: ActorRef,
+      val downStream: ActorPath)
     extends PersistentActor
     with AtLeastOnceDelivery {
 
@@ -169,10 +171,11 @@ class PersistPersistentActorWithAtLeastOnceDelivery(
   }
 }
 
-class PersistAsyncPersistentActorWithAtLeastOnceDelivery(
-    respondAfter: Int,
-    val upStream: ActorRef,
-    val downStream: ActorPath)
+class PersistAsyncPersistentActorWithAtLeastOnceDelivery
+  (
+      respondAfter: Int,
+      val upStream: ActorRef,
+      val downStream: ActorPath)
     extends PersistentActor
     with AtLeastOnceDelivery {
 

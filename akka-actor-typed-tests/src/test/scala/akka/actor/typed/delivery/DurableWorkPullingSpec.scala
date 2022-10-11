@@ -36,9 +36,11 @@ class DurableWorkPullingSpec
 
   private def producerId: String = s"p-$idCount"
 
-  private def awaitWorkersRegistered(
-      controller: ActorRef[WorkPullingProducerController.Command[TestConsumer.Job]],
-      count: Int): Unit = {
+  private def awaitWorkersRegistered
+    (
+        controller: ActorRef[WorkPullingProducerController.Command[TestConsumer.Job]],
+        count: Int)
+    : Unit = {
     val probe = createTestProbe[WorkPullingProducerController.WorkerStats]()
     probe.awaitAssert {
       controller ! WorkPullingProducerController.GetWorkerStats(probe.ref)
@@ -49,9 +51,11 @@ class DurableWorkPullingSpec
   val workerServiceKey: ServiceKey[ConsumerController.Command[TestConsumer.Job]] = ServiceKey("worker")
 
   // don't compare the UUID fields
-  private def assertState(
-      s: DurableProducerQueue.State[TestConsumer.Job],
-      expected: DurableProducerQueue.State[TestConsumer.Job]): Unit = {
+  private def assertState
+    (
+        s: DurableProducerQueue.State[TestConsumer.Job],
+        expected: DurableProducerQueue.State[TestConsumer.Job])
+    : Unit = {
 
     def cleanup(a: DurableProducerQueue.State[TestConsumer.Job]): DurableProducerQueue.State[TestConsumer.Job] = {
       a.copy(

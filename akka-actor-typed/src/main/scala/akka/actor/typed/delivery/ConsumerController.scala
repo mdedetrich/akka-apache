@@ -76,11 +76,12 @@ object ConsumerController {
    * When the message has been processed the consumer is supposed to send [[Confirmed]] back
    * to the `ConsumerController` via the `confirmTo`.
    */
-  final class Delivery[A](
-      val message: A,
-      val confirmTo: ActorRef[Confirmed],
-      val producerId: String,
-      val seqNr: SeqNr) {
+  final class Delivery[A]
+    (
+        val message: A,
+        val confirmTo: ActorRef[Confirmed],
+        val producerId: String,
+        val seqNr: SeqNr) {
     override def toString: String = s"Delivery($message,$confirmTo,$producerId,$seqNr)"
   }
 
@@ -135,13 +136,15 @@ object ConsumerController {
     /**
      * INTERNAL API
      */
-    @InternalApi private[akka] def fromChunked[A](
-        producerId: String,
-        seqNr: SeqNr,
-        chunk: ChunkedMessage,
-        first: Boolean,
-        ack: Boolean,
-        producerController: ActorRef[ProducerControllerImpl.InternalCommand]): SequencedMessage[A] =
+    @InternalApi private[akka] def fromChunked[A]
+      (
+          producerId: String,
+          seqNr: SeqNr,
+          chunk: ChunkedMessage,
+          first: Boolean,
+          ack: Boolean,
+          producerController: ActorRef[ProducerControllerImpl.InternalCommand])
+      : SequencedMessage[A] =
       new SequencedMessage(producerId, seqNr, chunk, first, ack)(producerController)
   }
 
@@ -156,12 +159,14 @@ object ConsumerController {
    *
    * @param producerController INTERNAL API: construction of SequencedMessage is internal
    */
-  final case class SequencedMessage[A](
-      producerId: String,
-      seqNr: SeqNr,
-      message: SequencedMessage.MessageOrChunk,
-      first: Boolean,
-      ack: Boolean)(@InternalApi private[akka] val producerController: ActorRef[ProducerControllerImpl.InternalCommand])
+  final case class SequencedMessage[A]
+    (
+        producerId: String,
+        seqNr: SeqNr,
+        message: SequencedMessage.MessageOrChunk,
+        first: Boolean,
+        ack: Boolean)
+    (@InternalApi private[akka] val producerController: ActorRef[ProducerControllerImpl.InternalCommand])
       extends Command[A]
       with DeliverySerializable
       with DeadLetterSuppression {
@@ -268,11 +273,12 @@ object ConsumerController {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        flowControlWindow: Int = flowControlWindow,
-        resendIntervalMin: FiniteDuration = resendIntervalMin,
-        resendIntervalMax: FiniteDuration = resendIntervalMax,
-        onlyFlowControl: Boolean = onlyFlowControl) =
+    private def copy
+      (
+          flowControlWindow: Int = flowControlWindow,
+          resendIntervalMin: FiniteDuration = resendIntervalMin,
+          resendIntervalMax: FiniteDuration = resendIntervalMax,
+          onlyFlowControl: Boolean = onlyFlowControl) =
       new Settings(flowControlWindow, resendIntervalMin, resendIntervalMax, onlyFlowControl)
 
     override def toString: String =
@@ -303,9 +309,11 @@ object ConsumerController {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def apply[A](
-      serviceKey: Option[ServiceKey[Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  @InternalApi private[akka] def apply[A]
+    (
+        serviceKey: Option[ServiceKey[Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     ConsumerControllerImpl(serviceKey, settings)
   }
 

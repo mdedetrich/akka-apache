@@ -20,10 +20,11 @@ import akka.annotation.InternalApi
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class GroupRouterBuilder[T] private[akka] (
-    key: ServiceKey[T],
-    preferLocalRoutees: Boolean = false,
-    logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RandomLogic[T]())
+private[akka] final case class GroupRouterBuilder[T] private[akka]
+  (
+      key: ServiceKey[T],
+      preferLocalRoutees: Boolean = false,
+      logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RandomLogic[T]())
     extends javadsl.GroupRouter[T]
     with scaladsl.GroupRouter[T] {
 
@@ -41,9 +42,11 @@ private[akka] final case class GroupRouterBuilder[T] private[akka] (
   def withRoundRobinRouting(preferLocalRoutees: Boolean): GroupRouterBuilder[T] =
     copy(preferLocalRoutees = preferLocalRoutees, logicFactory = _ => new RoutingLogics.RoundRobinLogic[T])
 
-  def withConsistentHashingRouting(
-      virtualNodesFactor: Int,
-      mapping: function.Function[T, String]): GroupRouterBuilder[T] =
+  def withConsistentHashingRouting
+    (
+        virtualNodesFactor: Int,
+        mapping: function.Function[T, String])
+    : GroupRouterBuilder[T] =
     withConsistentHashingRouting(virtualNodesFactor, mapping.apply(_))
 
   def withConsistentHashingRouting(virtualNodesFactor: Int, mapping: T => String): GroupRouterBuilder[T] = {
@@ -59,11 +62,12 @@ private[akka] final case class GroupRouterBuilder[T] private[akka] (
  * Starting behavior for a group router before it got a first listing back from the receptionist
  */
 @InternalApi
-private final class InitialGroupRouterImpl[T](
-    ctx: ActorContext[T],
-    serviceKey: ServiceKey[T],
-    preferLocalRoutees: Boolean,
-    routingLogic: RoutingLogic[T])
+private final class InitialGroupRouterImpl[T]
+  (
+      ctx: ActorContext[T],
+      serviceKey: ServiceKey[T],
+      preferLocalRoutees: Boolean,
+      routingLogic: RoutingLogic[T])
     extends AbstractBehavior[T](ctx) {
 
   // casting trix to avoid having to wrap incoming messages - note that this will cause problems if intercepting
@@ -112,12 +116,13 @@ private[routing] object GroupRouterHelper {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class GroupRouterImpl[T](
-    ctx: ActorContext[T],
-    serviceKey: ServiceKey[T],
-    preferLocalRoutees: Boolean,
-    routingLogic: RoutingLogic[T],
-    routeesInitiallyEmpty: Boolean)
+private[akka] final class GroupRouterImpl[T]
+  (
+      ctx: ActorContext[T],
+      serviceKey: ServiceKey[T],
+      preferLocalRoutees: Boolean,
+      routingLogic: RoutingLogic[T],
+      routeesInitiallyEmpty: Boolean)
     extends AbstractBehavior[T](ctx) {
 
   private var routeesEmpty = routeesInitiallyEmpty

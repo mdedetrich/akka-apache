@@ -71,13 +71,14 @@ object TraversalTestUtils {
     override def toString = s"TestFlow$tag"
   }
 
-  class MaterializationResult(
-      val connections: Int,
-      val inlets: Array[InPort],
-      val outlets: Array[OutPort],
-      val matValue: Any,
-      val attributesAssignments: List[(AtomicModule[Shape, Any], Attributes)],
-      val islandAssignments: List[(AtomicModule[Shape, Any], Attributes, IslandTag)]) {
+  class MaterializationResult
+    (
+        val connections: Int,
+        val inlets: Array[InPort],
+        val outlets: Array[OutPort],
+        val matValue: Any,
+        val attributesAssignments: List[(AtomicModule[Shape, Any], Attributes)],
+        val islandAssignments: List[(AtomicModule[Shape, Any], Attributes, IslandTag)]) {
 
     override def toString = {
       outlets.iterator.zip(inlets.iterator).mkString("connections: ", ", ", "")

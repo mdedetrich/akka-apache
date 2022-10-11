@@ -28,12 +28,15 @@ private[akka] object FrequencySketch {
    * @param hasher the hash function for the element type
    * @return a configured FrequencySketch
    */
-  def apply[A](
-      capacity: Int,
-      widthMultiplier: Int = 4,
-      resetMultiplier: Double = 10,
-      depth: Int = 4,
-      counterBits: Int = 4)(implicit hasher: Hasher[A]): FrequencySketch[A] = {
+  def apply[A]
+    (
+        capacity: Int,
+        widthMultiplier: Int = 4,
+        resetMultiplier: Double = 10,
+        depth: Int = 4,
+        counterBits: Int = 4)
+    (implicit hasher: Hasher[A])
+    : FrequencySketch[A] = {
     val width = widthMultiplier * Bits.ceilingPowerOfTwo(capacity)
     val resetSize = (resetMultiplier * capacity).toInt
     new FrequencySketch(depth, width, counterBits, resetSize, hasher)
@@ -96,12 +99,13 @@ private[akka] object FrequencySketch {
  * @param hasher the hash function for the element type
  */
 @InternalApi
-private[akka] final class FrequencySketch[A](
-    depth: Int,
-    width: Int,
-    counterBits: Int,
-    resetSize: Int,
-    hasher: FrequencySketch.Hasher[A]) {
+private[akka] final class FrequencySketch[A]
+  (
+      depth: Int,
+      width: Int,
+      counterBits: Int,
+      resetSize: Int,
+      hasher: FrequencySketch.Hasher[A]) {
 
   require(FrequencySketch.Bits.isPowerOfTwo(width), "width must be a power of two")
   require(Set(2, 4, 8, 16, 32, 64)(counterBits), "counterBits must be 2, 4, 8, 16, 32, or 64 bits")
@@ -357,12 +361,14 @@ private[akka] object FrequencySketchUtil {
   /**
    * Create a pretty table with all the frequency sketch counters for debugging (smaller) sketches.
    */
-  def debugString(
-      matrix: Array[Array[Long]],
-      rowWidth: Int,
-      slots: Int,
-      counterWidth: Int,
-      counterMax: Long): String = {
+  def debugString
+    (
+        matrix: Array[Array[Long]],
+        rowWidth: Int,
+        slots: Int,
+        counterWidth: Int,
+        counterMax: Long)
+    : String = {
     def digits(n: Long): Int = math.floor(math.log10(n.toDouble)).toInt + 1
     val indexDigits = digits(rowWidth)
     val counterDigits = math.max(2, digits(counterMax))

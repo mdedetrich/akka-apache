@@ -77,11 +77,12 @@ object WorkPullingDocExample {
     // #producer
 
     // #ask
-    final case class ConvertRequest(
-        fromFormat: String,
-        toFormat: String,
-        image: Array[Byte],
-        replyTo: ActorRef[ConvertResponse])
+    final case class ConvertRequest
+      (
+          fromFormat: String,
+          toFormat: String,
+          image: Array[Byte],
+          replyTo: ActorRef[ConvertResponse])
         extends Command
 
     sealed trait ConvertResponse
@@ -130,9 +131,10 @@ object WorkPullingDocExample {
 
   }
 
-  final class ImageWorkManager(
-      context: ActorContext[ImageWorkManager.Command],
-      stashBuffer: StashBuffer[ImageWorkManager.Command]) {
+  final class ImageWorkManager
+    (
+        context: ActorContext[ImageWorkManager.Command],
+        stashBuffer: StashBuffer[ImageWorkManager.Command]) {
 
     import ImageWorkManager._
 
@@ -154,8 +156,10 @@ object WorkPullingDocExample {
       }
     }
 
-    private def active(
-        next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] = {
+    private def active
+      (
+          next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob])
+      : Behavior[Command] = {
       Behaviors.receiveMessagePartial {
         case Convert(from, to, image) =>
           val resultId = UUID.randomUUID()
@@ -199,8 +203,10 @@ object WorkPullingDocExample {
         }
       }
 
-      private def active(
-          next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob]): Behavior[Command] = {
+      private def active
+        (
+            next: WorkPullingProducerController.RequestNext[ImageConverter.ConversionJob])
+        : Behavior[Command] = {
         Behaviors.receiveMessagePartial {
           case ConvertRequest(from, to, image, originalReplyTo) =>
             val resultId = UUID.randomUUID()

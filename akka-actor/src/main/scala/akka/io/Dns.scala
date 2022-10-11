@@ -150,7 +150,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
   override def get(system: ClassicActorSystemProvider): DnsExt = super.get(system)
 }
 
-class DnsExt private[akka] (val system: ExtendedActorSystem, resolverName: String, managerName: String)
+class DnsExt private[akka](val system: ExtendedActorSystem, resolverName: String, managerName: String)
     extends IO.Extension {
 
   private val asyncDns = new ConcurrentHashMap[String, ActorRef]
@@ -203,7 +203,7 @@ class DnsExt private[akka] (val system: ExtendedActorSystem, resolverName: Strin
   def this(system: ExtendedActorSystem) =
     this(system, system.settings.config.getString("akka.io.dns.resolver"), "IO-DNS")
 
-  class Settings private[DnsExt] (config: Config, resolverName: String) {
+  class Settings private[DnsExt](config: Config, resolverName: String) {
 
     /**
      * Load the default resolver

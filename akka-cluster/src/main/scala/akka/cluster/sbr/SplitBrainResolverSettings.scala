@@ -130,11 +130,12 @@ import akka.util.Helpers.Requiring
 /**
  * INTERNAL API
  */
-@InternalApi private[sbr] final case class LeaseMajoritySettings(
-    leaseImplementation: String,
-    acquireLeaseDelayForMinority: FiniteDuration,
-    releaseAfter: FiniteDuration,
-    role: Option[String],
-    leaseName: Option[String]) {
+@InternalApi private[sbr] final case class LeaseMajoritySettings
+  (
+      leaseImplementation: String,
+      acquireLeaseDelayForMinority: FiniteDuration,
+      releaseAfter: FiniteDuration,
+      role: Option[String],
+      leaseName: Option[String]) {
   def safeLeaseName(systemName: String) = leaseName.getOrElse(s"$systemName-akka-sbr")
 }

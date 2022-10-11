@@ -77,10 +77,12 @@ class FailingDnsResolver extends DnsProvider {
       None
     }
     override def cached(request: DnsProtocol.Resolve): Option[DnsProtocol.Resolved] = None
-    override def resolve(
-        request: DnsProtocol.Resolve,
-        system: ActorSystem,
-        sender: ActorRef): Option[DnsProtocol.Resolved] = {
+    override def resolve
+      (
+          request: DnsProtocol.Resolve,
+          system: ActorSystem,
+          sender: ActorRef)
+      : Option[DnsProtocol.Resolved] = {
       sender ! DnsProtocol.Resolved(request.name, immutable.Seq.empty, immutable.Seq.empty)
       None
     }
@@ -1063,11 +1065,13 @@ class TcpSpec extends StreamSpec("""
 
   }
 
-  def validateServerClientCommunication(
-      testData: ByteString,
-      serverConnection: ServerConnection,
-      readProbe: TcpReadProbe,
-      writeProbe: TcpWriteProbe): Unit = {
+  def validateServerClientCommunication
+    (
+        testData: ByteString,
+        serverConnection: ServerConnection,
+        readProbe: TcpReadProbe,
+        writeProbe: TcpWriteProbe)
+    : Unit = {
     serverConnection.write(testData)
     serverConnection.read(5)
     readProbe.read(5) should be(testData)

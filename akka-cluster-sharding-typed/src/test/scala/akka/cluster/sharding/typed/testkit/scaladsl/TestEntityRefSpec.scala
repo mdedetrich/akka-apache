@@ -60,10 +60,12 @@ class TestEntityRefSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike w
 
         override def init[M, E](entity: Entity[M, E]): ActorRef[E] = ???
 
-        override def entityRefFor[M](
-            typeKey: EntityTypeKey[M],
-            entityId: String,
-            dataCenter: DataCenter): EntityRef[M] =
+        override def entityRefFor[M]
+          (
+              typeKey: EntityTypeKey[M],
+              entityId: String,
+              dataCenter: DataCenter)
+          : EntityRef[M] =
           TestEntityRef(typeKey, entityId, probes(entityId).ref.asInstanceOf[ActorRef[M]])
 
         override def entityRefFor[M](typeKey: EntityTypeKey[M], entityId: String): EntityRef[M] =
@@ -71,8 +73,10 @@ class TestEntityRefSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike w
 
         override def shardState: ActorRef[ClusterShardingQuery] = ???
 
-        override def defaultShardAllocationStrategy(
-            settings: ClusterShardingSettings): ShardCoordinator.ShardAllocationStrategy =
+        override def defaultShardAllocationStrategy
+          (
+              settings: ClusterShardingSettings)
+          : ShardCoordinator.ShardAllocationStrategy =
           ShardAllocationStrategy.leastShardAllocationStrategy(1, 0.1)
 
         // below are for javadsl
@@ -80,10 +84,12 @@ class TestEntityRefSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike w
 
         override def entityRefFor[M](typeKey: javadsl.EntityTypeKey[M], entityId: String): javadsl.EntityRef[M] = ???
 
-        override def entityRefFor[M](
-            typeKey: javadsl.EntityTypeKey[M],
-            entityId: String,
-            dataCenter: String): javadsl.EntityRef[M] = ???
+        override def entityRefFor[M]
+          (
+              typeKey: javadsl.EntityTypeKey[M],
+              entityId: String,
+              dataCenter: String)
+          : javadsl.EntityRef[M] = ???
 
       }
 

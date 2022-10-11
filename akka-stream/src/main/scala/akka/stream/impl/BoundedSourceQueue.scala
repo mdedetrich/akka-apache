@@ -35,8 +35,10 @@ import akka.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, Out
   val out = Outlet[T]("BoundedSourceQueueStage.out")
   val shape = SourceShape(out)
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, BoundedSourceQueue[T]) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, BoundedSourceQueue[T]) = {
 
     val state = new AtomicReference[State](Running)
     val queue = new AbstractBoundedNodeQueue[T](bufferSize) {}

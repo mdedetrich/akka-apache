@@ -70,10 +70,12 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
    * @param origin the `InitJoinAck` sender
    * @param behavior on `JoinTo` being sent, if defined, `context.become`  is called, otherwise  `context.stop`.
    */
-  final def receiveInitJoinAckIncompatibleConfig(
-      joinTo: Address,
-      origin: ActorRef,
-      behavior: Option[Actor.Receive]): Unit = {
+  final def receiveInitJoinAckIncompatibleConfig
+    (
+        joinTo: Address,
+        origin: ActorRef,
+        behavior: Option[Actor.Receive])
+    : Unit = {
 
     // first InitJoinAck reply, but incompatible
     if (ByPassConfigCompatCheck) {
@@ -93,11 +95,13 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     }
   }
 
-  final def receiveInitJoinAckCompatibleConfig(
-      joinTo: Address,
-      origin: ActorRef,
-      configCheck: CompatibleConfig,
-      behavior: Option[Actor.Receive]): Unit = {
+  final def receiveInitJoinAckCompatibleConfig
+    (
+        joinTo: Address,
+        origin: ActorRef,
+        configCheck: CompatibleConfig,
+        behavior: Option[Actor.Receive])
+    : Unit = {
 
     logInitJoinAckReceived(origin)
 
@@ -120,10 +124,12 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     }
   }
 
-  final def receiveInitJoinAckUncheckedConfig(
-      joinTo: Address,
-      origin: ActorRef,
-      behavior: Option[Actor.Receive]): Unit = {
+  final def receiveInitJoinAckUncheckedConfig
+    (
+        joinTo: Address,
+        origin: ActorRef,
+        behavior: Option[Actor.Receive])
+    : Unit = {
 
     logInitJoinAckReceived(origin)
     logWarning("Joining a cluster without configuration compatibility check feature.")
@@ -161,9 +167,10 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
  * that other seed node to join existing cluster.
  */
 @InternalApi
-private[cluster] final class FirstSeedNodeProcess(
-    seedNodes: immutable.IndexedSeq[Address],
-    joinConfigCompatChecker: JoinConfigCompatChecker)
+private[cluster] final class FirstSeedNodeProcess
+  (
+      seedNodes: immutable.IndexedSeq[Address],
+      joinConfigCompatChecker: JoinConfigCompatChecker)
     extends SeedNodeProcess(joinConfigCompatChecker) {
 
   import ClusterUserAction.JoinTo
@@ -242,9 +249,10 @@ private[cluster] final class FirstSeedNodeProcess(
  * 5. seed3 retries the join procedure and gets acks from seed2 first, and then joins to seed2
  */
 @InternalApi
-private[cluster] final class JoinSeedNodeProcess(
-    seedNodes: immutable.IndexedSeq[Address],
-    joinConfigCompatChecker: JoinConfigCompatChecker)
+private[cluster] final class JoinSeedNodeProcess
+  (
+      seedNodes: immutable.IndexedSeq[Address],
+      joinConfigCompatChecker: JoinConfigCompatChecker)
     extends SeedNodeProcess(joinConfigCompatChecker) {
 
   import InternalClusterAction._

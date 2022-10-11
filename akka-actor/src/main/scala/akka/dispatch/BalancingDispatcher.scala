@@ -33,15 +33,16 @@ import akka.util.Helpers
  * @see akka.dispatch.Dispatchers
  */
 @deprecated("Use BalancingPool instead of BalancingDispatcher", "2.3")
-private[akka] class BalancingDispatcher(
-    _configurator: MessageDispatcherConfigurator,
-    _id: String,
-    throughput: Int,
-    throughputDeadlineTime: Duration,
-    _mailboxType: MailboxType,
-    _executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
-    _shutdownTimeout: FiniteDuration,
-    attemptTeamWork: Boolean)
+private[akka] class BalancingDispatcher
+  (
+      _configurator: MessageDispatcherConfigurator,
+      _id: String,
+      throughput: Int,
+      throughputDeadlineTime: Duration,
+      _mailboxType: MailboxType,
+      _executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
+      _shutdownTimeout: FiniteDuration,
+      attemptTeamWork: Boolean)
     extends Dispatcher(
       _configurator,
       _id,

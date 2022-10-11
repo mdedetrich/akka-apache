@@ -44,9 +44,11 @@ abstract class GraphStageWithMaterializedValue[+S <: Shape, +M] extends Graph[S,
    * INTERNAL API
    */
   @InternalApi
-  private[akka] def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes,
-      @unused materializer: Materializer): (GraphStageLogic, M) = createLogicAndMaterializedValue(inheritedAttributes)
+  private[akka] def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes,
+        @unused materializer: Materializer)
+    : (GraphStageLogic, M) = createLogicAndMaterializedValue(inheritedAttributes)
 
   @throws(classOf[Exception])
   def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, M)
@@ -192,11 +194,12 @@ object GraphStageLogic {
    *
    * Not for user instantiation, use [[#getStageActor]].
    */
-  final class StageActor @InternalApi() private[akka] (
-      materializer: Materializer,
-      getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
-      initialReceive: StageActorRef.Receive,
-      name: String) {
+  final class StageActor @InternalApi() private[akka]
+    (
+        materializer: Materializer,
+        getAsyncCallback: StageActorRef.Receive => AsyncCallback[(ActorRef, Any)],
+        initialReceive: StageActorRef.Receive,
+        name: String) {
 
     private val callback = getAsyncCallback(internalReceive)
 
@@ -304,7 +307,7 @@ private[akka] object ConcurrentAsyncCallbackState {
  * see any callbacks to `onUpstreamFailure`, `onUpstreamFinish` or `onDownstreamFinish`. Therefore operator resource
  * cleanup should always be done in `postStop`.
  */
-abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: Int) {
+abstract class GraphStageLogic private[stream](val inCount: Int, val outCount: Int) {
 
   import GraphInterpreter._
   import GraphStageLogic._
@@ -783,7 +786,10 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * If upstream closes before N elements have been read,
    * the `onClose` function is invoked with the elements which were read.
    */
-  final protected def readN[T](in: Inlet[T], n: Int)(andThen: Seq[T] => Unit, onClose: Seq[T] => Unit): Unit =
+  final protected def readN[T]
+    (in: Inlet[T], n: Int)
+    (andThen: Seq[T] => Unit, onClose: Seq[T] => Unit)
+    : Unit =
     // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
     if (n < 0) throw new IllegalArgumentException("cannot read negative number of elements")
     else if (n == 0) andThen(Nil)
@@ -817,11 +823,13 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * for the given inlet if suspension is needed and reinstalls the current
    * handler upon receiving the last `onPush()` signal (before invoking the `andThen` function).
    */
-  final protected def readN[T](
-      in: Inlet[T],
-      n: Int,
-      andThen: Procedure[java.util.List[T]],
-      onClose: Procedure[java.util.List[T]]): Unit = {
+  final protected def readN[T]
+    (
+        in: Inlet[T],
+        n: Int,
+        andThen: Procedure[java.util.List[T]],
+        onClose: Procedure[java.util.List[T]])
+    : Unit = {
     // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
     import akka.util.ccompat.JavaConverters._
     readN(in, n)(seq => andThen(seq.asJava), seq => onClose(seq.asJava))
@@ -877,9 +885,11 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * other values it is called without resetting the handler. n MUST be positive.
    */
   // can't be final because of SI-4440
-  private class Reading[T](in: Inlet[T], private var n: Int, val previous: InHandler)(
-      andThen: T => Unit,
-      onComplete: () => Unit)
+  private class Reading[T]
+    (in: Inlet[T], private var n: Int, val previous: InHandler)
+    (
+        andThen: T => Unit,
+        onComplete: () => Unit)
       extends InHandler {
     require(n > 0, "number of elements to read must be positive!")
 
@@ -1119,12 +1129,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * completion or failure of the given inlet shall lead to operator termination or not.
    * `doPull` instructs to perform one initial pull on the `from` port.
    */
-  final protected def passAlong[Out, In <: Out](
-      from: Inlet[In],
-      to: Outlet[Out],
-      doFinish: Boolean = true,
-      doFail: Boolean = true,
-      doPull: Boolean = false): Unit = {
+  final protected def passAlong[Out, In <: Out]
+    (
+        from: Inlet[In],
+        to: Outlet[Out],
+        doFinish: Boolean = true,
+        doFail: Boolean = true,
+        doPull: Boolean = false)
+    : Unit = {
     class PassAlongHandler extends InHandler with (() => Unit) {
       override def apply(): Unit = tryPull(from)
 
@@ -1329,8 +1341,11 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * materialization or one of the methods invoked by the graph operator machinery, such as `onPush` and `onPull`.
    */
   @InternalApi
-  protected[akka] def getEagerStageActor(eagerMaterializer: Materializer)(
-      receive: ((ActorRef, Any)) => Unit): StageActor =
+  protected[akka] def getEagerStageActor
+    (eagerMaterializer: Materializer)
+    (
+        receive: ((ActorRef, Any)) => Unit)
+    : StageActor =
     _stageActor match {
       case null =>
         _stageActor = new StageActor(eagerMaterializer, getAsyncCallback _, receive, stageActorName)
@@ -1721,10 +1736,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * Any existing timer with the same key will automatically be canceled before
    * adding the new timer.
    */
-  final protected def scheduleWithFixedDelay(
-      timerKey: Any,
-      initialDelay: FiniteDuration,
-      delay: FiniteDuration): Unit = {
+  final protected def scheduleWithFixedDelay
+    (
+        timerKey: Any,
+        initialDelay: FiniteDuration,
+        delay: FiniteDuration)
+    : Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
     val callback = getTimerAsyncCallback
@@ -1741,10 +1758,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * Any existing timer with the same key will automatically be canceled before
    * adding the new timer.
    */
-  final protected def scheduleWithFixedDelay(
-      timerKey: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit = {
+  final protected def scheduleWithFixedDelay
+    (
+        timerKey: Any,
+        initialDelay: java.time.Duration,
+        interval: java.time.Duration)
+    : Unit = {
     import akka.util.JavaDurationConverters._
     scheduleWithFixedDelay(timerKey, initialDelay.asScala, interval.asScala)
   }
@@ -1755,10 +1774,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * Any existing timer with the same key will automatically be canceled before
    * adding the new timer.
    */
-  final protected def scheduleAtFixedRate(
-      timerKey: Any,
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration): Unit = {
+  final protected def scheduleAtFixedRate
+    (
+        timerKey: Any,
+        initialDelay: FiniteDuration,
+        interval: FiniteDuration)
+    : Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
     val callback = getTimerAsyncCallback
@@ -1775,10 +1796,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
    * Any existing timer with the same key will automatically be canceled before
    * adding the new timer.
    */
-  final protected def scheduleAtFixedRate(
-      timerKey: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit = {
+  final protected def scheduleAtFixedRate
+    (
+        timerKey: Any,
+        initialDelay: java.time.Duration,
+        interval: java.time.Duration)
+    : Unit = {
     import akka.util.JavaDurationConverters._
     scheduleAtFixedRate(timerKey, initialDelay.asScala, interval.asScala)
   }
@@ -1793,10 +1816,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
     since = "2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration): Unit =
+  final protected def schedulePeriodicallyWithInitialDelay
+    (
+        timerKey: Any,
+        initialDelay: FiniteDuration,
+        interval: FiniteDuration)
+    : Unit =
     scheduleAtFixedRate(timerKey, initialDelay, interval)
 
   /**
@@ -1809,10 +1834,12 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
     since = "2.6.0")
-  final protected def schedulePeriodicallyWithInitialDelay(
-      timerKey: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit = {
+  final protected def schedulePeriodicallyWithInitialDelay
+    (
+        timerKey: Any,
+        initialDelay: java.time.Duration,
+        interval: java.time.Duration)
+    : Unit = {
     import akka.util.JavaDurationConverters._
     schedulePeriodicallyWithInitialDelay(timerKey, initialDelay.asScala, interval.asScala)
   }

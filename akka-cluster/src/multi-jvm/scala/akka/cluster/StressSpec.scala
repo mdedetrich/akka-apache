@@ -759,10 +759,12 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     val usedRoles = roles.take(nbrUsedRoles)
     val usedAddresses = usedRoles.map(address(_)).toSet
 
-    @tailrec def loop(
-        counter: Int,
-        previousAS: Option[ActorSystem],
-        allPreviousAddresses: Set[Address]): Option[ActorSystem] = {
+    @tailrec def loop
+      (
+          counter: Int,
+          previousAS: Option[ActorSystem],
+          allPreviousAddresses: Set[Address])
+      : Option[ActorSystem] = {
       if (counter > rounds) previousAS
       else {
         val t = title + " round " + counter

@@ -25,7 +25,7 @@ object SourceWithContext {
  *
  * Can be created by calling [[Source.asSourceWithContext]]
  */
-final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Source[(Out, Ctx), Mat])
+final class SourceWithContext[+Out, +Ctx, +Mat] private[stream](delegate: Source[(Out, Ctx), Mat])
     extends GraphDelegate(delegate)
     with FlowWithContextOps[Out, Ctx, Mat] {
   override type ReprMat[+O, +C, +M] = SourceWithContext[O, C, M @uncheckedVariance]
@@ -48,8 +48,11 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
       SourceShape(zipper.out)
     }))
 
-  override def viaMat[Out2, Ctx2, Mat2, Mat3](flow: Graph[FlowShape[(Out, Ctx), (Out2, Ctx2)], Mat2])(
-      combine: (Mat, Mat2) => Mat3): SourceWithContext[Out2, Ctx2, Mat3] =
+  override def viaMat[Out2, Ctx2, Mat2, Mat3]
+    (flow: Graph[FlowShape[(Out, Ctx), (Out2, Ctx2)], Mat2])
+    (
+        combine: (Mat, Mat2) => Mat3)
+    : SourceWithContext[Out2, Ctx2, Mat3] =
     new SourceWithContext(delegate.viaMat(flow)(combine))
 
   /**

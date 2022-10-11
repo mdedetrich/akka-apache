@@ -41,11 +41,13 @@ object CircuitBreaker {
    * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
    * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit
    */
-  def apply(
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration): CircuitBreaker =
+  def apply
+    (
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: FiniteDuration,
+        resetTimeout: FiniteDuration)
+    : CircuitBreaker =
     new CircuitBreaker(scheduler, maxFailures, callTimeout, resetTimeout)(parasitic)
 
   /**
@@ -70,11 +72,13 @@ object CircuitBreaker {
    * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def create(
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration): CircuitBreaker =
+  def create
+    (
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: FiniteDuration,
+        resetTimeout: FiniteDuration)
+    : CircuitBreaker =
     apply(scheduler, maxFailures, callTimeout, resetTimeout)
 
   /**
@@ -89,11 +93,13 @@ object CircuitBreaker {
    * @param callTimeout [[java.time.Duration]] of time after which to consider a call a failure
    * @param resetTimeout [[java.time.Duration]] of time after which to attempt to close the circuit
    */
-  def create(
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: java.time.Duration,
-      resetTimeout: java.time.Duration): CircuitBreaker =
+  def create
+    (
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: java.time.Duration,
+        resetTimeout: java.time.Duration)
+    : CircuitBreaker =
     apply(scheduler, maxFailures, callTimeout.asScala, resetTimeout.asScala)
 
   /**
@@ -105,8 +111,10 @@ object CircuitBreaker {
   def lookup(id: String, system: ExtendedActorSystem): CircuitBreaker =
     apply(id)(system)
 
-  protected def convertJavaFailureFnToScala[T](
-      javaFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): Try[T] => Boolean = {
+  protected def convertJavaFailureFnToScala[T]
+    (
+        javaFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean])
+    : Try[T] => Boolean = {
     val failureFnInScala: Try[T] => Boolean = {
       case Success(t)   => javaFn(Optional.of(t), Optional.empty())
       case Failure(err) => javaFn(Optional.empty(), Optional.of(err))
@@ -138,29 +146,33 @@ object CircuitBreaker {
  *                     In order to skip this additional delay pass in `0`.
  * @param executor [[scala.concurrent.ExecutionContext]] used for execution of state transition listeners
  */
-class CircuitBreaker(
-    scheduler: Scheduler,
-    maxFailures: Int,
-    callTimeout: FiniteDuration,
-    val resetTimeout: FiniteDuration,
-    maxResetTimeout: FiniteDuration,
-    exponentialBackoffFactor: Double,
-    randomFactor: Double,
-    val allowExceptions: Set[String],
-    val telemetry: CircuitBreakerTelemetry)(implicit executor: ExecutionContext)
+class CircuitBreaker
+  (
+      scheduler: Scheduler,
+      maxFailures: Int,
+      callTimeout: FiniteDuration,
+      val resetTimeout: FiniteDuration,
+      maxResetTimeout: FiniteDuration,
+      exponentialBackoffFactor: Double,
+      randomFactor: Double,
+      val allowExceptions: Set[String],
+      val telemetry: CircuitBreakerTelemetry)
+  (implicit executor: ExecutionContext)
     extends AbstractCircuitBreaker {
 
   require(exponentialBackoffFactor >= 1.0, "exponentialBackoffFactor must be >= 1.0")
   require(0.0 <= randomFactor && randomFactor <= 1.0, "randomFactor must be between 0.0 and 1.0")
 
-  def this(
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration,
-      maxResetTimeout: FiniteDuration,
-      exponentialBackoffFactor: Double,
-      randomFactor: Double)(implicit executor: ExecutionContext) = {
+  def this
+    (
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: FiniteDuration,
+        resetTimeout: FiniteDuration,
+        maxResetTimeout: FiniteDuration,
+        exponentialBackoffFactor: Double,
+        randomFactor: Double)
+    (implicit executor: ExecutionContext) = {
     this(
       scheduler,
       maxFailures,
@@ -174,12 +186,13 @@ class CircuitBreaker(
   }
 
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def this(
-      executor: ExecutionContext,
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration) = {
+  def this
+    (
+        executor: ExecutionContext,
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: FiniteDuration,
+        resetTimeout: FiniteDuration) = {
     this(
       scheduler,
       maxFailures,
@@ -190,12 +203,13 @@ class CircuitBreaker(
       randomFactor = 0.0)(executor)
   }
 
-  def this(
-      executor: ExecutionContext,
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: java.time.Duration,
-      resetTimeout: java.time.Duration) = {
+  def this
+    (
+        executor: ExecutionContext,
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: java.time.Duration,
+        resetTimeout: java.time.Duration) = {
     this(
       scheduler,
       maxFailures,
@@ -207,8 +221,10 @@ class CircuitBreaker(
   }
 
   // add the old constructor to make it binary compatible
-  def this(scheduler: Scheduler, maxFailures: Int, callTimeout: FiniteDuration, resetTimeout: FiniteDuration)(
-      implicit executor: ExecutionContext) = {
+  def this
+    (scheduler: Scheduler, maxFailures: Int, callTimeout: FiniteDuration, resetTimeout: FiniteDuration)
+    (
+        implicit executor: ExecutionContext) = {
     this(
       scheduler,
       maxFailures,
@@ -220,14 +236,16 @@ class CircuitBreaker(
   }
 
   // add the old constructor to make it binary compatible
-  def this(
-      scheduler: Scheduler,
-      maxFailures: Int,
-      callTimeout: FiniteDuration,
-      resetTimeout: FiniteDuration,
-      maxResetTimeout: FiniteDuration,
-      exponentialBackoffFactor: Double)(
-      implicit executor: ExecutionContext) = {
+  def this
+    (
+        scheduler: Scheduler,
+        maxFailures: Int,
+        callTimeout: FiniteDuration,
+        resetTimeout: FiniteDuration,
+        maxResetTimeout: FiniteDuration,
+        exponentialBackoffFactor: Double)
+    (
+        implicit executor: ExecutionContext) = {
     this(scheduler, maxFailures, callTimeout, resetTimeout, maxResetTimeout, exponentialBackoffFactor, 0.0)(executor)
   }
 
@@ -373,9 +391,11 @@ class CircuitBreaker(
    * @return [[scala.concurrent.Future]] containing the call result or a
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
-  def callWithCircuitBreaker[T](
-      body: Callable[Future[T]],
-      defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): Future[T] = {
+  def callWithCircuitBreaker[T]
+    (
+        body: Callable[Future[T]],
+        defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean])
+    : Future[T] = {
     val failureFnInScala = CircuitBreaker.convertJavaFailureFnToScala(defineFailureFn)
 
     withCircuitBreaker(body.call, failureFnInScala)
@@ -401,9 +421,11 @@ class CircuitBreaker(
    * @return [[java.util.concurrent.CompletionStage]] containing the call result or a
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
-  def callWithCircuitBreakerCS[T](
-      body: Callable[CompletionStage[T]],
-      defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
+  def callWithCircuitBreakerCS[T]
+    (
+        body: Callable[CompletionStage[T]],
+        defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean])
+    : CompletionStage[T] =
     FutureConverters.toJava[T](callWithCircuitBreaker(
       new Callable[Future[T]] {
         override def call(): Future[T] = FutureConverters.toScala(body.call())
@@ -462,9 +484,11 @@ class CircuitBreaker(
    * @param defineFailureFn function that define what should be consider failure and thus increase failure count
    * @return The result of the call
    */
-  def callWithSyncCircuitBreaker[T](
-      body: Callable[T],
-      defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): T = {
+  def callWithSyncCircuitBreaker[T]
+    (
+        body: Callable[T],
+        defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean])
+    : T = {
     val failureFnInScala = CircuitBreaker.convertJavaFailureFnToScala(defineFailureFn)
     withSyncCircuitBreaker(body.call, failureFnInScala)
   }
@@ -1123,8 +1147,9 @@ class CircuitBreaker(
  *                          currently in half-open state.
  * @param message Defaults to "Circuit Breaker is open; calls are failing fast"
  */
-class CircuitBreakerOpenException(
-    val remainingDuration: FiniteDuration,
-    message: String = "Circuit Breaker is open; calls are failing fast")
+class CircuitBreakerOpenException
+  (
+      val remainingDuration: FiniteDuration,
+      message: String = "Circuit Breaker is open; calls are failing fast")
     extends AkkaException(message)
     with NoStackTrace

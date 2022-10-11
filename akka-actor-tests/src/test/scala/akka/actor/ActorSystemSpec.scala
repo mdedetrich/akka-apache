@@ -85,10 +85,12 @@ object ActorSystemSpec {
       configureExecutor(),
       this.config.getMillisDuration("shutdown-timeout")) {
       val doneIt = new Switch
-      override protected[akka] def registerForExecution(
-          mbox: Mailbox,
-          hasMessageHint: Boolean,
-          hasSystemMessageHint: Boolean): Boolean = {
+      override protected[akka] def registerForExecution
+        (
+            mbox: Mailbox,
+            hasMessageHint: Boolean,
+            hasSystemMessageHint: Boolean)
+        : Boolean = {
         val ret = super.registerForExecution(mbox, hasMessageHint, hasSystemMessageHint)
         doneIt.switchOn {
           TestKit.awaitCond(mbox.actor.actor != null, 1.second)

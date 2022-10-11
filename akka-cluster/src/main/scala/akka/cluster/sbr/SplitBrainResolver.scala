@@ -64,10 +64,11 @@ import akka.remote.artery.ThisActorSystemQuarantinedEvent
     final case class WhenTimeElapsed(deadline: Deadline) extends ReleaseLeaseCondition
   }
 
-  final case class ReachabilityChangedStats(
-      firstChangeTimestamp: Long,
-      latestChangeTimestamp: Long,
-      changeCount: Long) {
+  final case class ReachabilityChangedStats
+    (
+        firstChangeTimestamp: Long,
+        latestChangeTimestamp: Long,
+        changeCount: Long) {
 
     def isEmpty: Boolean =
       changeCount == 0
@@ -457,10 +458,12 @@ import akka.remote.artery.ThisActorSystemQuarantinedEvent
   }
 
   @InternalStableApi
-  def observeDecision(
-      decision: Decision,
-      nodesToDown: Set[UniqueAddress],
-      unreachableDataCenters: Set[DataCenter]): Unit = {
+  def observeDecision
+    (
+        decision: Decision,
+        nodesToDown: Set[UniqueAddress],
+        unreachableDataCenters: Set[DataCenter])
+    : Unit = {
     val downMyself = nodesToDown.contains(selfUniqueAddress)
 
     val indirectlyConnectedLogMessage =

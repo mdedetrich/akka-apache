@@ -67,9 +67,11 @@ object ExecutionContexts {
    * @param errorReporter a Procedure that will log any exceptions passed to it
    * @return a new ExecutionContext
    */
-  def fromExecutorService(
-      executorService: ExecutorService,
-      errorReporter: Procedure[Throwable]): ExecutionContextExecutorService =
+  def fromExecutorService
+    (
+        executorService: ExecutorService,
+        errorReporter: Procedure[Throwable])
+    : ExecutionContextExecutorService =
     ExecutionContext.fromExecutorService(executorService, errorReporter.apply)
 
   /**
@@ -151,10 +153,12 @@ object Futures {
   /**
    * Returns a Future that will hold the optional result of the first Future with a result that matches the predicate
    */
-  def find[T <: AnyRef](
-      futures: JIterable[Future[T]],
-      predicate: JFunc[T, java.lang.Boolean],
-      executor: ExecutionContext): Future[JOption[T]] = {
+  def find[T <: AnyRef]
+    (
+        futures: JIterable[Future[T]],
+        predicate: JFunc[T, java.lang.Boolean],
+        executor: ExecutionContext)
+    : Future[JOption[T]] = {
     implicit val ec = executor
     compat.Future.find[T](futures.asScala)(predicate.apply(_))(executor).map(JOption.fromScalaOption)
   }
@@ -171,20 +175,24 @@ object Futures {
    * the result will be the first failure of any of the futures, or any failure in the actual fold,
    * or the result of the fold.
    */
-  def fold[T <: AnyRef, R <: AnyRef](
-      zero: R,
-      futures: JIterable[Future[T]],
-      fun: akka.japi.Function2[R, T, R],
-      executor: ExecutionContext): Future[R] =
+  def fold[T <: AnyRef, R <: AnyRef]
+    (
+        zero: R,
+        futures: JIterable[Future[T]],
+        fun: akka.japi.Function2[R, T, R],
+        executor: ExecutionContext)
+    : Future[R] =
     compat.Future.fold(futures.asScala)(zero)(fun.apply)(executor)
 
   /**
    * Reduces the results of the supplied futures and binary function.
    */
-  def reduce[T <: AnyRef, R >: T](
-      futures: JIterable[Future[T]],
-      fun: akka.japi.Function2[R, T, R],
-      executor: ExecutionContext): Future[R] =
+  def reduce[T <: AnyRef, R >: T]
+    (
+        futures: JIterable[Future[T]],
+        fun: akka.japi.Function2[R, T, R],
+        executor: ExecutionContext)
+    : Future[R] =
     compat.Future.reduce[T, R](futures.asScala)(fun.apply)(executor)
 
   /**

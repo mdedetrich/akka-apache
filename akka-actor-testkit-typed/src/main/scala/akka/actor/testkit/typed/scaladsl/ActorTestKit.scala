@@ -181,10 +181,11 @@ object ActorTestKit {
  *
  * For synchronous testing of a `Behavior` see [[BehaviorTestKit]]
  */
-final class ActorTestKit private[akka] (
-    val internalSystem: ActorSystem[_],
-    internalTestKitGuardian: ActorRef[ActorTestKitGuardian.TestKitCommand],
-    settings: Option[TestKitSettings]) {
+final class ActorTestKit private[akka]
+  (
+      val internalSystem: ActorSystem[_],
+      internalTestKitGuardian: ActorRef[ActorTestKitGuardian.TestKitCommand],
+      settings: Option[TestKitSettings]) {
 
   val name = internalSystem.name
 

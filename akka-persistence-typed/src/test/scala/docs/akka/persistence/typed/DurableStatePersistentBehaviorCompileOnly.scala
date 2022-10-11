@@ -122,7 +122,9 @@ object DurableStatePersistentBehaviorCompileOnly {
   }
 
   object TaggingBehavior {
-    def apply(): Behavior[Command[_]] =
+    def apply
+      ()
+      : Behavior[Command[_]] =
       // #tagging
       DurableStateBehavior[Command[_], State](
         persistenceId = PersistenceId.ofUniqueId("abc"),
@@ -136,7 +138,9 @@ object DurableStatePersistentBehaviorCompileOnly {
     import akka.persistence.typed.state.scaladsl.Effect
     import akka.persistence.typed.state.scaladsl.DurableStateBehavior.CommandHandler
 
-    def apply(): Behavior[Command[_]] =
+    def apply
+      ()
+      : Behavior[Command[_]] =
       // #wrapPersistentBehavior
       Behaviors.setup[Command[_]] { context =>
         DurableStateBehavior[Command[_], State](

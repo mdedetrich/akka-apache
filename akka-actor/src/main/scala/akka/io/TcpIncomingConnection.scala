@@ -20,13 +20,14 @@ import akka.io.Inet.SocketOption
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[io] class TcpIncomingConnection(
-    _tcp: TcpExt,
-    _channel: SocketChannel,
-    registry: ChannelRegistry,
-    bindHandler: ActorRef,
-    options: immutable.Traversable[SocketOption],
-    readThrottling: Boolean)
+private[io] class TcpIncomingConnection
+  (
+      _tcp: TcpExt,
+      _channel: SocketChannel,
+      registry: ChannelRegistry,
+      bindHandler: ActorRef,
+      options: immutable.Traversable[SocketOption],
+      readThrottling: Boolean)
     extends TcpConnection(_tcp, _channel, readThrottling) {
 
   signDeathPact(bindHandler)

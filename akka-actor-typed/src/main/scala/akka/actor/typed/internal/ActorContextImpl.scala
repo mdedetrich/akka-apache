@@ -59,13 +59,14 @@ import scala.util.Success
     }
   }
 
-  final case class LoggingContext(
-      logger: Logger,
-      tagsString: String,
-      akkaSource: String,
-      sourceActorSystem: String,
-      akkaAddress: String,
-      hasCustomName: Boolean) {
+  final case class LoggingContext
+    (
+        logger: Logger,
+        tagsString: String,
+        akkaSource: String,
+        sourceActorSystem: String,
+        akkaAddress: String,
+        hasCustomName: Boolean) {
     // toggled once per message if logging is used to avoid having to
     // touch the mdc thread local for cleanup in the end
     var mdcUsed = false
@@ -215,14 +216,22 @@ import scala.util.Success
     }
   }
   // Scala API impl
-  override def ask[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)(
-      mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit = {
+  override def ask[Req, Res]
+    (target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)
+    (
+        mapResponse: Try[Res] => T)
+    (implicit responseTimeout: Timeout, classTag: ClassTag[Res])
+    : Unit = {
     import akka.actor.typed.scaladsl.AskPattern._
     pipeToSelf(target.ask(createRequest)(responseTimeout, system.scheduler))(mapResponse)
   }
 
-  override def askWithStatus[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)(
-      mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit =
+  override def askWithStatus[Req, Res]
+    (target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)
+    (
+        mapResponse: Try[Res] => T)
+    (implicit responseTimeout: Timeout, classTag: ClassTag[Res])
+    : Unit =
     ask(target, createRequest) {
       case Success(StatusReply.Success(t: Res)) => mapResponse(Success(t))
       case Success(StatusReply.Error(why))      => mapResponse(Failure(why))
@@ -232,24 +241,28 @@ import scala.util.Success
 
   // Java API impl
   @nowarn("msg=never used") // resClass is just a pretend param
-  override def ask[Req, Res](
-      resClass: Class[Res],
-      target: RecipientRef[Req],
-      responseTimeout: Duration,
-      createRequest: akka.japi.function.Function[ActorRef[Res], Req],
-      applyToResponse: akka.japi.function.Function2[Res, Throwable, T]): Unit = {
+  override def ask[Req, Res]
+    (
+        resClass: Class[Res],
+        target: RecipientRef[Req],
+        responseTimeout: Duration,
+        createRequest: akka.japi.function.Function[ActorRef[Res], Req],
+        applyToResponse: akka.japi.function.Function2[Res, Throwable, T])
+    : Unit = {
     import akka.actor.typed.javadsl.AskPattern
     pipeToSelf[Res](
       AskPattern.ask(target, ref => createRequest(ref), responseTimeout, system.scheduler),
       applyToResponse)
   }
 
-  override def askWithStatus[Req, Res](
-      resClass: Class[Res],
-      target: RecipientRef[Req],
-      responseTimeout: Duration,
-      createRequest: akka.japi.function.Function[ActorRef[StatusReply[Res]], Req],
-      applyToResponse: akka.japi.function.Function2[Res, Throwable, T]): Unit = {
+  override def askWithStatus[Req, Res]
+    (
+        resClass: Class[Res],
+        target: RecipientRef[Req],
+        responseTimeout: Duration,
+        createRequest: akka.japi.function.Function[ActorRef[StatusReply[Res]], Req],
+        applyToResponse: akka.japi.function.Function2[Res, Throwable, T])
+    : Unit = {
     implicit val classTag: ClassTag[Res] = ClassTag(resClass)
     ask[Req, StatusReply[Res]](
       classOf[StatusReply[Res]],
@@ -271,9 +284,11 @@ import scala.util.Success
   }
 
   // Java API impl
-  def pipeToSelf[Value](
-      future: CompletionStage[Value],
-      applyToResult: akka.japi.function.Function2[Value, Throwable, T]): Unit = {
+  def pipeToSelf[Value]
+    (
+        future: CompletionStage[Value],
+        applyToResult: akka.japi.function.Function2[Value, Throwable, T])
+    : Unit = {
     future.whenComplete { (value, ex) =>
       if (ex != null)
         self.unsafeUpcast    ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))

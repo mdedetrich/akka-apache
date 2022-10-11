@@ -115,9 +115,11 @@ abstract class GroupRouter[T] extends DeferredBehavior[T] {
    * @param mapping            Hash key extractor. This function will be used in consistent hashing process.
    *                           Result of this operation should possibly uniquely distinguish messages.
    */
-  def withConsistentHashingRouting(
-      virtualNodesFactor: Int,
-      mapping: java.util.function.Function[T, String]): GroupRouter[T]
+  def withConsistentHashingRouting
+    (
+        virtualNodesFactor: Int,
+        mapping: java.util.function.Function[T, String])
+    : GroupRouter[T]
 
 }
 
@@ -170,9 +172,11 @@ abstract class PoolRouter[T] extends DeferredBehavior[T] {
    * @param mapping            Hash key extractor. This function will be used in consistent hashing process.
    *                           Result of this operation should possibly uniquely distinguish messages.
    */
-  def withConsistentHashingRouting(
-      virtualNodesFactor: Int,
-      mapping: java.util.function.Function[T, String]): PoolRouter[T]
+  def withConsistentHashingRouting
+    (
+        virtualNodesFactor: Int,
+        mapping: java.util.function.Function[T, String])
+    : PoolRouter[T]
 
   /**
    * Set a new pool size from the one set at construction

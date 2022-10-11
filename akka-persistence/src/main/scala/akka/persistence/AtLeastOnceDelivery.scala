@@ -24,9 +24,10 @@ object AtLeastOnceDelivery {
    * with [[AtLeastOnceDeliveryLike#setDeliverySnapshot]].
    */
   @SerialVersionUID(1L)
-  case class AtLeastOnceDeliverySnapshot(
-      currentDeliveryId: Long,
-      unconfirmedDeliveries: immutable.Seq[UnconfirmedDelivery])
+  case class AtLeastOnceDeliverySnapshot
+    (
+        currentDeliveryId: Long,
+        unconfirmedDeliveries: immutable.Seq[UnconfirmedDelivery])
       extends Message {
 
     /**

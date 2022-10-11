@@ -70,18 +70,21 @@ object OOIntroSpec {
     }
 
     private object SessionBehavior {
-      def apply(
-          room: ActorRef[PublishSessionMessage],
-          screenName: String,
-          client: ActorRef[SessionEvent]): Behavior[SessionCommand] =
+      def apply
+        (
+            room: ActorRef[PublishSessionMessage],
+            screenName: String,
+            client: ActorRef[SessionEvent])
+        : Behavior[SessionCommand] =
         Behaviors.setup(ctx => new SessionBehavior(ctx, room, screenName, client))
     }
 
-    private class SessionBehavior(
-        context: ActorContext[SessionCommand],
-        room: ActorRef[PublishSessionMessage],
-        screenName: String,
-        client: ActorRef[SessionEvent])
+    private class SessionBehavior
+      (
+          context: ActorContext[SessionCommand],
+          room: ActorRef[PublishSessionMessage],
+          screenName: String,
+          client: ActorRef[SessionEvent])
         extends AbstractBehavior[SessionCommand](context) {
 
       override def onMessage(msg: SessionCommand): Behavior[SessionCommand] =

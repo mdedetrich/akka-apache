@@ -59,11 +59,12 @@ private[akka] object LocalReceptionist extends ReceptionistBehaviorProvider {
    * @param subscriptions current subscriptions per service key
    * @param subscriptionsPerActor current subscriptions per subscriber (needed since a subscriber can subscribe to several keys) FIXME is it really needed?
    */
-  private final case class State(
-      services: TypedMultiMap[AbstractServiceKey, Service],
-      servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
-      subscriptions: TypedMultiMap[AbstractServiceKey, Subscriber],
-      subscriptionsPerActor: Map[ActorRef[_], Set[AbstractServiceKey]]) {
+  private final case class State
+    (
+        services: TypedMultiMap[AbstractServiceKey, Service],
+        servicesPerActor: Map[ActorRef[_], Set[AbstractServiceKey]],
+        subscriptions: TypedMultiMap[AbstractServiceKey, Subscriber],
+        subscriptionsPerActor: Map[ActorRef[_], Set[AbstractServiceKey]]) {
 
     def serviceInstanceAdded[Key <: AbstractServiceKey](key: Key)(serviceInstance: ActorRef[key.Protocol]): State = {
       val newServices = services.inserted(key)(serviceInstance)

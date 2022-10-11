@@ -140,12 +140,14 @@ final case class AtomicWrite(payload: immutable.Seq[PersistentRepr]) extends Per
   /**
    * Creates a new copy of this [[PersistentRepr]].
    */
-  def update(
-      sequenceNr: Long = sequenceNr,
-      persistenceId: String = persistenceId,
-      deleted: Boolean = deleted,
-      sender: ActorRef = sender,
-      writerUuid: String = writerUuid): PersistentRepr
+  def update
+    (
+        sequenceNr: Long = sequenceNr,
+        persistenceId: String = persistenceId,
+        deleted: Boolean = deleted,
+        sender: ActorRef = sender,
+        writerUuid: String = writerUuid)
+    : PersistentRepr
 }
 
 object PersistentRepr {
@@ -159,14 +161,16 @@ object PersistentRepr {
   /**
    * Plugin API.
    */
-  def apply(
-      payload: Any,
-      sequenceNr: Long = 0L,
-      persistenceId: String = PersistentRepr.Undefined,
-      manifest: String = PersistentRepr.Undefined,
-      deleted: Boolean = false,
-      sender: ActorRef = null,
-      writerUuid: String = PersistentRepr.Undefined): PersistentRepr =
+  def apply
+    (
+        payload: Any,
+        sequenceNr: Long = 0L,
+        persistenceId: String = PersistentRepr.Undefined,
+        manifest: String = PersistentRepr.Undefined,
+        deleted: Boolean = false,
+        sender: ActorRef = null,
+        writerUuid: String = PersistentRepr.Undefined)
+    : PersistentRepr =
     PersistentImpl(payload, sequenceNr, persistenceId, manifest, deleted, sender, writerUuid, 0L, None)
 
   /**
@@ -184,16 +188,17 @@ object PersistentRepr {
 /**
  * INTERNAL API.
  */
-private[persistence] final case class PersistentImpl(
-    override val payload: Any,
-    override val sequenceNr: Long,
-    override val persistenceId: String,
-    override val manifest: String,
-    override val deleted: Boolean,
-    override val sender: ActorRef,
-    override val writerUuid: String,
-    override val timestamp: Long,
-    override val metadata: Option[Any])
+private[persistence] final case class PersistentImpl
+  (
+      override val payload: Any,
+      override val sequenceNr: Long,
+      override val persistenceId: String,
+      override val manifest: String,
+      override val deleted: Boolean,
+      override val sender: ActorRef,
+      override val writerUuid: String,
+      override val timestamp: Long,
+      override val metadata: Option[Any])
     extends PersistentRepr
     with NoSerializationVerificationNeeded {
 

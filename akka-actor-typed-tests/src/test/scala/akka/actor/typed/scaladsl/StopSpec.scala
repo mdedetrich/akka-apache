@@ -68,10 +68,12 @@ class StopSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCa
       spawn(Behaviors.setup[AnyRef] { _ =>
         Behaviors.intercept(() =>
           new BehaviorInterceptor[AnyRef, AnyRef] {
-            override def aroundReceive(
-                context: typed.TypedActorContext[AnyRef],
-                message: AnyRef,
-                target: ReceiveTarget[AnyRef]): Behavior[AnyRef] = {
+            override def aroundReceive
+              (
+                  context: typed.TypedActorContext[AnyRef],
+                  message: AnyRef,
+                  target: ReceiveTarget[AnyRef])
+              : Behavior[AnyRef] = {
               target(context, message)
             }
           })(Behaviors.stopped { () =>

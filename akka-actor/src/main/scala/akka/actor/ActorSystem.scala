@@ -50,10 +50,12 @@ object BootstrapSetup {
    *
    * @see [[BootstrapSetup]] for description of the properties
    */
-  def apply(
-      classLoader: Option[ClassLoader],
-      config: Option[Config],
-      defaultExecutionContext: Option[ExecutionContext]): BootstrapSetup =
+  def apply
+    (
+        classLoader: Option[ClassLoader],
+        config: Option[Config],
+        defaultExecutionContext: Option[ExecutionContext])
+    : BootstrapSetup =
     new BootstrapSetup(classLoader, config, defaultExecutionContext)
 
   /**
@@ -66,10 +68,12 @@ object BootstrapSetup {
    *
    * @see [[BootstrapSetup]] for description of the properties
    */
-  def create(
-      classLoader: Optional[ClassLoader],
-      config: Optional[Config],
-      defaultExecutionContext: Optional[ExecutionContext]): BootstrapSetup =
+  def create
+    (
+        classLoader: Optional[ClassLoader],
+        config: Optional[Config],
+        defaultExecutionContext: Optional[ExecutionContext])
+    : BootstrapSetup =
     apply(classLoader.asScala, config.asScala, defaultExecutionContext.asScala)
 
   /**
@@ -234,11 +238,13 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
-  def create(
-      name: String,
-      config: Config,
-      classLoader: ClassLoader,
-      defaultExecutionContext: ExecutionContext): ActorSystem =
+  def create
+    (
+        name: String,
+        config: Config,
+        classLoader: ClassLoader,
+        defaultExecutionContext: ExecutionContext)
+    : ActorSystem =
     apply(name, Option(config), Option(classLoader), Option(defaultExecutionContext))
 
   /**
@@ -308,11 +314,13 @@ object ActorSystem {
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
-  def apply(
-      name: String,
-      config: Option[Config] = None,
-      classLoader: Option[ClassLoader] = None,
-      defaultExecutionContext: Option[ExecutionContext] = None): ActorSystem =
+  def apply
+    (
+        name: String,
+        config: Option[Config] = None,
+        classLoader: Option[ClassLoader] = None,
+        defaultExecutionContext: Option[ExecutionContext] = None)
+    : ActorSystem =
     apply(name, ActorSystemSetup(BootstrapSetup(classLoader, config, defaultExecutionContext)))
 
   /**
@@ -796,13 +804,14 @@ abstract class ExtendedActorSystem extends ActorSystem {
  * Internal API
  */
 @InternalApi
-private[akka] class ActorSystemImpl(
-    val name: String,
-    applicationConfig: Config,
-    classLoader: ClassLoader,
-    defaultExecutionContext: Option[ExecutionContext],
-    val guardianProps: Option[Props],
-    setup: ActorSystemSetup)
+private[akka] class ActorSystemImpl
+  (
+      val name: String,
+      applicationConfig: Config,
+      classLoader: ClassLoader,
+      defaultExecutionContext: Option[ExecutionContext],
+      val guardianProps: Option[Props],
+      setup: ActorSystemSetup)
     extends ExtendedActorSystem {
 
   val uid: Long = ThreadLocalRandom.current.nextLong()

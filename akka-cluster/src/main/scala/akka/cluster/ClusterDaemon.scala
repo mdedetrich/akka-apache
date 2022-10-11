@@ -1681,12 +1681,13 @@ private[cluster] class OnMemberStatusChangedListener(callback: Runnable, status:
  */
 @InternalApi
 @SerialVersionUID(1L)
-private[cluster] final case class GossipStats(
-    receivedGossipCount: Long = 0L,
-    mergeCount: Long = 0L,
-    sameCount: Long = 0L,
-    newerCount: Long = 0L,
-    olderCount: Long = 0L) {
+private[cluster] final case class GossipStats
+  (
+      receivedGossipCount: Long = 0L,
+      mergeCount: Long = 0L,
+      sameCount: Long = 0L,
+      newerCount: Long = 0L,
+      olderCount: Long = 0L) {
 
   def incrementMergeCount(): GossipStats =
     copy(mergeCount = mergeCount + 1, receivedGossipCount = receivedGossipCount + 1)

@@ -119,8 +119,10 @@ object FSM {
    * INTERNAL API
    */
   @InternalApi
-  private[akka] final case class Timer(name: String, msg: Any, mode: TimerMode, generation: Int, owner: AnyRef)(
-      context: ActorContext)
+  private[akka] final case class Timer
+    (name: String, msg: Any, mode: TimerMode, generation: Int, owner: AnyRef)
+    (
+        context: ActorContext)
       extends NoSerializationVerificationNeeded {
     private var ref: Option[Cancellable] = _
     private val scheduler = context.system.scheduler
@@ -165,12 +167,13 @@ object FSM {
    * INTERNAL API
    * Using a subclass for binary compatibility reasons
    */
-  private[akka] class SilentState[S, D](
-      stateName: S,
-      stateData: D,
-      timeout: Option[FiniteDuration],
-      stopReason: Option[Reason],
-      replies: List[Any])
+  private[akka] class SilentState[S, D]
+    (
+        stateName: S,
+        stateData: D,
+        timeout: Option[FiniteDuration],
+        stopReason: Option[Reason],
+        replies: List[Any])
       extends State[S, D](stateName, stateData, timeout, stopReason, replies) {
 
     /**
@@ -178,12 +181,14 @@ object FSM {
      */
     private[akka] override def notifies: Boolean = false
 
-    override def copy(
-        stateName: S = stateName,
-        stateData: D = stateData,
-        timeout: Option[FiniteDuration] = timeout,
-        stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+    override def copy
+      (
+          stateName: S = stateName,
+          stateData: D = stateData,
+          timeout: Option[FiniteDuration] = timeout,
+          stopReason: Option[Reason] = stopReason,
+          replies: List[Any] = replies)
+      : State[S, D] = {
       new SilentState(stateName, stateData, timeout, stopReason, replies)
     }
 
@@ -195,12 +200,13 @@ object FSM {
    * accumulated while processing the last message.
    */
   object State {
-    def apply[S, D](
-        stateName: S,
-        stateData: D,
-        timeout: Option[FiniteDuration] = None,
-        stopReason: Option[Reason] = None,
-        replies: List[Any] = Nil) = {
+    def apply[S, D]
+      (
+          stateName: S,
+          stateData: D,
+          timeout: Option[FiniteDuration] = None,
+          stopReason: Option[Reason] = None,
+          replies: List[Any] = Nil) = {
       new State(stateName, stateData, timeout, stopReason, replies)
     }
 
@@ -208,12 +214,13 @@ object FSM {
       Some((state.stateName, state.stateData, state.timeout, state.stopReason, state.replies))
     }
   }
-  class State[S, D](
-      val stateName: S,
-      val stateData: D,
-      val timeout: Option[FiniteDuration] = None,
-      val stopReason: Option[Reason] = None,
-      val replies: List[Any] = Nil)
+  class State[S, D]
+    (
+        val stateName: S,
+        val stateData: D,
+        val timeout: Option[FiniteDuration] = None,
+        val stopReason: Option[Reason] = None,
+        val replies: List[Any] = Nil)
       extends Product
       with Serializable {
 
@@ -253,12 +260,14 @@ object FSM {
     private[akka] def notifies: Boolean = true
 
     // defined here to be able to override it in SilentState
-    def copy(
-        stateName: S = stateName,
-        stateData: D = stateData,
-        timeout: Option[FiniteDuration] = timeout,
-        stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+    def copy
+      (
+          stateName: S = stateName,
+          stateData: D = stateData,
+          timeout: Option[FiniteDuration] = timeout,
+          stopReason: Option[Reason] = stopReason,
+          replies: List[Any] = replies)
+      : State[S, D] = {
       new State(stateName, stateData, timeout, stopReason, replies)
     }
 

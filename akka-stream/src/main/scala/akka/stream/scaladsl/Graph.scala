@@ -28,9 +28,10 @@ import akka.util.ConstantFun
  *
  * The implementation of a graph with an arbitrary shape.
  */
-private[stream] final class GenericGraph[S <: Shape, Mat](
-    override val shape: S,
-    override val traversalBuilder: TraversalBuilder)
+private[stream] final class GenericGraph[S <: Shape, Mat]
+  (
+      override val shape: S,
+      override val traversalBuilder: TraversalBuilder)
     extends Graph[S, Mat] { outer =>
 
   override def toString: String = s"GenericGraph($shape)"
@@ -48,10 +49,11 @@ private[stream] final class GenericGraph[S <: Shape, Mat](
  * The implementation of a graph with an arbitrary shape with changed attributes. Changing attributes again
  * prevents building up a chain of changes.
  */
-private[stream] final class GenericGraphWithChangedAttributes[S <: Shape, Mat](
-    override val shape: S,
-    originalTraversalBuilder: TraversalBuilder,
-    newAttributes: Attributes)
+private[stream] final class GenericGraphWithChangedAttributes[S <: Shape, Mat]
+  (
+      override val shape: S,
+      originalTraversalBuilder: TraversalBuilder,
+      newAttributes: Attributes)
     extends Graph[S, Mat] { outer =>
 
   private[stream] def traversalBuilder: TraversalBuilder = originalTraversalBuilder.setAttributes(newAttributes)
@@ -433,10 +435,12 @@ object Interleave {
    * @param segmentSize number of elements to send downstream before switching to next input port
    * @param eagerClose if true, interleave completes upstream if any of its upstream completes.
    */
-  def apply[T](
-      inputPorts: Int,
-      segmentSize: Int,
-      eagerClose: Boolean = false): Graph[UniformFanInShape[T, T], NotUsed] =
+  def apply[T]
+    (
+        inputPorts: Int,
+        segmentSize: Int,
+        eagerClose: Boolean = false)
+    : Graph[UniformFanInShape[T, T], NotUsed] =
     GraphStages.withDetachedInputs(new Interleave[T](inputPorts, segmentSize, eagerClose))
 }
 
@@ -1558,7 +1562,9 @@ final class MergeSequence[T](val inputPorts: Int)(extractSequence: T => Long)
           detectMissedSequence()
         }
 
-      private def detectMissedSequence(): Unit =
+      private def detectMissedSequence
+        ()
+        : Unit =
         // Cheap to calculate, but doesn't give the right answer, because there might be input ports
         // that are both complete and still have one last buffered element.
         if (isAvailable(out) && available.size + complete >= inputPorts) {
@@ -1586,8 +1592,11 @@ object GraphDSL extends GraphApply {
    * Creates a new [[Graph]] by importing the given graph list `graphs` and passing their [[Shape]]s
    * along with the [[GraphDSL.Builder]] to the given create function.
    */
-  def create[S <: Shape, IS <: Shape, Mat](graphs: immutable.Seq[Graph[IS, Mat]])(
-      buildBlock: GraphDSL.Builder[immutable.Seq[Mat]] => immutable.Seq[IS] => S): Graph[S, immutable.Seq[Mat]] = {
+  def create[S <: Shape, IS <: Shape, Mat]
+    (graphs: immutable.Seq[Graph[IS, Mat]])
+    (
+        buildBlock: GraphDSL.Builder[immutable.Seq[Mat]] => immutable.Seq[IS] => S)
+    : Graph[S, immutable.Seq[Mat]] = {
     require(graphs.nonEmpty, "The input list must have one or more Graph elements")
     val builder = new GraphDSL.Builder
     val toList = (m1: Mat) => Seq(m1)
@@ -1599,7 +1608,7 @@ object GraphDSL extends GraphApply {
     new GenericGraph(s, builder.result(s))
   }
 
-  class Builder[+M] private[stream] () {
+  class Builder[+M] private[stream]() {
     private val unwiredIns = new mutable.HashSet[Inlet[_]]()
     private val unwiredOuts = new mutable.HashSet[Outlet[_]]()
 
@@ -1898,8 +1907,11 @@ object GraphDSL extends GraphApply {
     implicit final class FlowShapeArrow[I, O](val f: FlowShape[I, O]) extends AnyVal with ReverseCombinerBase[I] {
       override def importAndGetPortReverse(b: Builder[_]): Inlet[I] = f.in
 
-      def <~>[I2, O2, Mat](bidi: Graph[BidiShape[O, O2, I2, I], Mat])(
-          implicit b: Builder[_]): BidiShape[O, O2, I2, I] = {
+      def <~>[I2, O2, Mat]
+        (bidi: Graph[BidiShape[O, O2, I2, I], Mat])
+        (
+            implicit b: Builder[_])
+        : BidiShape[O, O2, I2, I] = {
         val shape = b.add(bidi)
         b.addEdge(f.out, shape.in1)
         b.addEdge(shape.out2, f.in)
@@ -1920,8 +1932,11 @@ object GraphDSL extends GraphApply {
     }
 
     implicit final class FlowArrow[I, O, M](val f: Graph[FlowShape[I, O], M]) extends AnyVal {
-      def <~>[I2, O2, Mat](bidi: Graph[BidiShape[O, O2, I2, I], Mat])(
-          implicit b: Builder[_]): BidiShape[O, O2, I2, I] = {
+      def <~>[I2, O2, Mat]
+        (bidi: Graph[BidiShape[O, O2, I2, I], Mat])
+        (
+            implicit b: Builder[_])
+        : BidiShape[O, O2, I2, I] = {
         val shape = b.add(bidi)
         val flow = b.add(f)
         b.addEdge(flow.out, shape.in1)
@@ -1951,8 +1966,11 @@ object GraphDSL extends GraphApply {
         other
       }
 
-      def <~>[I3, O3, M](otherFlow: Graph[BidiShape[O1, O3, I3, I2], M])(
-          implicit b: Builder[_]): BidiShape[O1, O3, I3, I2] = {
+      def <~>[I3, O3, M]
+        (otherFlow: Graph[BidiShape[O1, O3, I3, I2], M])
+        (
+            implicit b: Builder[_])
+        : BidiShape[O1, O3, I3, I2] = {
         val other = b.add(otherFlow)
         b.addEdge(bidi.out1, other.in1)
         b.addEdge(other.out2, bidi.in2)

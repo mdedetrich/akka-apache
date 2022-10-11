@@ -41,11 +41,13 @@ object DelayStrategy {
    * @param initialDelay initial delay for each of elements
    * @param maxDelay limits maximum delay
    */
-  def linearIncreasingDelay[T](
-      increaseStep: FiniteDuration,
-      needsIncrease: T => Boolean,
-      initialDelay: FiniteDuration = Duration.Zero,
-      maxDelay: Duration = Duration.Inf): DelayStrategy[T] = {
+  def linearIncreasingDelay[T]
+    (
+        increaseStep: FiniteDuration,
+        needsIncrease: T => Boolean,
+        initialDelay: FiniteDuration = Duration.Zero,
+        maxDelay: Duration = Duration.Inf)
+    : DelayStrategy[T] = {
     require(increaseStep > Duration.Zero, "Increase step must be positive")
     require(maxDelay > initialDelay, "Max delay must be bigger than initial delay")
 

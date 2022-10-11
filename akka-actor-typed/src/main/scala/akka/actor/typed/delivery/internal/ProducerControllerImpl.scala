@@ -116,24 +116,27 @@ object ProducerControllerImpl {
       extends InternalCommand
   private case object DurableQueueTerminated extends InternalCommand
 
-  private final case class State[A](
-      requested: Boolean,
-      currentSeqNr: SeqNr,
-      confirmedSeqNr: SeqNr,
-      requestedSeqNr: SeqNr,
-      replyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
-      supportResend: Boolean,
-      unconfirmed: Vector[ConsumerController.SequencedMessage[A]],
-      remainingChunks: immutable.Seq[SequencedMessage[A]],
-      storeMessageSentInProgress: SeqNr,
-      firstSeqNr: SeqNr,
-      producer: ActorRef[ProducerController.RequestNext[A]],
-      send: ConsumerController.SequencedMessage[A] => Unit)
+  private final case class State[A]
+    (
+        requested: Boolean,
+        currentSeqNr: SeqNr,
+        confirmedSeqNr: SeqNr,
+        requestedSeqNr: SeqNr,
+        replyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
+        supportResend: Boolean,
+        unconfirmed: Vector[ConsumerController.SequencedMessage[A]],
+        remainingChunks: immutable.Seq[SequencedMessage[A]],
+        storeMessageSentInProgress: SeqNr,
+        firstSeqNr: SeqNr,
+        producer: ActorRef[ProducerController.RequestNext[A]],
+        send: ConsumerController.SequencedMessage[A] => Unit)
 
-  def apply[A: ClassTag](
-      producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings)
+    : Behavior[Command[A]] = {
     Behaviors
       .setup[InternalCommand] { context =>
         ActorFlightRecorder(context.system).delivery.producerCreated(producerId, context.self.path)
@@ -163,11 +166,13 @@ object ProducerControllerImpl {
    * For custom `send` function. For example used with Sharding where the message must be wrapped in
    * `ShardingEnvelope(SequencedMessage(msg))`.
    */
-  def apply[A: ClassTag](
-      producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings,
-      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings,
+        send: ConsumerController.SequencedMessage[A] => Unit)
+    : Behavior[Command[A]] = {
     Behaviors
       .setup[InternalCommand] { context =>
         ActorFlightRecorder(context.system).delivery.producerCreated(producerId, context.self.path)
@@ -193,10 +198,12 @@ object ProducerControllerImpl {
       .narrow
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings)
+    : Option[ActorRef[DurableProducerQueue.Command[A]]] = {
 
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
@@ -206,11 +213,13 @@ object ProducerControllerImpl {
     }
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings,
-      attempt: Int): Unit = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings,
+        attempt: Int)
+    : Unit = {
     implicit val loadTimeout: Timeout = settings.durableQueueRequestTimeout
     durableQueue.foreach { ref =>
       context.ask[DurableProducerQueue.LoadState[A], DurableProducerQueue.State[A]](
@@ -226,12 +235,14 @@ object ProducerControllerImpl {
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
   }
 
-  private def createState[A](
-      self: ActorRef[InternalCommand],
-      producerId: String,
-      send: SequencedMessage[A] => Unit,
-      producer: ActorRef[RequestNext[A]],
-      loadedState: DurableProducerQueue.State[A]): State[A] = {
+  private def createState[A]
+    (
+        self: ActorRef[InternalCommand],
+        producerId: String,
+        send: SequencedMessage[A] => Unit,
+        producer: ActorRef[RequestNext[A]],
+        loadedState: DurableProducerQueue.State[A])
+    : State[A] = {
     val unconfirmed = loadedState.unconfirmed.toVector.zipWithIndex.map {
       case (u, i) => SequencedMessage[A](producerId, u.seqNr, u.message, i == 0, u.ack)(self)
     }
@@ -250,17 +261,20 @@ object ProducerControllerImpl {
       send)
   }
 
-  private def waitingForInitialization[A: ClassTag](
-      context: ActorContext[InternalCommand],
-      producer: Option[ActorRef[RequestNext[A]]],
-      consumerController: Option[ActorRef[ConsumerController.Command[A]]],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings,
-      initialState: Option[DurableProducerQueue.State[A]])(
-      thenBecomeActive: (
-          ActorRef[RequestNext[A]],
-          ActorRef[ConsumerController.Command[A]],
-          DurableProducerQueue.State[A]) => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+  private def waitingForInitialization[A: ClassTag]
+    (
+        context: ActorContext[InternalCommand],
+        producer: Option[ActorRef[RequestNext[A]]],
+        consumerController: Option[ActorRef[ConsumerController.Command[A]]],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings,
+        initialState: Option[DurableProducerQueue.State[A]])
+    (
+        thenBecomeActive: (
+            ActorRef[RequestNext[A]],
+            ActorRef[ConsumerController.Command[A]],
+            DurableProducerQueue.State[A]) => Behavior[InternalCommand])
+    : Behavior[InternalCommand] = {
     Behaviors.receiveMessagePartial[InternalCommand] {
       case RegisterConsumer(c: ActorRef[ConsumerController.Command[A]] @unchecked) =>
         (producer, initialState) match {
@@ -306,11 +320,13 @@ object ProducerControllerImpl {
     }
   }
 
-  private def becomeActive[A: ClassTag](
-      producerId: String,
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings,
-      state: State[A]): Behavior[InternalCommand] = {
+  private def becomeActive[A: ClassTag]
+    (
+        producerId: String,
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: ProducerController.Settings,
+        state: State[A])
+    : Behavior[InternalCommand] = {
 
     Behaviors.setup { context =>
       val flightRecorder = ActorFlightRecorder(context.system).delivery
@@ -369,13 +385,14 @@ object ProducerControllerImpl {
 
 }
 
-private class ProducerControllerImpl[A: ClassTag](
-    context: ActorContext[ProducerControllerImpl.InternalCommand],
-    producerId: String,
-    durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-    settings: ProducerController.Settings,
-    msgAdapter: ActorRef[A],
-    timers: TimerScheduler[ProducerControllerImpl.InternalCommand]) {
+private class ProducerControllerImpl[A: ClassTag]
+  (
+      context: ActorContext[ProducerControllerImpl.InternalCommand],
+      producerId: String,
+      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+      settings: ProducerController.Settings,
+      msgAdapter: ActorRef[A],
+      timers: TimerScheduler[ProducerControllerImpl.InternalCommand]) {
   import ConsumerController.SequencedMessage
   import DurableProducerQueue.MessageSent
   import DurableProducerQueue.NoQualifier
@@ -398,10 +415,12 @@ private class ProducerControllerImpl[A: ClassTag](
 
   private def active(s: State[A]): Behavior[InternalCommand] = {
 
-    def onMsg(
-        seqMsg: SequencedMessage[A],
-        newReplyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
-        newRemainingChunks: immutable.Seq[SequencedMessage[A]]): Behavior[InternalCommand] = {
+    def onMsg
+      (
+          seqMsg: SequencedMessage[A],
+          newReplyAfterStore: Map[SeqNr, ActorRef[SeqNr]],
+          newRemainingChunks: immutable.Seq[SequencedMessage[A]])
+      : Behavior[InternalCommand] = {
       checkOnMsgRequestedState()
       if (seqMsg.isLastChunk != newRemainingChunks.isEmpty)
         throw new IllegalStateException(
@@ -454,11 +473,13 @@ private class ProducerControllerImpl[A: ClassTag](
           s"Received unexpected message before sending remaining [${s.remainingChunks.size}] chunks.")
     }
 
-    def receiveRequest(
-        newConfirmedSeqNr: SeqNr,
-        newRequestedSeqNr: SeqNr,
-        supportResend: Boolean,
-        viaTimeout: Boolean): Behavior[InternalCommand] = {
+    def receiveRequest
+      (
+          newConfirmedSeqNr: SeqNr,
+          newRequestedSeqNr: SeqNr,
+          supportResend: Boolean,
+          viaTimeout: Boolean)
+      : Behavior[InternalCommand] = {
       flightRecorder.producerReceivedRequest(producerId, newRequestedSeqNr, newConfirmedSeqNr)
       context.log.debugN(
         "Received Request, confirmed [{}], requested [{}], current [{}]",
@@ -687,8 +708,10 @@ private class ProducerControllerImpl[A: ClassTag](
       active(s.copy(producer = start.producer))
     }
 
-    def receiveRegisterConsumer(
-        consumerController: ActorRef[ConsumerController.Command[A]]): Behavior[InternalCommand] = {
+    def receiveRegisterConsumer
+      (
+          consumerController: ActorRef[ConsumerController.Command[A]])
+      : Behavior[InternalCommand] = {
       val newFirstSeqNr =
         if (s.unconfirmed.isEmpty) s.currentSeqNr
         else s.unconfirmed.head.seqNr

@@ -340,8 +340,12 @@ object ByteIterator {
       }
     }
 
-    @tailrec protected final def getToArray[A](xs: Array[A], offset: Int, n: Int, elemSize: Int)(getSingle: => A)(
-        getMult: (Array[A], Int, Int) => Unit): this.type =
+    @tailrec protected final def getToArray[A]
+      (xs: Array[A], offset: Int, n: Int, elemSize: Int)
+      (getSingle: => A)
+      (
+          getMult: (Array[A], Int, Int) => Unit)
+      : this.type =
       if (n <= 0) this
       else {
         if (isEmpty) EmptyImmutableSeq.iterator.next()

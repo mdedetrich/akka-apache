@@ -32,14 +32,15 @@ import akka.util.ByteString
 /**
  * INTERNAL API
  */
-@InternalApi private[stream] class ConnectionSourceStage(
-    val tcpManager: ActorRef,
-    val endpoint: InetSocketAddress,
-    val backlog: Int,
-    val options: immutable.Iterable[SocketOption],
-    val halfClose: Boolean,
-    val idleTimeout: Duration,
-    val bindShutdownTimeout: FiniteDuration)
+@InternalApi private[stream] class ConnectionSourceStage
+  (
+      val tcpManager: ActorRef,
+      val endpoint: InetSocketAddress,
+      val backlog: Int,
+      val options: immutable.Iterable[SocketOption],
+      val halfClose: Boolean,
+      val idleTimeout: Duration,
+      val bindShutdownTimeout: FiniteDuration)
     extends GraphStageWithMaterializedValue[
       SourceShape[StreamTcp.IncomingConnection],
       Future[StreamTcp.ServerBinding]] {
@@ -49,8 +50,10 @@ import akka.util.ByteString
   override def initialAttributes = Attributes.name("ConnectionSource")
   val shape: SourceShape[StreamTcp.IncomingConnection] = SourceShape(out)
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, Future[ServerBinding]) =
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, Future[ServerBinding]) =
     throw new UnsupportedOperationException("Not used")
 
   // TODO: Timeout on bind
@@ -223,11 +226,12 @@ private[stream] object ConnectionSourceStage {
   trait TcpRole {
     def halfClose: Boolean
   }
-  case class Outbound(
-      manager: ActorRef,
-      connectCmd: Connect,
-      localAddressPromise: Promise[InetSocketAddress],
-      halfClose: Boolean)
+  case class Outbound
+    (
+        manager: ActorRef,
+        connectCmd: Connect,
+        localAddressPromise: Promise[InetSocketAddress],
+        halfClose: Boolean)
       extends TcpRole
 
   case class Inbound(connection: ActorRef, halfClose: Boolean, registerCallback: () => Unit) extends TcpRole
@@ -239,12 +243,13 @@ private[stream] object ConnectionSourceStage {
    * to attach an extra, fused buffer to the end of this flow. Keeping this stage non-detached makes it much simpler and
    * easier to maintain and understand.
    */
-  class TcpStreamLogic(
-      val shape: FlowShape[ByteString, ByteString],
-      val role: TcpRole,
-      inheritedAttributes: Attributes,
-      remoteAddress: InetSocketAddress,
-      eagerMaterializer: Materializer)
+  class TcpStreamLogic
+    (
+        val shape: FlowShape[ByteString, ByteString],
+        val role: TcpRole,
+        inheritedAttributes: Attributes,
+        remoteAddress: InetSocketAddress,
+        eagerMaterializer: Materializer)
       extends GraphStageLogic(shape)
       with StageLogging {
     implicit def self: ActorRef = stageActor.ref
@@ -504,11 +509,12 @@ private[stream] object ConnectionSourceStage {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class IncomingConnectionStage(
-    connection: ActorRef,
-    remoteAddress: InetSocketAddress,
-    halfClose: Boolean,
-    registerCallback: () => Unit)
+@InternalApi private[akka] class IncomingConnectionStage
+  (
+      connection: ActorRef,
+      remoteAddress: InetSocketAddress,
+      halfClose: Boolean,
+      registerCallback: () => Unit)
     extends GraphStage[FlowShape[ByteString, ByteString]] {
   import TcpConnectionStage._
 
@@ -542,13 +548,14 @@ private[stream] object ConnectionSourceStage {
 /**
  * INTERNAL API
  */
-@InternalApi private[stream] class OutgoingConnectionStage(
-    manager: ActorRef,
-    remoteAddress: InetSocketAddress,
-    localAddress: Option[InetSocketAddress] = None,
-    options: immutable.Iterable[SocketOption] = Nil,
-    halfClose: Boolean = true,
-    connectTimeout: Duration = Duration.Inf)
+@InternalApi private[stream] class OutgoingConnectionStage
+  (
+      manager: ActorRef,
+      remoteAddress: InetSocketAddress,
+      localAddress: Option[InetSocketAddress] = None,
+      options: immutable.Iterable[SocketOption] = Nil,
+      halfClose: Boolean = true,
+      connectTimeout: Duration = Duration.Inf)
     extends GraphStageWithMaterializedValue[FlowShape[ByteString, ByteString], Future[StreamTcp.OutgoingConnection]] {
   import TcpConnectionStage._
 
@@ -557,13 +564,17 @@ private[stream] object ConnectionSourceStage {
   override def initialAttributes = Attributes.name("OutgoingConnection")
   val shape: FlowShape[ByteString, ByteString] = FlowShape(bytesIn, bytesOut)
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, Future[OutgoingConnection]) =
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, Future[OutgoingConnection]) =
     throw new UnsupportedOperationException("Not used")
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes,
-      eagerMaterializer: Materializer): (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes,
+        eagerMaterializer: Materializer)
+    : (GraphStageLogic, Future[StreamTcp.OutgoingConnection]) = {
     // FIXME: A method like this would make soo much sense on Duration (i.e. toOption)
     val connTimeout = connectTimeout match {
       case x: FiniteDuration => Some(x)
@@ -590,9 +601,11 @@ private[stream] object ConnectionSourceStage {
 
 /** INTERNAL API */
 @InternalApi private[akka] object TcpIdleTimeout {
-  def apply(
-      idleTimeout: FiniteDuration,
-      remoteAddress: Option[InetSocketAddress]): BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
+  def apply
+    (
+        idleTimeout: FiniteDuration,
+        remoteAddress: Option[InetSocketAddress])
+    : BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
     val connectionToString = remoteAddress match {
       case Some(address) => s" on connection to [$address]"
       case _             => ""

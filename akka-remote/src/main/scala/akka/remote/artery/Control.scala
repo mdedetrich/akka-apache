@@ -182,9 +182,10 @@ private[remote] object OutboundControlJunction {
  * INTERNAL API
  */
 @InternalApi
-private[remote] class OutboundControlJunction(
-    outboundContext: OutboundContext,
-    outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope])
+private[remote] class OutboundControlJunction
+  (
+      outboundContext: OutboundContext,
+      outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope])
     extends GraphStageWithMaterializedValue[
       FlowShape[OutboundEnvelope, OutboundEnvelope],
       OutboundControlJunction.OutboundControlIngress] {

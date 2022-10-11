@@ -213,8 +213,11 @@ trait ExplicitAskSupport {
    */
   def ask(actorRef: ActorRef, messageFactory: ActorRef => Any)(implicit timeout: Timeout): Future[Any] =
     actorRef.internalAsk(messageFactory, timeout, ActorRef.noSender)
-  def ask(actorRef: ActorRef, messageFactory: ActorRef => Any, sender: ActorRef)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask
+    (actorRef: ActorRef, messageFactory: ActorRef => Any, sender: ActorRef)
+    (
+        implicit timeout: Timeout)
+    : Future[Any] =
     actorRef.internalAsk(messageFactory, timeout, sender)
 
   /**
@@ -271,8 +274,11 @@ trait ExplicitAskSupport {
    */
   def ask(actorSelection: ActorSelection, messageFactory: ActorRef => Any)(implicit timeout: Timeout): Future[Any] =
     actorSelection.internalAsk(messageFactory, timeout, ActorRef.noSender)
-  def ask(actorSelection: ActorSelection, messageFactory: ActorRef => Any, sender: ActorRef)(
-      implicit timeout: Timeout): Future[Any] =
+  def ask
+    (actorSelection: ActorSelection, messageFactory: ActorRef => Any, sender: ActorRef)
+    (
+        implicit timeout: Timeout)
+    : Future[Any] =
     actorSelection.internalAsk(messageFactory, timeout, sender)
 }
 
@@ -287,10 +293,12 @@ object AskableActorRef {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def negativeTimeoutException(
-      recipient: Any,
-      message: Any,
-      sender: ActorRef): IllegalArgumentException = {
+  @InternalApi private[akka] def negativeTimeoutException
+    (
+        recipient: Any,
+        message: Any,
+        sender: ActorRef)
+    : IllegalArgumentException = {
     new IllegalArgumentException(
       s"Timeout length must be positive, question not sent to [$recipient]. " +
       messagePartOfException(message, sender))
@@ -299,10 +307,12 @@ object AskableActorRef {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def recipientTerminatedException(
-      recipient: Any,
-      message: Any,
-      sender: ActorRef): AskTimeoutException = {
+  @InternalApi private[akka] def recipientTerminatedException
+    (
+        recipient: Any,
+        message: Any,
+        sender: ActorRef)
+    : AskTimeoutException = {
     new AskTimeoutException(
       s"Recipient [$recipient] had already been terminated. " +
       messagePartOfException(message, sender))
@@ -311,10 +321,12 @@ object AskableActorRef {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def unsupportedRecipientType(
-      recipient: Any,
-      message: Any,
-      sender: ActorRef): IllegalArgumentException = {
+  @InternalApi private[akka] def unsupportedRecipientType
+    (
+        recipient: Any,
+        message: Any,
+        sender: ActorRef)
+    : IllegalArgumentException = {
     new IllegalArgumentException(
       s"Unsupported recipient type, question not sent to [$recipient]. " +
       messagePartOfException(message, sender))
@@ -343,8 +355,11 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
    * INTERNAL API
    */
   @InternalApi
-  private[pattern] def internalAskWithStatus(
-      message: Any)(implicit timeout: Timeout, sender: ActorRef = Actor.noSender): Future[Any] =
+  private[pattern] def internalAskWithStatus
+    (
+        message: Any)
+    (implicit timeout: Timeout, sender: ActorRef = Actor.noSender)
+    : Future[Any] =
     StatusReply.flattenStatusFuture[Any](internalAsk(message, timeout, sender).mapTo[StatusReply[Any]])
 
   /**
@@ -502,11 +517,12 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
  *
  * INTERNAL API
  */
-private[akka] final class PromiseActorRef(
-    val provider: ActorRefProvider,
-    val result: Promise[Any],
-    _mcn: String,
-    refPathPrefix: String)
+private[akka] final class PromiseActorRef
+  (
+      val provider: ActorRefProvider,
+      val result: Promise[Any],
+      _mcn: String,
+      refPathPrefix: String)
     extends MinimalActorRef {
   import AbstractPromiseActorRef.{ stateOffset, watchedByOffset }
   import PromiseActorRef._
@@ -702,14 +718,16 @@ private[akka] object PromiseActorRef {
   private val ActorStopResult = Failure(ActorKilledException("Stopped"))
   private val defaultOnTimeout: String => Throwable = str => new AskTimeoutException(str)
 
-  def apply(
-      provider: ActorRefProvider,
-      timeout: Timeout,
-      targetName: Any,
-      messageClassName: String,
-      refPathPrefix: String,
-      sender: ActorRef = Actor.noSender,
-      onTimeout: String => Throwable = defaultOnTimeout): PromiseActorRef = {
+  def apply
+    (
+        provider: ActorRefProvider,
+        timeout: Timeout,
+        targetName: Any,
+        messageClassName: String,
+        refPathPrefix: String,
+        sender: ActorRef = Actor.noSender,
+        onTimeout: String => Throwable = defaultOnTimeout)
+    : PromiseActorRef = {
     if (refPathPrefix.indexOf('/') > -1)
       throw new IllegalArgumentException(s"refPathPrefix must not contain slash, was: $refPathPrefix")
     val result = Promise[Any]()

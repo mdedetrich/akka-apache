@@ -67,8 +67,10 @@ object LoggingReceive {
  * This decorator adds invocation logging to a Receive function.
  * @param source the log source, if not defined the actor of the context will be used
  */
-class LoggingReceive(source: Option[AnyRef], r: Receive, label: Option[String], logLevel: LogLevel)(
-    implicit context: ActorContext)
+class LoggingReceive
+  (source: Option[AnyRef], r: Receive, label: Option[String], logLevel: LogLevel)
+  (
+      implicit context: ActorContext)
     extends Receive {
   def this(source: Option[AnyRef], r: Receive, label: Option[String])(implicit context: ActorContext) =
     this(source, r, label, Logging.DebugLevel)

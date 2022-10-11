@@ -38,9 +38,10 @@ private[akka] object SegmentedRecencyList {
  * Implemented using doubly-linked lists plus hash map for lookup, so that all operations are constant time.
  */
 @InternalApi
-private[akka] final class SegmentedRecencyList[A](
-    initialLimits: immutable.Seq[Int],
-    clock: OptionVal[RecencyList.Clock]) {
+private[akka] final class SegmentedRecencyList[A]
+  (
+      initialLimits: immutable.Seq[Int],
+      clock: OptionVal[RecencyList.Clock]) {
   import SegmentedRecencyList.Node
 
   private var limits: immutable.IndexedSeq[Int] = initialLimits.toIndexedSeq

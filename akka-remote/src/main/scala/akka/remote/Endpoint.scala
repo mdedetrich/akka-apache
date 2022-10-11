@@ -44,30 +44,35 @@ import akka.util.OptionVal
  * INTERNAL API
  */
 private[remote] trait InboundMessageDispatcher {
-  def dispatch(
-      recipient: InternalActorRef,
-      recipientAddress: Address,
-      serializedMessage: SerializedMessage,
-      senderOption: OptionVal[ActorRef]): Unit
+  def dispatch
+    (
+        recipient: InternalActorRef,
+        recipientAddress: Address,
+        serializedMessage: SerializedMessage,
+        senderOption: OptionVal[ActorRef])
+    : Unit
 }
 
 /**
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class DefaultMessageDispatcher(
-    private val system: ExtendedActorSystem,
-    private val provider: RemoteActorRefProvider,
-    private val log: MarkerLoggingAdapter)
+private[remote] class DefaultMessageDispatcher
+  (
+      private val system: ExtendedActorSystem,
+      private val provider: RemoteActorRefProvider,
+      private val log: MarkerLoggingAdapter)
     extends InboundMessageDispatcher {
 
   private val remoteDaemon = provider.remoteDaemon
 
-  override def dispatch(
-      recipient: InternalActorRef,
-      recipientAddress: Address,
-      serializedMessage: SerializedMessage,
-      senderOption: OptionVal[ActorRef]): Unit = {
+  override def dispatch
+    (
+        recipient: InternalActorRef,
+        recipientAddress: Address,
+        serializedMessage: SerializedMessage,
+        senderOption: OptionVal[ActorRef])
+    : Unit = {
 
     import provider.remoteSettings._
 
@@ -171,11 +176,12 @@ private[remote] final case class ShutDownAssociation(localAddress: Address, remo
  * INTERNAL API
  */
 @SerialVersionUID(2L)
-private[remote] final case class InvalidAssociation(
-    localAddress: Address,
-    remoteAddress: Address,
-    cause: Throwable,
-    disassociationInfo: Option[DisassociateInfo] = None)
+private[remote] final case class InvalidAssociation
+  (
+      localAddress: Address,
+      remoteAddress: Address,
+      cause: Throwable,
+      disassociationInfo: Option[DisassociateInfo] = None)
     extends EndpointException("Invalid address: " + remoteAddress, cause)
     with AssociationProblem
 
@@ -183,11 +189,12 @@ private[remote] final case class InvalidAssociation(
  * INTERNAL API
  */
 @SerialVersionUID(1L)
-private[remote] final case class HopelessAssociation(
-    localAddress: Address,
-    remoteAddress: Address,
-    uid: Option[Int],
-    cause: Throwable)
+private[remote] final case class HopelessAssociation
+  (
+      localAddress: Address,
+      remoteAddress: Address,
+      uid: Option[Int],
+      cause: Throwable)
     extends EndpointException("Catastrophic association error.")
     with AssociationProblem
 
@@ -221,15 +228,17 @@ private[remote] object ReliableDeliverySupervisor {
   case object Idle
   case object TooLongIdle
 
-  def props(
-      handleOrActive: Option[AkkaProtocolHandle],
-      localAddress: Address,
-      remoteAddress: Address,
-      refuseUid: Option[Int],
-      transport: AkkaProtocolTransport,
-      settings: RemoteSettings,
-      codec: AkkaPduCodec,
-      receiveBuffers: ConcurrentHashMap[Link, ResendState]): Props =
+  def props
+    (
+        handleOrActive: Option[AkkaProtocolHandle],
+        localAddress: Address,
+        remoteAddress: Address,
+        refuseUid: Option[Int],
+        transport: AkkaProtocolTransport,
+        settings: RemoteSettings,
+        codec: AkkaPduCodec,
+        receiveBuffers: ConcurrentHashMap[Link, ResendState])
+    : Props =
     Props(
       classOf[ReliableDeliverySupervisor],
       handleOrActive,
@@ -246,15 +255,16 @@ private[remote] object ReliableDeliverySupervisor {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class ReliableDeliverySupervisor(
-    handleOrActive: Option[AkkaProtocolHandle],
-    val localAddress: Address,
-    val remoteAddress: Address,
-    val refuseUid: Option[Int],
-    val transport: AkkaProtocolTransport,
-    val settings: RemoteSettings,
-    val codec: AkkaPduCodec,
-    val receiveBuffers: ConcurrentHashMap[Link, ResendState])
+private[remote] class ReliableDeliverySupervisor
+  (
+      handleOrActive: Option[AkkaProtocolHandle],
+      val localAddress: Address,
+      val remoteAddress: Address,
+      val refuseUid: Option[Int],
+      val transport: AkkaProtocolTransport,
+      val settings: RemoteSettings,
+      val codec: AkkaPduCodec,
+      val receiveBuffers: ConcurrentHashMap[Link, ResendState])
     extends Actor
     with ActorLogging {
   import ReliableDeliverySupervisor._
@@ -537,12 +547,13 @@ private[remote] class ReliableDeliverySupervisor(
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] abstract class EndpointActor(
-    val localAddress: Address,
-    val remoteAddress: Address,
-    val transport: Transport,
-    val settings: RemoteSettings,
-    val codec: AkkaPduCodec)
+private[remote] abstract class EndpointActor
+  (
+      val localAddress: Address,
+      val remoteAddress: Address,
+      val transport: Transport,
+      val settings: RemoteSettings,
+      val codec: AkkaPduCodec)
     extends Actor
     with ActorLogging {
 
@@ -566,16 +577,18 @@ private[remote] abstract class EndpointActor(
 @nowarn("msg=deprecated")
 private[remote] object EndpointWriter {
 
-  def props(
-      handleOrActive: Option[AkkaProtocolHandle],
-      localAddress: Address,
-      remoteAddress: Address,
-      refuseUid: Option[Int],
-      transport: AkkaProtocolTransport,
-      settings: RemoteSettings,
-      codec: AkkaPduCodec,
-      receiveBuffers: ConcurrentHashMap[Link, ResendState],
-      reliableDeliverySupervisor: Option[ActorRef]): Props =
+  def props
+    (
+        handleOrActive: Option[AkkaProtocolHandle],
+        localAddress: Address,
+        remoteAddress: Address,
+        refuseUid: Option[Int],
+        transport: AkkaProtocolTransport,
+        settings: RemoteSettings,
+        codec: AkkaPduCodec,
+        receiveBuffers: ConcurrentHashMap[Link, ResendState],
+        reliableDeliverySupervisor: Option[ActorRef])
+    : Props =
     Props(
       classOf[EndpointWriter],
       handleOrActive,
@@ -621,16 +634,17 @@ private[remote] object EndpointWriter {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class EndpointWriter(
-    handleOrActive: Option[AkkaProtocolHandle],
-    localAddress: Address,
-    remoteAddress: Address,
-    refuseUid: Option[Int],
-    transport: AkkaProtocolTransport,
-    settings: RemoteSettings,
-    codec: AkkaPduCodec,
-    val receiveBuffers: ConcurrentHashMap[Link, ResendState],
-    val reliableDeliverySupervisor: Option[ActorRef])
+private[remote] class EndpointWriter
+  (
+      handleOrActive: Option[AkkaProtocolHandle],
+      localAddress: Address,
+      remoteAddress: Address,
+      refuseUid: Option[Int],
+      transport: AkkaProtocolTransport,
+      settings: RemoteSettings,
+      codec: AkkaPduCodec,
+      val receiveBuffers: ConcurrentHashMap[Link, ResendState],
+      val reliableDeliverySupervisor: Option[ActorRef])
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
 
   import EndpointWriter._
@@ -1046,17 +1060,19 @@ private[remote] class EndpointWriter(
 @nowarn("msg=deprecated")
 private[remote] object EndpointReader {
 
-  def props(
-      localAddress: Address,
-      remoteAddress: Address,
-      transport: Transport,
-      settings: RemoteSettings,
-      codec: AkkaPduCodec,
-      msgDispatch: InboundMessageDispatcher,
-      inbound: Boolean,
-      uid: Int,
-      reliableDeliverySupervisor: Option[ActorRef],
-      receiveBuffers: ConcurrentHashMap[Link, ResendState]): Props =
+  def props
+    (
+        localAddress: Address,
+        remoteAddress: Address,
+        transport: Transport,
+        settings: RemoteSettings,
+        codec: AkkaPduCodec,
+        msgDispatch: InboundMessageDispatcher,
+        inbound: Boolean,
+        uid: Int,
+        reliableDeliverySupervisor: Option[ActorRef],
+        receiveBuffers: ConcurrentHashMap[Link, ResendState])
+    : Props =
     Props(
       classOf[EndpointReader],
       localAddress,
@@ -1076,17 +1092,18 @@ private[remote] object EndpointReader {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class EndpointReader(
-    localAddress: Address,
-    remoteAddress: Address,
-    transport: Transport,
-    settings: RemoteSettings,
-    codec: AkkaPduCodec,
-    msgDispatch: InboundMessageDispatcher,
-    val inbound: Boolean,
-    val uid: Int,
-    val reliableDeliverySupervisor: Option[ActorRef],
-    val receiveBuffers: ConcurrentHashMap[Link, ResendState])
+private[remote] class EndpointReader
+  (
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: Transport,
+      settings: RemoteSettings,
+      codec: AkkaPduCodec,
+      msgDispatch: InboundMessageDispatcher,
+      val inbound: Boolean,
+      val uid: Int,
+      val reliableDeliverySupervisor: Option[ActorRef],
+      val receiveBuffers: ConcurrentHashMap[Link, ResendState])
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
 
   import EndpointWriter.{ OutboundAck, StopReading, StoppedReading }

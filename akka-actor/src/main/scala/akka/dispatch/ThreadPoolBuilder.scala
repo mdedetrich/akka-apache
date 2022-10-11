@@ -68,13 +68,14 @@ trait ExecutorServiceFactoryProvider {
 /**
  * A small configuration DSL to create ThreadPoolExecutors that can be provided as an ExecutorServiceFactoryProvider to Dispatcher
  */
-final case class ThreadPoolConfig(
-    allowCorePoolTimeout: Boolean = ThreadPoolConfig.defaultAllowCoreThreadTimeout,
-    corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
-    maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
-    threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
-    queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
-    rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
+final case class ThreadPoolConfig
+  (
+      allowCorePoolTimeout: Boolean = ThreadPoolConfig.defaultAllowCoreThreadTimeout,
+      corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
+      maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
+      threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
+      queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig.linkedBlockingQueue(),
+      rejectionPolicy: RejectedExecutionHandler = ThreadPoolConfig.defaultRejectionPolicy)
     extends ExecutorServiceFactoryProvider {
   class ThreadPoolExecutorServiceFactory(val threadFactory: ThreadFactory) extends ExecutorServiceFactory {
     def createExecutorService: ExecutorService = {
@@ -124,9 +125,11 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
   def withNewThreadPoolWithSynchronousQueueWithFairness(fair: Boolean): ThreadPoolConfigBuilder =
     this.copy(config = config.copy(queueFactory = synchronousQueue(fair)))
 
-  def withNewThreadPoolWithArrayBlockingQueueWithCapacityAndFairness(
-      capacity: Int,
-      fair: Boolean): ThreadPoolConfigBuilder =
+  def withNewThreadPoolWithArrayBlockingQueueWithCapacityAndFairness
+    (
+        capacity: Int,
+        fair: Boolean)
+    : ThreadPoolConfigBuilder =
     this.copy(config = config.copy(queueFactory = arrayBlockingQueue(capacity, fair)))
 
   def setFixedPoolSize(size: Int): ThreadPoolConfigBuilder =
@@ -181,12 +184,13 @@ object MonitorableThreadFactory {
   }
 }
 
-final case class MonitorableThreadFactory(
-    name: String,
-    daemonic: Boolean,
-    contextClassLoader: Option[ClassLoader],
-    exceptionHandler: Thread.UncaughtExceptionHandler = MonitorableThreadFactory.doNothing,
-    protected val counter: AtomicLong = new AtomicLong)
+final case class MonitorableThreadFactory
+  (
+      name: String,
+      daemonic: Boolean,
+      contextClassLoader: Option[ClassLoader],
+      exceptionHandler: Thread.UncaughtExceptionHandler = MonitorableThreadFactory.doNothing,
+      protected val counter: AtomicLong = new AtomicLong)
     extends ThreadFactory
     with ForkJoinPool.ForkJoinWorkerThreadFactory {
 

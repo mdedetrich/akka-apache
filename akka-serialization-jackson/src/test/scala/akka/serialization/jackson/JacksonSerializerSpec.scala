@@ -150,10 +150,11 @@ object ScalaTestMessages {
     override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = HasAkkaSerializer(new String(bytes))
   }
 
-  final case class WithAkkaSerializer(
-      @JsonDeserialize(`using` = classOf[AkkaSerializationDeserializer])
-      @JsonSerialize(`using` = classOf[AkkaSerializationSerializer])
-      akkaSerializer: HasAkkaSerializer)
+  final case class WithAkkaSerializer
+    (
+        @JsonDeserialize(`using` = classOf[AkkaSerializationDeserializer])
+        @JsonSerialize(`using` = classOf[AkkaSerializationSerializer])
+        akkaSerializer: HasAkkaSerializer)
       extends TestMessage
 }
 
@@ -173,11 +174,13 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     new String(blob, "utf-8")
   }
 
-  def deserializeFromJsonString(
-      json: String,
-      serializerId: Int,
-      manifest: String,
-      sys: ActorSystem = system): AnyRef = {
+  def deserializeFromJsonString
+    (
+        json: String,
+        serializerId: Int,
+        manifest: String,
+        sys: ActorSystem = system)
+    : AnyRef = {
     val blob = json.getBytes("utf-8")
     deserializeFromBinary(blob, serializerId, manifest, sys)
   }
@@ -485,45 +488,52 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
             super.newObjectMapper(bindingName, jsonFactory)
         }
 
-        override def overrideConfiguredSerializationFeatures(
-            bindingName: String,
-            configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-            : immutable.Seq[(SerializationFeature, Boolean)] = {
+        override def overrideConfiguredSerializationFeatures
+          (
+              bindingName: String,
+              configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
+          : immutable.Seq[(SerializationFeature, Boolean)] = {
           if (bindingName == "jackson-json")
             configuredFeatures :+ (SerializationFeature.INDENT_OUTPUT -> true)
           else
             super.overrideConfiguredSerializationFeatures(bindingName, configuredFeatures)
         }
 
-        override def overrideConfiguredModules(
-            bindingName: String,
-            configuredModules: immutable.Seq[Module]): immutable.Seq[Module] =
+        override def overrideConfiguredModules
+          (
+              bindingName: String,
+              configuredModules: immutable.Seq[Module])
+          : immutable.Seq[Module] =
           if (bindingName == "jackson-json")
             configuredModules.filterNot(_.isInstanceOf[JavaTimeModule]) :+ customJavaTimeModule
           else
             super.overrideConfiguredModules(bindingName, configuredModules)
 
-        override def overrideConfiguredMapperFeatures(
-            bindingName: String,
-            configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
+        override def overrideConfiguredMapperFeatures
+          (
+              bindingName: String,
+              configuredFeatures: immutable.Seq[(MapperFeature, Boolean)])
+          : immutable.Seq[(MapperFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (MapperFeature.SORT_PROPERTIES_ALPHABETICALLY -> true)
           else
             super.overrideConfiguredMapperFeatures(bindingName, configuredFeatures)
 
-        override def overrideConfiguredJsonParserFeatures(
-            bindingName: String,
-            configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)])
-            : immutable.Seq[(JsonParser.Feature, Boolean)] =
+        override def overrideConfiguredJsonParserFeatures
+          (
+              bindingName: String,
+              configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)])
+          : immutable.Seq[(JsonParser.Feature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (JsonParser.Feature.ALLOW_SINGLE_QUOTES -> true)
           else
             super.overrideConfiguredJsonParserFeatures(bindingName, configuredFeatures)
 
-        override def overrideConfiguredJsonGeneratorFeatures(
-            bindingName: String,
-            configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
-            : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
+        override def overrideConfiguredJsonGeneratorFeatures
+          (
+              bindingName: String,
+              configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
+          : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN -> true)
           else
@@ -784,11 +794,13 @@ abstract class JacksonSerializerSpec(serializerName: String)
   def serializeToBinary(obj: AnyRef, sys: ActorSystem = system): Array[Byte] =
     serialization(sys).serialize(obj).get
 
-  def deserializeFromBinary(
-      blob: Array[Byte],
-      serializerId: Int,
-      manifest: String,
-      sys: ActorSystem = system): AnyRef = {
+  def deserializeFromBinary
+    (
+        blob: Array[Byte],
+        serializerId: Int,
+        manifest: String,
+        sys: ActorSystem = system)
+    : AnyRef = {
     // TransportInformation added by serialization.deserialize
     serialization(sys).deserialize(blob, serializerId, manifest).get
   }

@@ -180,12 +180,18 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         override def maxFrequency: Double = systemScheduler.maxFrequency
 
         @nowarn("msg=deprecated")
-        override def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
-            implicit executor: ExecutionContext): Cancellable =
+        override def schedule
+          (initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)
+          (
+              implicit executor: ExecutionContext)
+          : Cancellable =
           systemScheduler.schedule(initialDelay, interval, runnable)
 
-        override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
-            implicit executor: ExecutionContext): Cancellable =
+        override def scheduleOnce
+          (delay: FiniteDuration, runnable: Runnable)
+          (
+              implicit executor: ExecutionContext)
+          : Cancellable =
           systemScheduler.scheduleOnce(delay, runnable)
       }
     }

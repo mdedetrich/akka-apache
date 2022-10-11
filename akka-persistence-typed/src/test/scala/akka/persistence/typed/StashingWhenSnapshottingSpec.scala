@@ -40,9 +40,11 @@ object StashingWhenSnapshottingSpec {
   }
 
   class ControllableSnapshotStore extends SnapshotStore {
-    override def loadAsync(
-        persistenceId: String,
-        criteria: persistence.SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = Future.successful(None)
+    override def loadAsync
+      (
+          persistenceId: String,
+          criteria: persistence.SnapshotSelectionCriteria)
+      : Future[Option[SelectedSnapshot]] = Future.successful(None)
 
     override def saveAsync(metadata: persistence.SnapshotMetadata, snapshot: Any): Future[Unit] = {
       ControllableSnapshotStoreExt(context.system.toTyped).snapshotWriteStarted.await()

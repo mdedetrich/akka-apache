@@ -27,18 +27,19 @@ import akka.util.OptionVal
  * INTERNAL API: Carry state for the `DurableStateBehavior` implementation behaviors.
  */
 @InternalApi
-private[akka] final class BehaviorSetup[C, S](
-    val context: ActorContext[InternalProtocol],
-    val persistenceId: PersistenceId,
-    val emptyState: S,
-    val commandHandler: DurableStateBehavior.CommandHandler[C, S],
-    private val signalHandler: PartialFunction[(S, Signal), Unit],
-    val tag: String,
-    val snapshotAdapter: SnapshotAdapter[S],
-    var holdingRecoveryPermit: Boolean,
-    val settings: DurableStateSettings,
-    val stashState: StashState,
-    private val internalLoggerFactory: () => Logger) {
+private[akka] final class BehaviorSetup[C, S]
+  (
+      val context: ActorContext[InternalProtocol],
+      val persistenceId: PersistenceId,
+      val emptyState: S,
+      val commandHandler: DurableStateBehavior.CommandHandler[C, S],
+      private val signalHandler: PartialFunction[(S, Signal), Unit],
+      val tag: String,
+      val snapshotAdapter: SnapshotAdapter[S],
+      var holdingRecoveryPermit: Boolean,
+      val settings: DurableStateSettings,
+      val stashState: StashState,
+      private val internalLoggerFactory: () => Logger) {
 
   import akka.actor.typed.scaladsl.adapter._
 

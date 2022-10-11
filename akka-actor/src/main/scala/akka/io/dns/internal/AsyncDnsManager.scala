@@ -38,13 +38,14 @@ private[akka] object AsyncDnsManager {
  */
 @InternalApi
 @nowarn("msg=deprecated")
-private[io] final class AsyncDnsManager(
-    name: String,
-    system: ExtendedActorSystem,
-    resolverConfig: Config,
-    cache: Dns,
-    dispatcher: String,
-    provider: DnsProvider)
+private[io] final class AsyncDnsManager
+  (
+      name: String,
+      system: ExtendedActorSystem,
+      resolverConfig: Config,
+      cache: Dns,
+      dispatcher: String,
+      provider: DnsProvider)
     extends Actor
     with RequiresMessageQueue[UnboundedMessageQueueSemantics]
     with ActorLogging

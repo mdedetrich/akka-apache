@@ -38,9 +38,10 @@ import akka.routing._
  * @param metricsSelector decides what probability to use for selecting a routee, based
  *   on remaining capacity as indicated by the node metrics
  */
-final case class AdaptiveLoadBalancingRoutingLogic(
-    system: ActorSystem,
-    metricsSelector: MetricsSelector = MixMetricsSelector)
+final case class AdaptiveLoadBalancingRoutingLogic
+  (
+      system: ActorSystem,
+      metricsSelector: MetricsSelector = MixMetricsSelector)
     extends RoutingLogic
     with NoSerializationVerificationNeeded {
 
@@ -127,12 +128,13 @@ final case class AdaptiveLoadBalancingRoutingLogic(
  *   supervision, death watch and router management messages
  */
 @SerialVersionUID(1L)
-final case class AdaptiveLoadBalancingPool(
-    metricsSelector: MetricsSelector = MixMetricsSelector,
-    val nrOfInstances: Int = 0,
-    override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
-    override val usePoolDispatcher: Boolean = false)
+final case class AdaptiveLoadBalancingPool
+  (
+      metricsSelector: MetricsSelector = MixMetricsSelector,
+      val nrOfInstances: Int = 0,
+      override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
+      override val usePoolDispatcher: Boolean = false)
     extends Pool {
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
@@ -212,10 +214,11 @@ final case class AdaptiveLoadBalancingPool(
  *   router management messages
  */
 @SerialVersionUID(1L)
-final case class AdaptiveLoadBalancingGroup(
-    metricsSelector: MetricsSelector = MixMetricsSelector,
-    val paths: immutable.Iterable[String] = Nil,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
+final case class AdaptiveLoadBalancingGroup
+  (
+      metricsSelector: MetricsSelector = MixMetricsSelector,
+      val paths: immutable.Iterable[String] = Nil,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
     extends Group {
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
@@ -476,10 +479,11 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
  *
  * Pick routee based on its weight. Higher weight, higher probability.
  */
-private[metrics] class WeightedRoutees(
-    routees: immutable.IndexedSeq[Routee],
-    selfAddress: Address,
-    weights: Map[Address, Int]) {
+private[metrics] class WeightedRoutees
+  (
+      routees: immutable.IndexedSeq[Routee],
+      selfAddress: Address,
+      weights: Map[Address, Int]) {
 
   // fill an array of same size as the refs with accumulated weights,
   // binarySearch is used to pick the right bucket from a requested value

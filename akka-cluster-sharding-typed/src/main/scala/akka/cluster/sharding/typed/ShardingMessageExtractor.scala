@@ -23,8 +23,11 @@ object ShardingMessageExtractor {
   /**
    * Scala API: Create a message extractor for a protocol where the entity id is available in each message.
    */
-  def noEnvelope[M](numberOfShards: Int, @unused stopMessage: M)(
-      extractEntityId: M => String): ShardingMessageExtractor[M, M] =
+  def noEnvelope[M]
+    (numberOfShards: Int, @unused stopMessage: M)
+    (
+        extractEntityId: M => String)
+    : ShardingMessageExtractor[M, M] =
     new HashCodeNoEnvelopeMessageExtractor[M](numberOfShards) {
       def entityId(message: M) = extractEntityId(message)
     }

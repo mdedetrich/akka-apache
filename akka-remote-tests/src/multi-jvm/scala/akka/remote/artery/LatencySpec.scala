@@ -83,25 +83,28 @@ object LatencySpec extends MultiNodeConfig {
     }
   }
 
-  def receiverProps(
-      reporter: RateReporter,
-      settings: TestSettings,
-      totalMessages: Int,
-      sendTimes: AtomicLongArray,
-      histogram: Histogram,
-      plotsRef: ActorRef,
-      BenchmarkFileReporter: BenchmarkFileReporter): Props =
+  def receiverProps
+    (
+        reporter: RateReporter,
+        settings: TestSettings,
+        totalMessages: Int,
+        sendTimes: AtomicLongArray,
+        histogram: Histogram,
+        plotsRef: ActorRef,
+        BenchmarkFileReporter: BenchmarkFileReporter)
+    : Props =
     Props(new Receiver(reporter, settings, totalMessages, sendTimes, histogram, plotsRef, BenchmarkFileReporter))
       .withDispatcher(Dispatchers.InternalDispatcherId)
 
-  class Receiver(
-      reporter: RateReporter,
-      settings: TestSettings,
-      totalMessages: Int,
-      sendTimes: AtomicLongArray,
-      histogram: Histogram,
-      plotsRef: ActorRef,
-      BenchmarkFileReporter: BenchmarkFileReporter)
+  class Receiver
+    (
+        reporter: RateReporter,
+        settings: TestSettings,
+        totalMessages: Int,
+        sendTimes: AtomicLongArray,
+        histogram: Histogram,
+        plotsRef: ActorRef,
+        BenchmarkFileReporter: BenchmarkFileReporter)
       extends Actor {
     import settings._
 
@@ -141,11 +144,13 @@ object LatencySpec extends MultiNodeConfig {
       }
     }
 
-    def printTotal(
-        testName: String,
-        histogram: Histogram,
-        totalDurationNanos: Long,
-        reporter: BenchmarkFileReporter): Unit = {
+    def printTotal
+      (
+          testName: String,
+          histogram: Histogram,
+          totalDurationNanos: Long,
+          reporter: BenchmarkFileReporter)
+      : Unit = {
       def percentile(p: Double): Double = histogram.getValueAtPercentile(p) / 1000.0
       val throughput = 1000.0 * histogram.getTotalCount / math.max(1, totalDurationNanos.nanos.toMillis)
 
@@ -166,12 +171,13 @@ object LatencySpec extends MultiNodeConfig {
     }
   }
 
-  final case class TestSettings(
-      testName: String,
-      messageRate: Int, // msg/s
-      payloadSize: Int,
-      repeat: Int,
-      realMessage: Boolean)
+  final case class TestSettings
+    (
+        testName: String,
+        messageRate: Int, // msg/s
+        payloadSize: Int,
+        repeat: Int,
+        realMessage: Boolean)
 
 }
 

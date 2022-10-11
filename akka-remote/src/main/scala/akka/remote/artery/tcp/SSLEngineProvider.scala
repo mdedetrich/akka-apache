@@ -49,8 +49,10 @@ object SSLEngineProviderSetup {
    * Java API: factory for defining a `SSLEngineProvider` that is passed in when ActorSystem
    * is created rather than creating one from configured class name.
    */
-  def create(
-      sslEngineProvider: java.util.function.Function[ExtendedActorSystem, SSLEngineProvider]): SSLEngineProviderSetup =
+  def create
+    (
+        sslEngineProvider: java.util.function.Function[ExtendedActorSystem, SSLEngineProvider])
+    : SSLEngineProviderSetup =
     apply(sys => sslEngineProvider(sys))
 
 }

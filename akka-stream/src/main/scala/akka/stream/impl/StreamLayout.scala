@@ -51,10 +51,11 @@ import akka.util.OptionVal
   }
   final case class Both(subscriber: Subscriber[Any]) extends HasActualSubscriber
 
-  final case class Establishing(
-      subscriber: Subscriber[Any],
-      onCompleteBuffered: Boolean = false,
-      onErrorBuffered: OptionVal[Throwable] = OptionVal.None)
+  final case class Establishing
+    (
+        subscriber: Subscriber[Any],
+        onCompleteBuffered: Boolean = false,
+        onErrorBuffered: OptionVal[Throwable] = OptionVal.None)
       extends HasActualSubscriber
   object Establishing {
     def create(s: Subscriber[_]) = Establishing(s.asInstanceOf[Subscriber[Any]])
@@ -528,9 +529,10 @@ import akka.util.OptionVal
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class ProcessorModule[In, Out, Mat](
-    val createProcessor: () => (Processor[In, Out], Mat),
-    attributes: Attributes = DefaultAttributes.processor)
+@InternalApi private[akka] final case class ProcessorModule[In, Out, Mat]
+  (
+      val createProcessor: () => (Processor[In, Out], Mat),
+      attributes: Attributes = DefaultAttributes.processor)
     extends StreamLayout.AtomicModule[FlowShape[In, Out], Mat] {
   val inPort = Inlet[In]("ProcessorModule.in")
   val outPort = Outlet[Out]("ProcessorModule.out")

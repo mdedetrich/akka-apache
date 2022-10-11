@@ -87,8 +87,10 @@ private[akka] final class StreamRefSerializer(val system: ExtendedActorSystem)
     StreamRefMessages.CumulativeDemand.newBuilder().setSeqNr(d.seqNr).build()
   }
 
-  private def serializeRemoteSinkFailure(
-      d: StreamRefsProtocol.RemoteStreamFailure): StreamRefMessages.RemoteStreamFailure = {
+  private def serializeRemoteSinkFailure
+    (
+        d: StreamRefsProtocol.RemoteStreamFailure)
+    : StreamRefMessages.RemoteStreamFailure = {
     StreamRefMessages.RemoteStreamFailure
       .newBuilder()
       .setCause {
@@ -98,13 +100,17 @@ private[akka] final class StreamRefSerializer(val system: ExtendedActorSystem)
       .build()
   }
 
-  private def serializeRemoteSinkCompleted(
-      d: StreamRefsProtocol.RemoteStreamCompleted): StreamRefMessages.RemoteStreamCompleted = {
+  private def serializeRemoteSinkCompleted
+    (
+        d: StreamRefsProtocol.RemoteStreamCompleted)
+    : StreamRefMessages.RemoteStreamCompleted = {
     StreamRefMessages.RemoteStreamCompleted.newBuilder().setSeqNr(d.seqNr).build()
   }
 
-  private def serializeOnSubscribeHandshake(
-      o: StreamRefsProtocol.OnSubscribeHandshake): StreamRefMessages.OnSubscribeHandshake = {
+  private def serializeOnSubscribeHandshake
+    (
+        o: StreamRefsProtocol.OnSubscribeHandshake)
+    : StreamRefMessages.OnSubscribeHandshake = {
     StreamRefMessages.OnSubscribeHandshake
       .newBuilder()
       .setTargetRef(StreamRefMessages.ActorRef.newBuilder().setPath(Serialization.serializedActorPath(o.targetRef)))

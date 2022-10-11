@@ -38,14 +38,16 @@ object SplitBrainResolverSpec {
   final case class DownCalled(address: Address)
 
   object DowningTestActor {
-    def props(
-        stableAfter: FiniteDuration,
-        strategy: DowningStrategy,
-        probe: ActorRef,
-        selfUniqueAddress: UniqueAddress,
-        selfDc: DataCenter,
-        downAllWhenUnstable: FiniteDuration,
-        tickInterval: FiniteDuration): Props =
+    def props
+      (
+          stableAfter: FiniteDuration,
+          strategy: DowningStrategy,
+          probe: ActorRef,
+          selfUniqueAddress: UniqueAddress,
+          selfDc: DataCenter,
+          downAllWhenUnstable: FiniteDuration,
+          tickInterval: FiniteDuration)
+      : Props =
       Props(
         new DowningTestActor(
           stableAfter,
@@ -57,14 +59,15 @@ object SplitBrainResolverSpec {
           tickInterval))
   }
 
-  class DowningTestActor(
-      stableAfter: FiniteDuration,
-      strategy: DowningStrategy,
-      probe: ActorRef,
-      override val selfUniqueAddress: UniqueAddress,
-      override val selfDc: DataCenter,
-      override val downAllWhenUnstable: FiniteDuration,
-      val tick: FiniteDuration)
+  class DowningTestActor
+    (
+        stableAfter: FiniteDuration,
+        strategy: DowningStrategy,
+        probe: ActorRef,
+        override val selfUniqueAddress: UniqueAddress,
+        override val selfDc: DataCenter,
+        override val downAllWhenUnstable: FiniteDuration,
+        val tick: FiniteDuration)
       extends SplitBrainResolverBase(stableAfter, strategy) {
 
     // manual ticks used in this test
@@ -1100,12 +1103,13 @@ class SplitBrainResolverSpec
 
   "Split Brain Resolver" must {
 
-    class SetupKeepMajority(
-        stableAfter: FiniteDuration,
-        selfUniqueAddress: UniqueAddress,
-        role: Option[String],
-        downAllWhenUnstable: FiniteDuration = Duration.Zero,
-        tickInterval: FiniteDuration = Duration.Zero)
+    class SetupKeepMajority
+      (
+          stableAfter: FiniteDuration,
+          selfUniqueAddress: UniqueAddress,
+          role: Option[String],
+          downAllWhenUnstable: FiniteDuration = Duration.Zero,
+          tickInterval: FiniteDuration = Duration.Zero)
         extends Setup(
           stableAfter,
           new KeepMajority(selfDc, role, selfUniqueAddress),
@@ -1113,30 +1117,33 @@ class SplitBrainResolverSpec
           downAllWhenUnstable,
           tickInterval)
 
-    class SetupKeepOldest(
-        stableAfter: FiniteDuration,
-        selfUniqueAddress: UniqueAddress,
-        downIfAlone: Boolean,
-        role: Option[String])
+    class SetupKeepOldest
+      (
+          stableAfter: FiniteDuration,
+          selfUniqueAddress: UniqueAddress,
+          downIfAlone: Boolean,
+          role: Option[String])
         extends Setup(stableAfter, new KeepOldest(selfDc, downIfAlone, role, selfUniqueAddress), selfUniqueAddress)
 
-    class SetupStaticQuorum(
-        stableAfter: FiniteDuration,
-        selfUniqueAddress: UniqueAddress,
-        size: Int,
-        role: Option[String])
+    class SetupStaticQuorum
+      (
+          stableAfter: FiniteDuration,
+          selfUniqueAddress: UniqueAddress,
+          size: Int,
+          role: Option[String])
         extends Setup(stableAfter, new StaticQuorum(selfDc, size, role, selfUniqueAddress), selfUniqueAddress)
 
     class SetupDownAllNodes(stableAfter: FiniteDuration, selfUniqueAddress: UniqueAddress)
         extends Setup(stableAfter, new DownAllNodes(selfDc, selfUniqueAddress), selfUniqueAddress)
 
-    class SetupLeaseMajority(
-        stableAfter: FiniteDuration,
-        selfUniqueAddress: UniqueAddress,
-        role: Option[String],
-        val testLease: TestLease,
-        downAllWhenUnstable: FiniteDuration = Duration.Zero,
-        tickInterval: FiniteDuration = Duration.Zero)
+    class SetupLeaseMajority
+      (
+          stableAfter: FiniteDuration,
+          selfUniqueAddress: UniqueAddress,
+          role: Option[String],
+          val testLease: TestLease,
+          downAllWhenUnstable: FiniteDuration = Duration.Zero,
+          tickInterval: FiniteDuration = Duration.Zero)
         extends Setup(
           stableAfter,
           new LeaseMajority(
@@ -1150,12 +1157,13 @@ class SplitBrainResolverSpec
           downAllWhenUnstable,
           tickInterval)
 
-    abstract class Setup(
-        stableAfter: FiniteDuration,
-        strategy: DowningStrategy,
-        selfUniqueAddress: UniqueAddress,
-        downAllWhenUnstable: FiniteDuration = Duration.Zero,
-        tickInterval: FiniteDuration = Duration.Zero) {
+    abstract class Setup
+      (
+          stableAfter: FiniteDuration,
+          strategy: DowningStrategy,
+          selfUniqueAddress: UniqueAddress,
+          downAllWhenUnstable: FiniteDuration = Duration.Zero,
+          tickInterval: FiniteDuration = Duration.Zero) {
 
       val a = system.actorOf(
         DowningTestActor

@@ -25,15 +25,17 @@ object WriteAggregatorSpec {
   val KeyA = GSetKey[String]("A")
   val KeyB = ORSetKey[String]("B")
 
-  def writeAggregatorProps(
-      data: GSet[String],
-      consistency: Replicator.WriteConsistency,
-      probes: Map[UniqueAddress, ActorRef],
-      selfUniqueAddress: UniqueAddress,
-      nodes: Vector[UniqueAddress],
-      unreachable: Set[UniqueAddress],
-      replyTo: ActorRef,
-      durable: Boolean): Props =
+  def writeAggregatorProps
+    (
+        data: GSet[String],
+        consistency: Replicator.WriteConsistency,
+        probes: Map[UniqueAddress, ActorRef],
+        selfUniqueAddress: UniqueAddress,
+        nodes: Vector[UniqueAddress],
+        unreachable: Set[UniqueAddress],
+        replyTo: ActorRef,
+        durable: Boolean)
+    : Props =
     Props(
       new TestWriteAggregator(
         KeyA,
@@ -47,16 +49,18 @@ object WriteAggregatorSpec {
         replyTo,
         durable))
 
-  def writeAggregatorPropsWithDelta(
-      data: ORSet[String],
-      delta: Delta,
-      consistency: Replicator.WriteConsistency,
-      probes: Map[UniqueAddress, ActorRef],
-      selfUniqueAddress: UniqueAddress,
-      nodes: Vector[UniqueAddress],
-      unreachable: Set[UniqueAddress],
-      replyTo: ActorRef,
-      durable: Boolean): Props =
+  def writeAggregatorPropsWithDelta
+    (
+        data: ORSet[String],
+        delta: Delta,
+        consistency: Replicator.WriteConsistency,
+        probes: Map[UniqueAddress, ActorRef],
+        selfUniqueAddress: UniqueAddress,
+        nodes: Vector[UniqueAddress],
+        unreachable: Set[UniqueAddress],
+        replyTo: ActorRef,
+        durable: Boolean)
+    : Props =
     Props(
       new TestWriteAggregator(
         KeyB,
@@ -70,17 +74,18 @@ object WriteAggregatorSpec {
         replyTo,
         durable))
 
-  class TestWriteAggregator(
-      key: Key.KeyR,
-      data: ReplicatedData,
-      delta: Option[Delta],
-      consistency: Replicator.WriteConsistency,
-      probes: Map[UniqueAddress, ActorRef],
-      selfUniqueAddress: UniqueAddress,
-      nodes: Vector[UniqueAddress],
-      unreachable: Set[UniqueAddress],
-      replyTo: ActorRef,
-      durable: Boolean)
+  class TestWriteAggregator
+    (
+        key: Key.KeyR,
+        data: ReplicatedData,
+        delta: Option[Delta],
+        consistency: Replicator.WriteConsistency,
+        probes: Map[UniqueAddress, ActorRef],
+        selfUniqueAddress: UniqueAddress,
+        nodes: Vector[UniqueAddress],
+        unreachable: Set[UniqueAddress],
+        replyTo: ActorRef,
+        durable: Boolean)
       extends WriteAggregator(
         key,
         DataEnvelope(data),

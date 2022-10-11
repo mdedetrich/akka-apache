@@ -26,8 +26,10 @@ trait Subclassification[K] {
 
 private[akka] object SubclassifiedIndex {
 
-  class Nonroot[K, V](override val root: SubclassifiedIndex[K, V], val key: K, _values: Set[V])(
-      implicit sc: Subclassification[K])
+  class Nonroot[K, V]
+    (override val root: SubclassifiedIndex[K, V], val key: K, _values: Set[V])
+    (
+        implicit sc: Subclassification[K])
       extends SubclassifiedIndex[K, V](_values) {
 
     override def innerAddValue(key: K, value: V): Changes = {
@@ -144,7 +146,9 @@ private[akka] class SubclassifiedIndex[K, V] private (protected var values: Set[
    *
    * @return the complete changes that should be updated in the cache
    */
-  def removeValue(key: K, value: V): Changes =
+  def removeValue
+    (key: K, value: V)
+    : Changes =
     // the reason for not using the values in the returned diff is that we need to
     // go through the whole tree to find all values for the "changed" keys in other
     // parts of the tree as well, since new nodes might have been created

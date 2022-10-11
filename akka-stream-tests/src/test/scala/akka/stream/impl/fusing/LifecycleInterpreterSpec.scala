@@ -145,11 +145,12 @@ class LifecycleInterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
 
   }
 
-  private[akka] case class PreStartAndPostStopIdentity[T](
-      onStart: () => Unit = () => (),
-      onStop: () => Unit = () => (),
-      onUpstreamCompleted: () => Unit = () => (),
-      onUpstreamFailed: Throwable => Unit = _ => ())
+  private[akka] case class PreStartAndPostStopIdentity[T]
+    (
+        onStart: () => Unit = () => (),
+        onStop: () => Unit = () => (),
+        onUpstreamCompleted: () => Unit = () => (),
+        onUpstreamFailed: Throwable => Unit = _ => ())
       extends SimpleLinearGraphStage[T] {
 
     override def createLogic(attributes: Attributes): GraphStageLogic =

@@ -25,12 +25,13 @@ import scala.concurrent.ExecutionContext
  */
 @InternalApi
 private[akka] object RememberEntityStarter {
-  def props(
-      region: ActorRef,
-      shard: ActorRef,
-      shardId: ShardRegion.ShardId,
-      ids: Set[ShardRegion.EntityId],
-      settings: ClusterShardingSettings) =
+  def props
+    (
+        region: ActorRef,
+        shard: ActorRef,
+        shardId: ShardRegion.ShardId,
+        ids: Set[ShardRegion.EntityId],
+        settings: ClusterShardingSettings) =
     Props(new RememberEntityStarter(region, shard, shardId, ids, settings))
 
   private final case class StartBatch(batchSize: Int) extends NoSerializationVerificationNeeded
@@ -41,12 +42,13 @@ private[akka] object RememberEntityStarter {
  * INTERNAL API: Actor responsible for starting entities when rememberEntities is enabled
  */
 @InternalApi
-private[akka] final class RememberEntityStarter(
-    region: ActorRef,
-    shard: ActorRef,
-    shardId: ShardRegion.ShardId,
-    ids: Set[ShardRegion.EntityId],
-    settings: ClusterShardingSettings)
+private[akka] final class RememberEntityStarter
+  (
+      region: ActorRef,
+      shard: ActorRef,
+      shardId: ShardRegion.ShardId,
+      ids: Set[ShardRegion.EntityId],
+      settings: ClusterShardingSettings)
     extends Actor
     with ActorLogging
     with Timers {

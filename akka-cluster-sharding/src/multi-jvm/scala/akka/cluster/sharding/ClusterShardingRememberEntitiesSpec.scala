@@ -29,10 +29,11 @@ object ClusterShardingRememberEntitiesSpec {
 
 }
 
-abstract class ClusterShardingRememberEntitiesSpecConfig(
-    mode: String,
-    rememberEntities: Boolean,
-    rememberEntitiesStore: String = ClusterShardingSettings.RememberEntitiesStoreDData)
+abstract class ClusterShardingRememberEntitiesSpecConfig
+  (
+      mode: String,
+      rememberEntities: Boolean,
+      rememberEntitiesStore: String = ClusterShardingSettings.RememberEntitiesStoreDData)
     extends MultiNodeClusterShardingConfig(
       mode,
       rememberEntities,

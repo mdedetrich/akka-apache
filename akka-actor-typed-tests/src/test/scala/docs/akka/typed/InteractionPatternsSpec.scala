@@ -184,11 +184,12 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
       }
     }
 
-    class Buncher(
-        timers: TimerScheduler[Buncher.Command],
-        target: ActorRef[Buncher.Batch],
-        after: FiniteDuration,
-        maxSize: Int) {
+    class Buncher
+      (
+          timers: TimerScheduler[Buncher.Command],
+          target: ActorRef[Buncher.Batch],
+          after: FiniteDuration,
+          maxSize: Int) {
       import Buncher._
 
       private def idle(): Behavior[Command] = {
@@ -399,11 +400,13 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
       }
 
       // per session actor behavior
-      def prepareToLeaveHome(
-          whoIsLeaving: String,
-          replyTo: ActorRef[ReadyToLeaveHome],
-          keyCabinet: ActorRef[KeyCabinet.GetKeys],
-          drawer: ActorRef[Drawer.GetWallet]): Behavior[NotUsed] = {
+      def prepareToLeaveHome
+        (
+            whoIsLeaving: String,
+            replyTo: ActorRef[ReadyToLeaveHome],
+            keyCabinet: ActorRef[KeyCabinet.GetKeys],
+            drawer: ActorRef[Drawer.GetWallet])
+        : Behavior[NotUsed] = {
         // we don't _really_ care about the actor protocol here as nobody will send us
         // messages except for responses to our queries, so we just accept any kind of message
         // but narrow that to more limited types when we interact

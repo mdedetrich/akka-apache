@@ -59,10 +59,12 @@ object DelayStrategy {
    * @param needsIncrease if `true` delay increases, if `false` delay resets to `initialDelay`
    * @param initialDelay initial delay for each of elements
    */
-  def linearIncreasingDelay[T](
-      increaseStep: java.time.Duration,
-      needsIncrease: T => Boolean,
-      initialDelay: java.time.Duration): DelayStrategy[T] =
+  def linearIncreasingDelay[T]
+    (
+        increaseStep: java.time.Duration,
+        needsIncrease: T => Boolean,
+        initialDelay: java.time.Duration)
+    : DelayStrategy[T] =
     linearIncreasingDelay(increaseStep, needsIncrease, initialDelay, java.time.Duration.ofNanos(Long.MaxValue))
 
   /**
@@ -75,11 +77,13 @@ object DelayStrategy {
    * @param initialDelay initial delay for each of elements
    * @param maxDelay limits maximum delay
    */
-  def linearIncreasingDelay[T](
-      increaseStep: java.time.Duration,
-      needsIncrease: T => Boolean,
-      initialDelay: java.time.Duration,
-      maxDelay: java.time.Duration): DelayStrategy[T] = {
+  def linearIncreasingDelay[T]
+    (
+        increaseStep: java.time.Duration,
+        needsIncrease: T => Boolean,
+        initialDelay: java.time.Duration,
+        maxDelay: java.time.Duration)
+    : DelayStrategy[T] = {
     require(increaseStep.compareTo(java.time.Duration.ZERO) > 0, "Increase step must be positive")
     require(maxDelay.compareTo(initialDelay) >= 0, "Initial delay may not exceed max delay")
 

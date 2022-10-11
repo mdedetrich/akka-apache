@@ -163,8 +163,10 @@ class WithContextUsageSpec extends StreamSpec {
     def genValue(ix: Int) = s"v$ix"
   }
 
-  def createSourceWithContext(
-      committableMessages: Vector[Consumer.CommittableMessage[Record]]): SourceWithContext[Record, Offset, NotUsed] =
+  def createSourceWithContext
+    (
+        committableMessages: Vector[Consumer.CommittableMessage[Record]])
+    : SourceWithContext[Record, Offset, NotUsed] =
     Consumer
       .committableSource(committableMessages)
       .asSourceWithContext(m => Offset(m.committableOffset.offset))
@@ -203,8 +205,10 @@ case class Committed[R](record: R, offset: Int)
 case class MultiRecord(records: immutable.Seq[Record])
 
 object Consumer {
-  def committableSource(
-      committableMessages: Vector[CommittableMessage[Record]]): Source[CommittableMessage[Record], NotUsed] = {
+  def committableSource
+    (
+        committableMessages: Vector[CommittableMessage[Record]])
+    : Source[CommittableMessage[Record], NotUsed] = {
     Source(committableMessages)
   }
   case class CommittableMessage[V](record: V, committableOffset: CommittableOffset)

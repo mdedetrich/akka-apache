@@ -157,11 +157,13 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
    * previous timer is not received, even if it was already enqueued
    * in the mailbox when the new timer was started.
    */
-  final def startTimerWithFixedDelay(
-      key: Any,
-      msg: Any,
-      initialDelay: java.time.Duration,
-      delay: java.time.Duration): Unit =
+  final def startTimerWithFixedDelay
+    (
+        key: Any,
+        msg: Any,
+        initialDelay: java.time.Duration,
+        delay: java.time.Duration)
+    : Unit =
     startTimerWithFixedDelay(key, msg, initialDelay.asScala, delay.asScala)
 
   /**
@@ -271,11 +273,13 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
    * previous timer is not received, even if it was already enqueued
    * in the mailbox when the new timer was started.
    */
-  final def startTimerAtFixedRate(
-      key: Any,
-      msg: Any,
-      initialDelay: java.time.Duration,
-      interval: java.time.Duration): Unit =
+  final def startTimerAtFixedRate
+    (
+        key: Any,
+        msg: Any,
+        initialDelay: java.time.Duration,
+        interval: java.time.Duration)
+    : Unit =
     startTimerAtFixedRate(key, msg, initialDelay.asScala, interval.asScala)
 
   /**

@@ -298,11 +298,12 @@ object MultiNodeSpec {
  * `AskTimeoutException: sending to terminated ref breaks promises`. Using lazy
  * val is fine.
  */
-abstract class MultiNodeSpec(
-    val myself: RoleName,
-    _system: ActorSystem,
-    _roles: immutable.Seq[RoleName],
-    deployments: RoleName => Seq[String])
+abstract class MultiNodeSpec
+  (
+      val myself: RoleName,
+      _system: ActorSystem,
+      _roles: immutable.Seq[RoleName],
+      deployments: RoleName => Seq[String])
     extends TestKit(_system)
     with MultiNodeSpecCallbacks {
 

@@ -28,10 +28,11 @@ import akka.stream.stage._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class QueueSource[T](
-    maxBuffer: Int,
-    overflowStrategy: OverflowStrategy,
-    maxConcurrentOffers: Int)
+@InternalApi private[akka] final class QueueSource[T]
+  (
+      maxBuffer: Int,
+      overflowStrategy: OverflowStrategy,
+      maxConcurrentOffers: Int)
     extends GraphStageWithMaterializedValue[SourceShape[T], SourceQueueWithComplete[T]] {
   import QueueSource._
 

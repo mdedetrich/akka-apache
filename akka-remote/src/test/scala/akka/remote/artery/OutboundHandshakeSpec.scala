@@ -28,13 +28,14 @@ class OutboundHandshakeSpec extends AkkaSpec("""
 
   private val outboundEnvelopePool = ReusableOutboundEnvelope.createObjectPool(capacity = 16)
 
-  private def setupStream(
-      outboundContext: OutboundContext,
-      timeout: FiniteDuration = 5.seconds,
-      retryInterval: FiniteDuration = 10.seconds,
-      injectHandshakeInterval: FiniteDuration = 10.seconds,
-      livenessProbeInterval: Duration = Duration.Undefined)
-      : (TestPublisher.Probe[String], TestSubscriber.Probe[Any]) = {
+  private def setupStream
+    (
+        outboundContext: OutboundContext,
+        timeout: FiniteDuration = 5.seconds,
+        retryInterval: FiniteDuration = 10.seconds,
+        injectHandshakeInterval: FiniteDuration = 10.seconds,
+        livenessProbeInterval: Duration = Duration.Undefined)
+    : (TestPublisher.Probe[String], TestSubscriber.Probe[Any]) = {
 
     TestSource
       .probe[String]

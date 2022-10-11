@@ -41,7 +41,8 @@ class MyUnboundedMailbox extends MailboxType with ProducesMessageQueue[MyUnbound
   import MyUnboundedMailbox._
 
   // This constructor signature must exist, it will be called by Akka
-  def this(settings: ActorSystem.Settings, config: Config) = {
+  def this
+    (settings: ActorSystem.Settings, config: Config) = {
     // put your initialization code here
     this()
   }

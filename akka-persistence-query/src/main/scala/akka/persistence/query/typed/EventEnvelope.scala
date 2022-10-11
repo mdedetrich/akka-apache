@@ -11,24 +11,28 @@ import akka.persistence.query.Offset
 import akka.util.HashCode
 
 object EventEnvelope {
-  def apply[Event](
-      offset: Offset,
-      persistenceId: String,
-      sequenceNr: Long,
-      event: Event,
-      timestamp: Long,
-      entityType: String,
-      slice: Int): EventEnvelope[Event] =
+  def apply[Event]
+    (
+        offset: Offset,
+        persistenceId: String,
+        sequenceNr: Long,
+        event: Event,
+        timestamp: Long,
+        entityType: String,
+        slice: Int)
+    : EventEnvelope[Event] =
     new EventEnvelope(offset, persistenceId, sequenceNr, Option(event), timestamp, None, entityType, slice)
 
-  def create[Event](
-      offset: Offset,
-      persistenceId: String,
-      sequenceNr: Long,
-      event: Event,
-      timestamp: Long,
-      entityType: String,
-      slice: Int): EventEnvelope[Event] =
+  def create[Event]
+    (
+        offset: Offset,
+        persistenceId: String,
+        sequenceNr: Long,
+        event: Event,
+        timestamp: Long,
+        entityType: String,
+        slice: Int)
+    : EventEnvelope[Event] =
     apply(offset, persistenceId, sequenceNr, event, timestamp, entityType, slice)
 
   def unapply[Event](arg: EventEnvelope[Event]): Option[(Offset, String, Long, Option[Event], Long)] =
@@ -50,15 +54,16 @@ object EventEnvelope {
  * API May Change
  */
 @ApiMayChange
-final class EventEnvelope[Event](
-    val offset: Offset,
-    val persistenceId: String,
-    val sequenceNr: Long,
-    val eventOption: Option[Event],
-    val timestamp: Long,
-    val eventMetadata: Option[Any],
-    val entityType: String,
-    val slice: Int) {
+final class EventEnvelope[Event]
+  (
+      val offset: Offset,
+      val persistenceId: String,
+      val sequenceNr: Long,
+      val eventOption: Option[Event],
+      val timestamp: Long,
+      val eventMetadata: Option[Any],
+      val entityType: String,
+      val slice: Int) {
 
   def event: Event =
     eventOption match {

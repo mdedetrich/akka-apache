@@ -23,9 +23,10 @@ class ClusterReceptionistStateSpec extends ScalaTestWithActorTestKit with AnyWor
   val SomeService = ServiceKey[Int]("boy-oh-boy!")
   val SomeOtherService = ServiceKey[Int]("disappointing!")
 
-  private def emptyState(
-      distributedKeyCount: Int = 1,
-      self: UniqueAddress = UniqueAddress(Address("127.0.0.1", "MySystem"), 555L)) =
+  private def emptyState
+    (
+        distributedKeyCount: Int = 1,
+        self: UniqueAddress = UniqueAddress(Address("127.0.0.1", "MySystem"), 555L)) =
     ClusterReceptionist.State(
       registry = ShardedServiceRegistry(distributedKeyCount).addNode(self),
       servicesPerActor = Map.empty,

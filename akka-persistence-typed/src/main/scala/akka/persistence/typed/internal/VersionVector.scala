@@ -210,7 +210,7 @@ private[akka] sealed abstract class VersionVector {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class OneVersionVector private[akka] (key: String, version: Long)
+@InternalApi private[akka] final case class OneVersionVector private[akka](key: String, version: Long)
     extends VersionVector {
   import VersionVector.Timestamp
 

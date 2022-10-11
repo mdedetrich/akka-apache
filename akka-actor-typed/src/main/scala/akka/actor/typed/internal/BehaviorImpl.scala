@@ -121,10 +121,11 @@ private[akka] object BehaviorTags {
       }
   }
 
-  class ReceiveBehavior[T](
-      val onMessage: (SAC[T], T) => Behavior[T],
-      onSignal: PartialFunction[(SAC[T], Signal), Behavior[T]] =
-        BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
+  class ReceiveBehavior[T]
+    (
+        val onMessage: (SAC[T], T) => Behavior[T],
+        onSignal: PartialFunction[(SAC[T], Signal), Behavior[T]] =
+          BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
       extends ExtensibleBehavior[T] {
 
     override def receiveSignal(ctx: AC[T], msg: Signal): Behavior[T] = {
@@ -143,10 +144,11 @@ private[akka] object BehaviorTags {
    * We implement it separately in order to be able to avoid wrapping each function in
    * another function which drops the context parameter.
    */
-  class ReceiveMessageBehavior[T](
-      val onMessage: T => Behavior[T],
-      onSignal: PartialFunction[(SAC[T], Signal), Behavior[T]] =
-        BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
+  class ReceiveMessageBehavior[T]
+    (
+        val onMessage: T => Behavior[T],
+        onSignal: PartialFunction[(SAC[T], Signal), Behavior[T]] =
+          BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
       extends ExtensibleBehavior[T] {
 
     override def receive(ctx: AC[T], msg: T) = onMessage(msg)

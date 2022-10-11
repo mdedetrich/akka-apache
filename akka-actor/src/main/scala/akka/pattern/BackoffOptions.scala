@@ -62,12 +62,14 @@ object BackoffOpts {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  def onFailure(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): BackoffOnFailureOptions =
+  def onFailure
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    : BackoffOnFailureOptions =
     BackoffOnFailureOptionsImpl(childProps, childName, minBackoff, maxBackoff, randomFactor)
 
   /**
@@ -116,12 +118,14 @@ object BackoffOpts {
    *                       random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                       In order to skip this additional delay pass in `0`.
    */
-  def onFailure(
-      childProps: Props,
-      childName: String,
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double): BackoffOnFailureOptions =
+  def onFailure
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double)
+    : BackoffOnFailureOptions =
     onFailure(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
 
   /**
@@ -177,12 +181,14 @@ object BackoffOpts {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  def onStop(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): BackoffOnStopOptions =
+  def onStop
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    : BackoffOnStopOptions =
     BackoffOnStopOptionsImpl(childProps, childName, minBackoff, maxBackoff, randomFactor)
 
   /**
@@ -238,12 +244,14 @@ object BackoffOpts {
    *                       random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                       In order to skip this additional delay pass in `0`.
    */
-  def onStop(
-      childProps: Props,
-      childName: String,
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double): BackoffOnStopOptions =
+  def onStop
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double)
+    : BackoffOnStopOptions =
     onStop(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
 }
 
@@ -335,16 +343,17 @@ sealed trait BackoffOnStopOptions extends ExtendedBackoffOptions[BackoffOnStopOp
 @DoNotInherit
 sealed trait BackoffOnFailureOptions extends ExtendedBackoffOptions[BackoffOnFailureOptions]
 
-private final case class BackoffOnStopOptionsImpl[T](
-    childProps: Props,
-    childName: String,
-    minBackoff: FiniteDuration,
-    maxBackoff: FiniteDuration,
-    randomFactor: Double,
-    reset: Option[BackoffReset] = None,
-    supervisorStrategy: OneForOneStrategy = OneForOneStrategy()(SupervisorStrategy.defaultStrategy.decider),
-    handlingWhileStopped: HandlingWhileStopped = ForwardDeathLetters,
-    finalStopMessage: Option[Any => Boolean] = None)
+private final case class BackoffOnStopOptionsImpl[T]
+  (
+      childProps: Props,
+      childName: String,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      randomFactor: Double,
+      reset: Option[BackoffReset] = None,
+      supervisorStrategy: OneForOneStrategy = OneForOneStrategy()(SupervisorStrategy.defaultStrategy.decider),
+      handlingWhileStopped: HandlingWhileStopped = ForwardDeathLetters,
+      finalStopMessage: Option[Any => Boolean] = None)
     extends BackoffOnStopOptions {
 
   private val backoffReset = reset.getOrElse(AutoReset(minBackoff))
@@ -389,15 +398,16 @@ private final case class BackoffOnStopOptionsImpl[T](
   }
 }
 
-private final case class BackoffOnFailureOptionsImpl[T](
-    childProps: Props,
-    childName: String,
-    minBackoff: FiniteDuration,
-    maxBackoff: FiniteDuration,
-    randomFactor: Double,
-    reset: Option[BackoffReset] = None,
-    supervisorStrategy: OneForOneStrategy = OneForOneStrategy()(SupervisorStrategy.defaultStrategy.decider),
-    handlingWhileStopped: HandlingWhileStopped = ForwardDeathLetters)
+private final case class BackoffOnFailureOptionsImpl[T]
+  (
+      childProps: Props,
+      childName: String,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      randomFactor: Double,
+      reset: Option[BackoffReset] = None,
+      supervisorStrategy: OneForOneStrategy = OneForOneStrategy()(SupervisorStrategy.defaultStrategy.decider),
+      handlingWhileStopped: HandlingWhileStopped = ForwardDeathLetters)
     extends BackoffOnFailureOptions {
 
   private val backoffReset = reset.getOrElse(AutoReset(minBackoff))

@@ -50,11 +50,13 @@ trait EventsBySliceQuery extends ReadJournal {
    * events when new events are persisted. Corresponding query that is completed when it reaches the end of the
    * currently stored events is provided by [[CurrentEventsBySliceQuery.currentEventsBySlices]].
    */
-  def eventsBySlices[Event](
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[EventEnvelope[Event], NotUsed]
+  def eventsBySlices[Event]
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[EventEnvelope[Event], NotUsed]
 
   def sliceForPersistenceId(persistenceId: String): Int
 

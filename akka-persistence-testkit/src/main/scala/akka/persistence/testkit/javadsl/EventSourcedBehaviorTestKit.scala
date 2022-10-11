@@ -56,12 +56,13 @@ object EventSourcedBehaviorTestKit {
    * Customization of which serialization checks that are performed.
    * `equals` must be implemented (or using `case class`) when `verifyEquality` is enabled.
    */
-  final class SerializationSettings(
-      val enabled: Boolean,
-      val verifyEquality: Boolean,
-      val verifyCommands: Boolean,
-      val verifyEvents: Boolean,
-      val verifyState: Boolean) {
+  final class SerializationSettings
+    (
+        val enabled: Boolean,
+        val verifyEquality: Boolean,
+        val verifyCommands: Boolean,
+        val verifyEvents: Boolean,
+        val verifyState: Boolean) {
 
     def withEnabled(value: Boolean): SerializationSettings =
       copy(enabled = value)
@@ -78,12 +79,14 @@ object EventSourcedBehaviorTestKit {
     def withVerifyState(value: Boolean): SerializationSettings =
       copy(verifyState = value)
 
-    private def copy(
-        enabled: Boolean = this.enabled,
-        verifyEquality: Boolean = this.verifyEquality,
-        verifyCommands: Boolean = this.verifyCommands,
-        verifyEvents: Boolean = this.verifyEvents,
-        verifyState: Boolean = this.verifyState): SerializationSettings = {
+    private def copy
+      (
+          enabled: Boolean = this.enabled,
+          verifyEquality: Boolean = this.verifyEquality,
+          verifyCommands: Boolean = this.verifyCommands,
+          verifyEvents: Boolean = this.verifyEvents,
+          verifyState: Boolean = this.verifyState)
+      : SerializationSettings = {
       new SerializationSettings(enabled, verifyEquality, verifyCommands, verifyEvents, verifyState)
     }
   }
@@ -91,9 +94,11 @@ object EventSourcedBehaviorTestKit {
   /**
    * Factory method to create a new EventSourcedBehaviorTestKit.
    */
-  def create[Command, Event, State](
-      system: ActorSystem[_],
-      behavior: Behavior[Command]): EventSourcedBehaviorTestKit[Command, Event, State] =
+  def create[Command, Event, State]
+    (
+        system: ActorSystem[_],
+        behavior: Behavior[Command])
+    : EventSourcedBehaviorTestKit[Command, Event, State] =
     create(system, behavior, enabledSerializationSettings)
 
   /**
@@ -101,10 +106,12 @@ object EventSourcedBehaviorTestKit {
    *
    * Note that `equals` must be implemented in the commands, events and state if `verifyEquality` is enabled.
    */
-  def create[Command, Event, State](
-      system: ActorSystem[_],
-      behavior: Behavior[Command],
-      serializationSettings: SerializationSettings): EventSourcedBehaviorTestKit[Command, Event, State] = {
+  def create[Command, Event, State]
+    (
+        system: ActorSystem[_],
+        behavior: Behavior[Command],
+        serializationSettings: SerializationSettings)
+    : EventSourcedBehaviorTestKit[Command, Event, State] = {
     val scaladslSettings = new scaladsl.EventSourcedBehaviorTestKit.SerializationSettings(
       enabled = serializationSettings.enabled,
       verifyEquality = serializationSettings.verifyEquality,
@@ -117,8 +124,9 @@ object EventSourcedBehaviorTestKit {
   /**
    * The result of running a command.
    */
-  @DoNotInherit class CommandResult[Command, Event, State](
-      delegate: scaladsl.EventSourcedBehaviorTestKit.CommandResult[Command, Event, State]) {
+  @DoNotInherit class CommandResult[Command, Event, State]
+    (
+        delegate: scaladsl.EventSourcedBehaviorTestKit.CommandResult[Command, Event, State]) {
 
     /**
      * The command that was run.
@@ -170,8 +178,9 @@ object EventSourcedBehaviorTestKit {
    * The result of running a command with a `ActorRef<R> replyTo`, i.e. the `runCommand` with a
    * `Function<ActorRef<R>, Command>` parameter.
    */
-  final class CommandResultWithReply[Command, Event, State, Reply](
-      delegate: scaladsl.EventSourcedBehaviorTestKit.CommandResultWithReply[Command, Event, State, Reply])
+  final class CommandResultWithReply[Command, Event, State, Reply]
+    (
+        delegate: scaladsl.EventSourcedBehaviorTestKit.CommandResultWithReply[Command, Event, State, Reply])
       extends CommandResult[Command, Event, State](delegate) {
 
     /**
@@ -209,8 +218,9 @@ object EventSourcedBehaviorTestKit {
 }
 
 @ApiMayChange
-final class EventSourcedBehaviorTestKit[Command, Event, State](
-    delegate: scaladsl.EventSourcedBehaviorTestKit[Command, Event, State]) {
+final class EventSourcedBehaviorTestKit[Command, Event, State]
+  (
+      delegate: scaladsl.EventSourcedBehaviorTestKit[Command, Event, State]) {
 
   import EventSourcedBehaviorTestKit._
 

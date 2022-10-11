@@ -81,16 +81,17 @@ import akka.util.ConstantFun.scalaIdentityFunction
 
   private final case class ConsumerTerminated(consumer: ActorRef[_]) extends InternalCommand
 
-  private final case class State[A](
-      producerController: ActorRef[ProducerControllerImpl.InternalCommand],
-      producerId: String,
-      consumer: ActorRef[ConsumerController.Delivery[A]],
-      receivedSeqNr: SeqNr,
-      confirmedSeqNr: SeqNr,
-      requestedSeqNr: SeqNr,
-      collectedChunks: List[SequencedMessage[A]],
-      registering: Option[ActorRef[ProducerController.Command[A]]],
-      stopping: Boolean) {
+  private final case class State[A]
+    (
+        producerController: ActorRef[ProducerControllerImpl.InternalCommand],
+        producerId: String,
+        consumer: ActorRef[ConsumerController.Delivery[A]],
+        receivedSeqNr: SeqNr,
+        confirmedSeqNr: SeqNr,
+        requestedSeqNr: SeqNr,
+        collectedChunks: List[SequencedMessage[A]],
+        registering: Option[ActorRef[ProducerController.Command[A]]],
+        stopping: Boolean) {
 
     def isNextExpected(seqMsg: SequencedMessage[A]): Boolean =
       seqMsg.seqNr == receivedSeqNr + 1
@@ -111,9 +112,11 @@ import akka.util.ConstantFun.scalaIdentityFunction
     }
   }
 
-  def apply[A](
-      serviceKey: Option[ServiceKey[Command[A]]],
-      settings: ConsumerController.Settings): Behavior[Command[A]] = {
+  def apply[A]
+    (
+        serviceKey: Option[ServiceKey[Command[A]]],
+        settings: ConsumerController.Settings)
+    : Behavior[Command[A]] = {
     Behaviors
       .withStash[InternalCommand](settings.flowControlWindow) { stashBuffer =>
         Behaviors.setup { context =>
@@ -126,9 +129,11 @@ import akka.util.ConstantFun.scalaIdentityFunction
             }
             Behaviors.withTimers { timers =>
               // wait for the `Start` message from the consumer, SequencedMessage will be stashed
-              def waitForStart(
-                  registering: Option[ActorRef[ProducerController.Command[A]]],
-                  stopping: Boolean): Behavior[InternalCommand] = {
+              def waitForStart
+                (
+                    registering: Option[ActorRef[ProducerController.Command[A]]],
+                    stopping: Boolean)
+                : Behavior[InternalCommand] = {
                 Behaviors.receiveMessagePartial {
                   case reg: RegisterToProducerController[A] @unchecked =>
                     reg.producerController ! ProducerController.RegisterConsumer(context.self)
@@ -199,11 +204,13 @@ import akka.util.ConstantFun.scalaIdentityFunction
     }
   }
 
-  private def initialState[A](
-      context: ActorContext[InternalCommand],
-      start: Start[A],
-      registering: Option[ActorRef[ProducerController.Command[A]]],
-      stopping: Boolean): State[A] = {
+  private def initialState[A]
+    (
+        context: ActorContext[InternalCommand],
+        start: Start[A],
+        registering: Option[ActorRef[ProducerController.Command[A]]],
+        stopping: Boolean)
+    : State[A] = {
     State(
       producerController = context.system.deadLetters,
       "n/a",
@@ -221,10 +228,11 @@ import akka.util.ConstantFun.scalaIdentityFunction
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
   }
 
-  private class RetryTimer(
-      timers: TimerScheduler[ConsumerControllerImpl.InternalCommand],
-      val minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration) {
+  private class RetryTimer
+    (
+        timers: TimerScheduler[ConsumerControllerImpl.InternalCommand],
+        val minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration) {
     private var _interval = minBackoff
 
     def interval(): FiniteDuration =
@@ -656,10 +664,12 @@ private class ConsumerControllerImpl[A] private (
     }
   }
 
-  private def receiveStart(
-      s: State[A],
-      start: Start[A],
-      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+  private def receiveStart
+    (
+        s: State[A],
+        start: Start[A],
+        nextBehavior: State[A] => Behavior[InternalCommand])
+    : Behavior[InternalCommand] = {
     ConsumerControllerImpl.enforceLocalConsumer(start.deliverTo)
     if (start.deliverTo == s.consumer) {
       nextBehavior(s)
@@ -671,10 +681,12 @@ private class ConsumerControllerImpl[A] private (
     }
   }
 
-  private def receiveRegisterToProducerController(
-      s: State[A],
-      reg: RegisterToProducerController[A],
-      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+  private def receiveRegisterToProducerController
+    (
+        s: State[A],
+        reg: RegisterToProducerController[A],
+        nextBehavior: State[A] => Behavior[InternalCommand])
+    : Behavior[InternalCommand] = {
     if (reg.producerController != s.producerController) {
       context.log.debug2(
         "Register to new ProducerController [{}], previous was [{}].",
@@ -688,9 +700,11 @@ private class ConsumerControllerImpl[A] private (
     }
   }
 
-  private def receiveDeliverThenStop(
-      s: State[A],
-      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+  private def receiveDeliverThenStop
+    (
+        s: State[A],
+        nextBehavior: State[A] => Behavior[InternalCommand])
+    : Behavior[InternalCommand] = {
     if (stashBuffer.isEmpty && s.receivedSeqNr == s.confirmedSeqNr) {
       context.log.debug("Stopped at seqNr [{}], no buffered messages.", s.confirmedSeqNr)
       Behaviors.stopped

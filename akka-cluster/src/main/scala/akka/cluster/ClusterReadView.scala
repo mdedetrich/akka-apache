@@ -24,11 +24,12 @@ import akka.dispatch.UnboundedMessageQueueSemantics
  * INTERNAL API
  */
 @InternalApi private[akka] object ClusterReadView {
-  final case class State(
-      clusterState: CurrentClusterState,
-      reachability: Reachability,
-      selfMember: Member,
-      latestStats: CurrentInternalStats)
+  final case class State
+    (
+        clusterState: CurrentClusterState,
+        reachability: Reachability,
+        selfMember: Member,
+        latestStats: CurrentInternalStats)
 
 }
 

@@ -137,11 +137,13 @@ object RemoteInstrumentsSerializationSpec {
     override def isDebugEnabled(logClass: Class[_], logSource: String): Boolean = logSource == "DebugSource"
   }
 
-  def testInstrument(
-      id: Int,
-      metadata: String,
-      sentThrowable: Throwable = null,
-      receiveThrowable: Throwable = null): RemoteInstrument = {
+  def testInstrument
+    (
+        id: Int,
+        metadata: String,
+        sentThrowable: Throwable = null,
+        receiveThrowable: Throwable = null)
+    : RemoteInstrument = {
     new RemoteInstrument {
       private val charset = Charset.forName("UTF-8")
       private val encoder = charset.newEncoder()
@@ -149,11 +151,13 @@ object RemoteInstrumentsSerializationSpec {
 
       override def identifier: Byte = id.toByte
 
-      override def remoteWriteMetadata(
-          recipient: ActorRef,
-          message: Object,
-          sender: ActorRef,
-          buffer: ByteBuffer): Unit = {
+      override def remoteWriteMetadata
+        (
+            recipient: ActorRef,
+            message: Object,
+            sender: ActorRef,
+            buffer: ByteBuffer)
+        : Unit = {
         buffer.putInt(metadata.length)
         if (sentThrowable ne null) throw sentThrowable
         encoder.encode(CharBuffer.wrap(metadata), buffer, true)
@@ -161,11 +165,13 @@ object RemoteInstrumentsSerializationSpec {
         encoder.reset()
       }
 
-      override def remoteReadMetadata(
-          recipient: ActorRef,
-          message: Object,
-          sender: ActorRef,
-          buffer: ByteBuffer): Unit = {
+      override def remoteReadMetadata
+        (
+            recipient: ActorRef,
+            message: Object,
+            sender: ActorRef,
+            buffer: ByteBuffer)
+        : Unit = {
         val size = buffer.getInt
         if (receiveThrowable ne null) throw receiveThrowable
         val charBuffer = CharBuffer.allocate(size)
@@ -176,19 +182,23 @@ object RemoteInstrumentsSerializationSpec {
         recipient ! s"$message-$identifier-$string"
       }
 
-      override def remoteMessageSent(
-          recipient: ActorRef,
-          message: Object,
-          sender: ActorRef,
-          size: Int,
-          time: Long): Unit = ()
+      override def remoteMessageSent
+        (
+            recipient: ActorRef,
+            message: Object,
+            sender: ActorRef,
+            size: Int,
+            time: Long)
+        : Unit = ()
 
-      override def remoteMessageReceived(
-          recipient: ActorRef,
-          message: Object,
-          sender: ActorRef,
-          size: Int,
-          time: Long): Unit = ()
+      override def remoteMessageReceived
+        (
+            recipient: ActorRef,
+            message: Object,
+            sender: ActorRef,
+            size: Int,
+            time: Long)
+        : Unit = ()
     }
   }
 
@@ -205,11 +215,13 @@ object RemoteInstrumentsSerializationSpec {
     ri.deserializeRaw(mockInbound)
   }
 
-  def serializeDeserialize(
-      riS: RemoteInstruments,
-      riD: RemoteInstruments,
-      recipient: ActorRef,
-      message: AnyRef): Unit = {
+  def serializeDeserialize
+    (
+        riS: RemoteInstruments,
+        riD: RemoteInstruments,
+        recipient: ActorRef,
+        message: AnyRef)
+    : Unit = {
     val buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN)
     serialize(riS, buffer)
     buffer.flip()

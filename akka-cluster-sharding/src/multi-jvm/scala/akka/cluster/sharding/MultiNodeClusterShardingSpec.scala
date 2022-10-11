@@ -119,12 +119,14 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
    *                      doing them after `onJoinedRunOnFrom` more flexibility.
    *                      Defaults to true, running member status checks.
    */
-  protected def join(
-      from: RoleName,
-      to: RoleName,
-      onJoinedRunOnFrom: => Unit = (),
-      assertNodeUp: Boolean = true,
-      max: FiniteDuration = 20.seconds): Unit = {
+  protected def join
+    (
+        from: RoleName,
+        to: RoleName,
+        onJoinedRunOnFrom: => Unit = (),
+        assertNodeUp: Boolean = true,
+        max: FiniteDuration = 20.seconds)
+    : Unit = {
 
     runOn(from) {
       cluster.join(node(to).address)
@@ -140,15 +142,17 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
     enterBarrier(from.name + "-joined")
   }
 
-  protected def startSharding(
-      sys: ActorSystem,
-      typeName: String,
-      entityProps: Props = TestActors.echoActorProps,
-      settings: ClusterShardingSettings = settings,
-      extractEntityId: ShardRegion.ExtractEntityId = intExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId = intExtractShardId,
-      allocationStrategy: ShardAllocationStrategy = defaultShardAllocationStrategy,
-      handOffStopMessage: Any = PoisonPill): ActorRef = {
+  protected def startSharding
+    (
+        sys: ActorSystem,
+        typeName: String,
+        entityProps: Props = TestActors.echoActorProps,
+        settings: ClusterShardingSettings = settings,
+        extractEntityId: ShardRegion.ExtractEntityId = intExtractEntityId,
+        extractShardId: ShardRegion.ExtractShardId = intExtractShardId,
+        allocationStrategy: ShardAllocationStrategy = defaultShardAllocationStrategy,
+        handOffStopMessage: Any = PoisonPill)
+    : ActorRef = {
 
     ClusterSharding(sys).start(
       typeName,
@@ -160,12 +164,14 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
       handOffStopMessage)
   }
 
-  protected def startProxy(
-      sys: ActorSystem,
-      typeName: String,
-      role: Option[String],
-      extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId): ActorRef = {
+  protected def startProxy
+    (
+        sys: ActorSystem,
+        typeName: String,
+        role: Option[String],
+        extractEntityId: ShardRegion.ExtractEntityId,
+        extractShardId: ShardRegion.ExtractShardId)
+    : ActorRef = {
     ClusterSharding(sys).startProxy(typeName, role, extractEntityId, extractShardId)
   }
 

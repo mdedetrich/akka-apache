@@ -63,10 +63,12 @@ object EventSourcedBehaviorTestKitSpec {
     def apply(persistenceId: PersistenceId, emptyState: State): Behavior[Command] =
       Behaviors.setup(ctx => counter(ctx, persistenceId, emptyState))
 
-    private def counter(
-        ctx: ActorContext[Command],
-        persistenceId: PersistenceId,
-        emptyState: State): EventSourcedBehavior[Command, Event, State] = {
+    private def counter
+      (
+          ctx: ActorContext[Command],
+          persistenceId: PersistenceId,
+          emptyState: State)
+      : EventSourcedBehavior[Command, Event, State] = {
       EventSourcedBehavior.withEnforcedReplies[Command, Event, State](
         persistenceId,
         emptyState,

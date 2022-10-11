@@ -83,9 +83,11 @@ object ExternalShardAllocationStrategy {
   }
 }
 
-class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider, typeName: String)(
-    // local only ask
-    implicit val timeout: Timeout = Timeout(5.seconds))
+class ExternalShardAllocationStrategy
+  (systemProvider: ClassicActorSystemProvider, typeName: String)
+  (
+      // local only ask
+      implicit val timeout: Timeout = Timeout(5.seconds))
     extends ShardCoordinator.StartableAllocationStrategy {
 
   private val system = systemProvider.classicSystem
@@ -111,10 +113,12 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
     shardState = createShardStateActor()
   }
 
-  override def allocateShard(
-      requester: ShardRegion,
-      shardId: ShardId,
-      currentShardAllocations: Map[ShardRegion, immutable.IndexedSeq[ShardId]]): Future[ShardRegion] = {
+  override def allocateShard
+    (
+        requester: ShardRegion,
+        shardId: ShardId,
+        currentShardAllocations: Map[ShardRegion, immutable.IndexedSeq[ShardId]])
+    : Future[ShardRegion] = {
 
     log.debug("allocateShard [{}] [{}] [{}]", shardId, requester, currentShardAllocations)
 
@@ -162,9 +166,11 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
 
   }
 
-  override def rebalance(
-      currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
+  override def rebalance
+    (
+        currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
+        rebalanceInProgress: Set[ShardId])
+    : Future[Set[ShardId]] = {
 
     log.debug("rebalance [{}] [{}]", currentShardAllocations, rebalanceInProgress)
 

@@ -33,11 +33,12 @@ object Mailboxes {
   final val BoundedCapacityPrefix = "bounded-capacity:"
 }
 
-private[akka] class Mailboxes(
-    val settings: ActorSystem.Settings,
-    val eventStream: EventStream,
-    dynamicAccess: DynamicAccess,
-    deadLetters: ActorRef) {
+private[akka] class Mailboxes
+  (
+      val settings: ActorSystem.Settings,
+      val eventStream: EventStream,
+      dynamicAccess: DynamicAccess,
+      deadLetters: ActorRef) {
 
   import Mailboxes._
 

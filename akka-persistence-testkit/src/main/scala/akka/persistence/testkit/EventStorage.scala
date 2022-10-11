@@ -28,7 +28,9 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
   def addAny(key: String, elem: Any): Unit =
     addAny(key, immutable.Seq(elem))
 
-  def addAny(key: String, elems: immutable.Seq[Any]): Unit =
+  def addAny
+    (key: String, elems: immutable.Seq[Any])
+    : Unit =
     // need to use `updateExisting` because `mapAny` reads latest seqnum
     // and therefore must be done at the same time with the update, not before
     updateOrSetNew(key, v => v ++ mapAny(key, elems).toVector)
@@ -77,11 +79,13 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
     }
   }
 
-  def tryRead(
-      persistenceId: String,
-      fromSequenceNr: Long,
-      toSequenceNr: Long,
-      max: Long): immutable.Seq[PersistentRepr] = {
+  def tryRead
+    (
+        persistenceId: String,
+        fromSequenceNr: Long,
+        toSequenceNr: Long,
+        max: Long)
+    : immutable.Seq[PersistentRepr] = {
     val batch = read(persistenceId, fromSequenceNr, toSequenceNr, max)
     currentPolicy.tryProcess(persistenceId, ReadEvents(batch)) match {
       case ProcessingSuccess  => batch

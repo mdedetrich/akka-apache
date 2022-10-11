@@ -28,10 +28,11 @@ import akka.stream.stage._
  * INTERNAL API
  */
 // TODO: Fix variance issues
-@InternalApi private[akka] final case class GraphStageModule[+S <: Shape @uncheckedVariance, +M](
-    shape: S,
-    attributes: Attributes,
-    stage: GraphStageWithMaterializedValue[S, M])
+@InternalApi private[akka] final case class GraphStageModule[+S <: Shape @uncheckedVariance, +M]
+  (
+      shape: S,
+      attributes: Attributes,
+      stage: GraphStageWithMaterializedValue[S, M])
     extends AtomicModule[S, M] {
 
   override def withAttributes(attributes: Attributes): AtomicModule[S, M] =

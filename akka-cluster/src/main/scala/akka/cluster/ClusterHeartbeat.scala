@@ -259,10 +259,11 @@ private[cluster] class ClusterHeartbeatSender extends Actor {
  * It is immutable, but it updates the failureDetector.
  */
 @InternalApi
-private[cluster] final case class ClusterHeartbeatSenderState(
-    ring: HeartbeatNodeRing,
-    oldReceiversNowUnreachable: Set[UniqueAddress],
-    failureDetector: FailureDetectorRegistry[Address]) {
+private[cluster] final case class ClusterHeartbeatSenderState
+  (
+      ring: HeartbeatNodeRing,
+      oldReceiversNowUnreachable: Set[UniqueAddress],
+      failureDetector: FailureDetectorRegistry[Address]) {
 
   val activeReceivers: Set[UniqueAddress] = ring.myReceivers.union(oldReceiversNowUnreachable)
 
@@ -327,11 +328,12 @@ private[cluster] final case class ClusterHeartbeatSenderState(
  *
  * It is immutable, i.e. the methods return new instances.
  */
-private[cluster] final case class HeartbeatNodeRing(
-    selfAddress: UniqueAddress,
-    nodes: Set[UniqueAddress],
-    unreachable: Set[UniqueAddress],
-    monitoredByNrOfMembers: Int) {
+private[cluster] final case class HeartbeatNodeRing
+  (
+      selfAddress: UniqueAddress,
+      nodes: Set[UniqueAddress],
+      unreachable: Set[UniqueAddress],
+      monitoredByNrOfMembers: Int) {
 
   require(nodes contains selfAddress, s"nodes [${nodes.mkString(", ")}] must contain selfAddress [${selfAddress}]")
 

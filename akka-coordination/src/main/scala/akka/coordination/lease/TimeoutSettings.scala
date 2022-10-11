@@ -24,10 +24,11 @@ object TimeoutSettings {
 
 }
 
-final class TimeoutSettings(
-    val heartbeatInterval: FiniteDuration,
-    val heartbeatTimeout: FiniteDuration,
-    val operationTimeout: FiniteDuration) {
+final class TimeoutSettings
+  (
+      val heartbeatInterval: FiniteDuration,
+      val heartbeatTimeout: FiniteDuration,
+      val operationTimeout: FiniteDuration) {
 
   /**
    * Java API
@@ -75,10 +76,12 @@ final class TimeoutSettings(
     copy(operationTimeout = operationTimeout)
   }
 
-  private def copy(
-      heartbeatInterval: FiniteDuration = heartbeatInterval,
-      heartbeatTimeout: FiniteDuration = heartbeatTimeout,
-      operationTimeout: FiniteDuration = operationTimeout): TimeoutSettings = {
+  private def copy
+    (
+        heartbeatInterval: FiniteDuration = heartbeatInterval,
+        heartbeatTimeout: FiniteDuration = heartbeatTimeout,
+        operationTimeout: FiniteDuration = operationTimeout)
+    : TimeoutSettings = {
     new TimeoutSettings(heartbeatInterval, heartbeatTimeout, operationTimeout)
   }
 

@@ -407,12 +407,13 @@ private[akka] object ActorCell {
  * for! (waves hand)
  */
 @nowarn("msg=deprecated")
-private[akka] class ActorCell(
-    val system: ActorSystemImpl,
-    val self: InternalActorRef,
-    _initialProps: Props,
-    val dispatcher: MessageDispatcher,
-    val parent: InternalActorRef)
+private[akka] class ActorCell
+  (
+      val system: ActorSystemImpl,
+      val self: InternalActorRef,
+      _initialProps: Props,
+      val dispatcher: MessageDispatcher,
+      val parent: InternalActorRef)
     extends AbstractActor.ActorContext
     with Cell
     with dungeon.ReceiveTimeout

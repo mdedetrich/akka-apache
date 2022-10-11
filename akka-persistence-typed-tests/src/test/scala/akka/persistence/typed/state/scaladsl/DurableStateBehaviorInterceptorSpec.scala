@@ -55,10 +55,12 @@ class DurableStateBehaviorInterceptorSpec
       val pid = nextPid()
 
       val toUpper = new BehaviorInterceptor[String, String] {
-        override def aroundReceive(
-            ctx: TypedActorContext[String],
-            msg: String,
-            target: BehaviorInterceptor.ReceiveTarget[String]): Behavior[String] = {
+        override def aroundReceive
+          (
+              ctx: TypedActorContext[String],
+              msg: String,
+              target: BehaviorInterceptor.ReceiveTarget[String])
+          : Behavior[String] = {
           target(ctx, msg.toUpperCase())
         }
       }

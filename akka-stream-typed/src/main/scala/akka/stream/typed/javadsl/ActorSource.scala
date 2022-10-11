@@ -47,11 +47,13 @@ object ActorSource {
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  def actorRef[T](
-      completionMatcher: Predicate[T],
-      failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]],
-      bufferSize: Int,
-      overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] = {
+  def actorRef[T]
+    (
+        completionMatcher: Predicate[T],
+        failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]],
+        bufferSize: Int,
+        overflowStrategy: OverflowStrategy)
+    : Source[T, ActorRef[T]] = {
     akka.stream.typed.scaladsl.ActorSource
       .actorRef(
         { case m if completionMatcher.test(m) => }: PartialFunction[T, Unit],
@@ -84,11 +86,13 @@ object ActorSource {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    */
-  def actorRefWithBackpressure[T, Ack](
-      ackTo: ActorRef[Ack],
-      ackMessage: Ack,
-      completionMatcher: akka.japi.function.Function[T, java.util.Optional[CompletionStrategy]],
-      failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]]): Source[T, ActorRef[T]] =
+  def actorRefWithBackpressure[T, Ack]
+    (
+        ackTo: ActorRef[Ack],
+        ackMessage: Ack,
+        completionMatcher: akka.japi.function.Function[T, java.util.Optional[CompletionStrategy]],
+        failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]])
+    : Source[T, ActorRef[T]] =
     akka.stream.typed.scaladsl.ActorSource
       .actorRefWithBackpressure[T, Ack](
         ackTo,
@@ -127,11 +131,13 @@ object ActorSource {
    */
   @Deprecated
   @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
-  def actorRefWithAck[T, Ack](
-      ackTo: ActorRef[Ack],
-      ackMessage: Ack,
-      completionMatcher: akka.japi.function.Function[T, java.util.Optional[CompletionStrategy]],
-      failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]]): Source[T, ActorRef[T]] =
+  def actorRefWithAck[T, Ack]
+    (
+        ackTo: ActorRef[Ack],
+        ackMessage: Ack,
+        completionMatcher: akka.japi.function.Function[T, java.util.Optional[CompletionStrategy]],
+        failureMatcher: akka.japi.function.Function[T, java.util.Optional[Throwable]])
+    : Source[T, ActorRef[T]] =
     akka.stream.typed.scaladsl.ActorSource
       .actorRefWithBackpressure[T, Ack](
         ackTo,

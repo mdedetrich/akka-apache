@@ -290,10 +290,12 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     }
   }
 
-  override protected def outboundTransportSink(
-      outboundContext: OutboundContext,
-      streamId: Int,
-      bufferPool: EnvelopeBufferPool): Sink[EnvelopeBuffer, Future[Done]] = {
+  override protected def outboundTransportSink
+    (
+        outboundContext: OutboundContext,
+        streamId: Int,
+        bufferPool: EnvelopeBufferPool)
+    : Sink[EnvelopeBuffer, Future[Done]] = {
     val giveUpAfter =
       if (streamId == ControlStreamId) settings.Advanced.GiveUpSystemMessageAfter
       else settings.Advanced.Aeron.GiveUpMessageAfter
@@ -312,10 +314,12 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
         flightRecorder))
   }
 
-  private def aeronSource(
-      streamId: Int,
-      pool: EnvelopeBufferPool,
-      inboundChannel: String): Source[EnvelopeBuffer, AeronSource.AeronLifecycle] =
+  private def aeronSource
+    (
+        streamId: Int,
+        pool: EnvelopeBufferPool,
+        inboundChannel: String)
+    : Source[EnvelopeBuffer, AeronSource.AeronLifecycle] =
     Source.fromGraph(
       new AeronSource(inboundChannel, streamId, aeron, taskRunner, pool, flightRecorder, aeronSourceSpinningStrategy))
 
@@ -440,10 +444,12 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
       () => runInboundLargeMessagesStream(inboundChannel))
   }
 
-  private def updateStreamMatValues(
-      streamId: Int,
-      aeronSourceLifecycle: AeronSource.AeronLifecycle,
-      completed: Future[Done]): Unit = {
+  private def updateStreamMatValues
+    (
+        streamId: Int,
+        aeronSourceLifecycle: AeronSource.AeronLifecycle,
+        completed: Future[Done])
+    : Unit = {
     implicit val ec = materializer.executionContext
     updateStreamMatValues(
       streamId,

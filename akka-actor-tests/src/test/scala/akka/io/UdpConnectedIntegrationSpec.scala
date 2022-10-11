@@ -36,10 +36,12 @@ class UdpConnectedIntegrationSpec extends AkkaSpec("""
     commander.sender()
   }
 
-  def connectUdp(
-      localAddress: Option[InetSocketAddress],
-      remoteAddress: InetSocketAddress,
-      handler: ActorRef): ActorRef = {
+  def connectUdp
+    (
+        localAddress: Option[InetSocketAddress],
+        remoteAddress: InetSocketAddress,
+        handler: ActorRef)
+    : ActorRef = {
     val commander = TestProbe()
     commander.send(IO(UdpConnected), UdpConnected.Connect(handler, remoteAddress, localAddress, Nil))
     commander.expectMsg(UdpConnected.Connected)

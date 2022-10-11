@@ -44,11 +44,13 @@ private[akka] object ShardedDaemonProcessImpl {
     private case object Tick extends Event
     private case object StartTick extends Event
 
-    def apply[T](
-        settings: ShardedDaemonProcessSettings,
-        name: String,
-        identities: Set[EntityId],
-        shardingRef: ActorRef[ShardingEnvelope[T]]): Behavior[Event] =
+    def apply[T]
+      (
+          settings: ShardedDaemonProcessSettings,
+          name: String,
+          identities: Set[EntityId],
+          shardingRef: ActorRef[ShardingEnvelope[T]])
+      : Behavior[Event] =
       Behaviors.setup { context =>
         Cluster(context.system).subscriptions ! Subscribe(
           context.messageAdapter[SelfUp](_ => StartTick),
@@ -97,30 +99,42 @@ private[akka] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
 
   import ShardedDaemonProcessImpl._
 
-  def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T])(
-      implicit classTag: ClassTag[T]): Unit =
+  def init[T]
+    (name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T])
+    (
+        implicit classTag: ClassTag[T])
+    : Unit =
     init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), None, None)(classTag)
 
-  override def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T], stopMessage: T)(
-      implicit classTag: ClassTag[T]): Unit =
+  override def init[T]
+    (name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T], stopMessage: T)
+    (
+        implicit classTag: ClassTag[T])
+    : Unit =
     init(name, numberOfInstances, behaviorFactory, ShardedDaemonProcessSettings(system), Some(stopMessage), None)(
       classTag)
 
-  def init[T](
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: Int => Behavior[T],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Option[T])(implicit classTag: ClassTag[T]): Unit =
+  def init[T]
+    (
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: Int => Behavior[T],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Option[T])
+    (implicit classTag: ClassTag[T])
+    : Unit =
     init(name, numberOfInstances, behaviorFactory, settings, stopMessage, None)
 
-  def init[T](
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: Int => Behavior[T],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Option[T],
-      shardAllocationStrategy: Option[ShardAllocationStrategy])(implicit classTag: ClassTag[T]): Unit = {
+  def init[T]
+    (
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: Int => Behavior[T],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Option[T],
+        shardAllocationStrategy: Option[ShardAllocationStrategy])
+    (implicit classTag: ClassTag[T])
+    : Unit = {
 
     val entityTypeKey = EntityTypeKey[T](s"sharded-daemon-process-$name")
 
@@ -180,19 +194,23 @@ private[akka] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
   }
 
   // Java API
-  def init[T](
-      messageClass: Class[T],
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]]): Unit =
+  def init[T]
+    (
+        messageClass: Class[T],
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: IntFunction[Behavior[T]])
+    : Unit =
     init(name, numberOfInstances, n => behaviorFactory(n))(ClassTag(messageClass))
 
-  override def init[T](
-      messageClass: Class[T],
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
-      stopMessage: T): Unit =
+  override def init[T]
+    (
+        messageClass: Class[T],
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: IntFunction[Behavior[T]],
+        stopMessage: T)
+    : Unit =
     init(
       name,
       numberOfInstances,
@@ -201,23 +219,27 @@ private[akka] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
       Some(stopMessage),
       None)(ClassTag(messageClass))
 
-  def init[T](
-      messageClass: Class[T],
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Optional[T]): Unit =
+  def init[T]
+    (
+        messageClass: Class[T],
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: IntFunction[Behavior[T]],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Optional[T])
+    : Unit =
     init(name, numberOfInstances, n => behaviorFactory(n), settings, stopMessage.asScala, None)(ClassTag(messageClass))
 
-  def init[T](
-      messageClass: Class[T],
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: IntFunction[Behavior[T]],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Optional[T],
-      shardAllocationStrategy: Optional[ShardAllocationStrategy]): Unit =
+  def init[T]
+    (
+        messageClass: Class[T],
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: IntFunction[Behavior[T]],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Optional[T],
+        shardAllocationStrategy: Optional[ShardAllocationStrategy])
+    : Unit =
     init(
       name,
       numberOfInstances,

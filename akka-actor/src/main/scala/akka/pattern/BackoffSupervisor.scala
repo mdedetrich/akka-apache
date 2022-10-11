@@ -35,12 +35,14 @@ object BackoffSupervisor {
    *                     In order to skip this additional delay pass in `0`.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def props(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): Props = {
+  def props
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    : Props = {
     propsWithSupervisorStrategy(
       childProps,
       childName,
@@ -71,13 +73,15 @@ object BackoffSupervisor {
    *                       In order to restart infinitely pass in `-1`.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def props(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxNrOfRetries: Int): Props = {
+  def props
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxNrOfRetries: Int)
+    : Props = {
     val supervisionStrategy = SupervisorStrategy.defaultStrategy match {
       case oneForOne: OneForOneStrategy => oneForOne.withMaxNrOfRetries(maxNrOfRetries)
       case s                            => s
@@ -103,12 +107,14 @@ object BackoffSupervisor {
    *                     In order to skip this additional delay pass in `0`.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def props(
-      childProps: Props,
-      childName: String,
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double): Props = {
+  def props
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double)
+    : Props = {
     props(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
   }
 
@@ -133,13 +139,15 @@ object BackoffSupervisor {
    *                       In order to restart infinitely pass in `-1`.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def props(
-      childProps: Props,
-      childName: String,
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxNrOfRetries: Int): Props = {
+  def props
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxNrOfRetries: Int)
+    : Props = {
     props(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor, maxNrOfRetries)
   }
 
@@ -165,13 +173,15 @@ object BackoffSupervisor {
    *                     backoff process, only a [[OneForOneStrategy]] makes sense here.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def propsWithSupervisorStrategy(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      strategy: SupervisorStrategy): Props = {
+  def propsWithSupervisorStrategy
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        strategy: SupervisorStrategy)
+    : Props = {
     require(minBackoff > Duration.Zero, "minBackoff must be > 0")
     require(maxBackoff >= minBackoff, "maxBackoff must be >= minBackoff")
     require(0.0 <= randomFactor && randomFactor <= 1.0, "randomFactor must be between 0.0 and 1.0")
@@ -210,13 +220,15 @@ object BackoffSupervisor {
    *                     backoff process, only a [[OneForOneStrategy]] makes sense here.
    */
   @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
-  def propsWithSupervisorStrategy(
-      childProps: Props,
-      childName: String,
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      strategy: SupervisorStrategy): Props = {
+  def propsWithSupervisorStrategy
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        strategy: SupervisorStrategy)
+    : Props = {
     propsWithSupervisorStrategy(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor, strategy)
   }
 
@@ -309,11 +321,13 @@ object BackoffSupervisor {
    *
    * Calculates an exponential back off delay.
    */
-  private[akka] def calculateDelay(
-      restartCount: Int,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): FiniteDuration = {
+  private[akka] def calculateDelay
+    (
+        restartCount: Int,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    : FiniteDuration = {
     val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
     val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
     calculatedDuration match {
@@ -323,16 +337,17 @@ object BackoffSupervisor {
   }
 }
 
-final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22") (
-    override val childProps: Props,
-    override val childName: String,
-    minBackoff: FiniteDuration,
-    maxBackoff: FiniteDuration,
-    override val reset: BackoffReset,
-    randomFactor: Double,
-    strategy: SupervisorStrategy,
-    val replyWhileStopped: Option[Any],
-    val finalStopMessage: Option[Any => Boolean])
+final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
+  (
+      override val childProps: Props,
+      override val childName: String,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      override val reset: BackoffReset,
+      randomFactor: Double,
+      strategy: SupervisorStrategy,
+      val replyWhileStopped: Option[Any],
+      val finalStopMessage: Option[Any => Boolean])
     extends BackoffOnStopSupervisor(
       childProps,
       childName,
@@ -346,26 +361,28 @@ final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method 
 
   // for binary compatibility with 2.5.18
   @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
-  def this(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      reset: BackoffReset,
-      randomFactor: Double,
-      strategy: SupervisorStrategy,
-      replyWhileStopped: Option[Any]) =
+  def this
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        reset: BackoffReset,
+        randomFactor: Double,
+        strategy: SupervisorStrategy,
+        replyWhileStopped: Option[Any]) =
     this(childProps, childName, minBackoff, maxBackoff, reset, randomFactor, strategy, replyWhileStopped, None)
 
   // for binary compatibility with 2.4.1
   @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
-  def this(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      supervisorStrategy: SupervisorStrategy) =
+  def this
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        supervisorStrategy: SupervisorStrategy) =
     this(
       childProps,
       childName,
@@ -379,11 +396,12 @@ final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method 
 
   // for binary compatibility with 2.4.0
   @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
-  def this(
-      childProps: Props,
-      childName: String,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double) =
+  def this
+    (
+        childProps: Props,
+        childName: String,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double) =
     this(childProps, childName, minBackoff, maxBackoff, randomFactor, SupervisorStrategy.defaultStrategy)
 }

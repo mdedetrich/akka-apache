@@ -25,9 +25,10 @@ import akka.persistence.typed.SnapshotAdapter
  * API May Change
  */
 @ApiMayChange
-abstract class DurableStateBehavior[Command, State] private[akka] (
-    val persistenceId: PersistenceId,
-    onPersistFailure: Optional[BackoffSupervisorStrategy])
+abstract class DurableStateBehavior[Command, State] private[akka]
+  (
+      val persistenceId: PersistenceId,
+      onPersistFailure: Optional[BackoffSupervisorStrategy])
     extends DeferredBehavior[Command] {
 
   /**
@@ -156,9 +157,10 @@ abstract class DurableStateBehavior[Command, State] private[akka] (
  * There will be compilation errors if the returned effect isn't a [[ReplyEffect]], which can be
  * created with `Effects().reply`, `Effects().noReply`, [[EffectBuilder.thenReply]], or [[EffectBuilder.thenNoReply]].
  */
-abstract class DurableStateBehaviorWithEnforcedReplies[Command, State](
-    persistenceId: PersistenceId,
-    backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
+abstract class DurableStateBehaviorWithEnforcedReplies[Command, State]
+  (
+      persistenceId: PersistenceId,
+      backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
     extends DurableStateBehavior[Command, State](persistenceId, backoffSupervisorStrategy) {
 
   def this(persistenceId: PersistenceId) = {

@@ -117,10 +117,12 @@ final class BehaviorBuilder[T] private (messageHandlers: List[Case[T, T]], signa
    * @tparam M type of signal to match
    * @return a new behavior builder with the specified handling appended
    */
-  def onSignal[M <: Signal](
-      `type`: Class[M],
-      test: JPredicate[M],
-      handler: JFunction[M, Behavior[T]]): BehaviorBuilder[T] =
+  def onSignal[M <: Signal]
+    (
+        `type`: Class[M],
+        test: JPredicate[M],
+        handler: JFunction[M, Behavior[T]])
+    : BehaviorBuilder[T] =
     withSignal(
       `type`,
       OptionVal.Some((t: Signal) => test.test(t.asInstanceOf[M])),
@@ -136,18 +138,22 @@ final class BehaviorBuilder[T] private (messageHandlers: List[Case[T, T]], signa
   def onSignalEquals(signal: Signal, handler: Creator[Behavior[T]]): BehaviorBuilder[T] =
     withSignal(signal.getClass, OptionVal.Some(_.equals(signal)), (_: Signal) => handler.create())
 
-  private def withMessage[M <: T](
-      clazz: OptionVal[Class[M]],
-      test: OptionVal[M => Boolean],
-      handler: JFunction[M, Behavior[T]]): BehaviorBuilder[T] = {
+  private def withMessage[M <: T]
+    (
+        clazz: OptionVal[Class[M]],
+        test: OptionVal[M => Boolean],
+        handler: JFunction[M, Behavior[T]])
+    : BehaviorBuilder[T] = {
     val newCase = Case(clazz, test, handler)
     new BehaviorBuilder[T](newCase.asInstanceOf[Case[T, T]] +: messageHandlers, signalHandlers)
   }
 
-  private def withSignal[M <: Signal](
-      `type`: Class[M],
-      test: OptionVal[Signal => Boolean],
-      handler: JFunction[Signal, Behavior[T]]): BehaviorBuilder[T] = {
+  private def withSignal[M <: Signal]
+    (
+        `type`: Class[M],
+        test: OptionVal[Signal => Boolean],
+        handler: JFunction[Signal, Behavior[T]])
+    : BehaviorBuilder[T] = {
     new BehaviorBuilder[T](
       messageHandlers,
       Case(OptionVal.Some(`type`), test, handler).asInstanceOf[Case[T, Signal]] +: signalHandlers)
@@ -162,10 +168,11 @@ object BehaviorBuilder {
 
   /** INTERNAL API */
   @InternalApi
-  private[javadsl] final case class Case[BT, MT](
-      `type`: OptionVal[Class[_ <: MT]],
-      test: OptionVal[MT => Boolean],
-      handler: JFunction[MT, Behavior[BT]])
+  private[javadsl] final case class Case[BT, MT]
+    (
+        `type`: OptionVal[Class[_ <: MT]],
+        test: OptionVal[MT => Boolean],
+        handler: JFunction[MT, Behavior[BT]])
 
   /**
    * @return new empty immutable behavior builder.

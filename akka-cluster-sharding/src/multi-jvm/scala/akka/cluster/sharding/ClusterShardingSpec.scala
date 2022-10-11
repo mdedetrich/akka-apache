@@ -111,10 +111,11 @@ object ClusterShardingSpec {
 
 }
 
-abstract class ClusterShardingSpecConfig(
-    mode: String,
-    rememberEntitiesStore: String,
-    val entityRecoveryStrategy: String = "all")
+abstract class ClusterShardingSpecConfig
+  (
+      mode: String,
+      rememberEntitiesStore: String,
+      val entityRecoveryStrategy: String = "all")
     extends MultiNodeClusterShardingConfig(mode = mode, rememberEntitiesStore = rememberEntitiesStore) {
 
   val controller = role("controller")

@@ -10,12 +10,14 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class HillClimbingAdmissionOptimizerSpec extends AnyWordSpec with Matchers {
 
-  def create(
-      initialLimit: Int = 5,
-      adjustMultiplier: Double = 2.0,
-      initialStep: Double = 0.01,
-      restartThreshold: Double = 0.05,
-      stepDecay: Double = 0.98): HillClimbingAdmissionOptimizer =
+  def create
+    (
+        initialLimit: Int = 5,
+        adjustMultiplier: Double = 2.0,
+        initialStep: Double = 0.01,
+        restartThreshold: Double = 0.05,
+        stepDecay: Double = 0.98)
+    : HillClimbingAdmissionOptimizer =
     new HillClimbingAdmissionOptimizer(initialLimit, adjustMultiplier, initialStep, restartThreshold, stepDecay)
 
   "HillClimbingAdmissionOptimizer" must {

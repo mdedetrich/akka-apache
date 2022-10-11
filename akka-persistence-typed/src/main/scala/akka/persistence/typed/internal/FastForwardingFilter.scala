@@ -35,8 +35,10 @@ private[akka] class FastForwardingFilter
 
   override val shape = FlowShape[EventEnvelope, EventEnvelope](in, out)
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, ReplicationStreamControl) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, ReplicationStreamControl) = {
     var replicationStreamControl: ReplicationStreamControl = null
     val logic = new GraphStageLogic(shape) with InHandler with OutHandler {
       // -1 means not currently fast forwarding

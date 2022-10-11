@@ -213,7 +213,7 @@ private[stream] final class TerminationSignal {
  * It is also possible to individually cancel, complete or fail upstream and downstream parts by calling the corresponding
  * methods.
  */
-final class UniqueKillSwitch private[stream] (private val promise: Promise[Done]) extends KillSwitch {
+final class UniqueKillSwitch private[stream](private val promise: Promise[Done]) extends KillSwitch {
 
   /**
    * After calling [[UniqueKillSwitch#shutdown]] the running instance of the [[Graph]] of [[FlowShape]] that materialized to the
@@ -254,7 +254,7 @@ final class UniqueKillSwitch private[stream] (private val promise: Promise[Done]
  *
  * This class is thread-safe, the instance can be passed safely among threads and its methods may be invoked concurrently.
  */
-final class SharedKillSwitch private[stream] (val name: String) extends KillSwitch {
+final class SharedKillSwitch private[stream](val name: String) extends KillSwitch {
   private[this] val terminationSignal = new TerminationSignal
   private[this] val _flow: Graph[FlowShape[Any, Any], SharedKillSwitch] = new SharedKillSwitchFlow
 
@@ -296,8 +296,10 @@ final class SharedKillSwitch private[stream] (val name: String) extends KillSwit
 
     override def toString: String = s"SharedKillSwitchFlow(switch: $name)"
 
-    override def createLogicAndMaterializedValue(
-        inheritedAttributes: Attributes): (GraphStageLogic, SharedKillSwitch) = {
+    override def createLogicAndMaterializedValue
+      (
+          inheritedAttributes: Attributes)
+      : (GraphStageLogic, SharedKillSwitch) = {
       val shutdownListener = terminationSignal.createListener()
       val logic = new KillSwitches.KillableGraphStageLogic(shutdownListener.future, shape)
         with InHandler

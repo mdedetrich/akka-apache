@@ -294,8 +294,10 @@ private[akka] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Boo
     }
   }
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, (Sink[T, NotUsed], MergeHub.DrainingControl)) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, (Sink[T, NotUsed], MergeHub.DrainingControl)) = {
     val idCounter = new AtomicLong()
 
     val logic: MergedSourceLogic = new MergedSourceLogic(shape)
@@ -700,8 +702,10 @@ private[akka] class BroadcastHub[T](bufferSize: Int)
   private case class HubCompleted(failure: Option[Throwable]) extends ConsumerEvent
   private case class Initialize(offset: Int) extends ConsumerEvent
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, Source[T, NotUsed]) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, Source[T, NotUsed]) = {
     val idCounter = new AtomicLong()
 
     val logic = new BroadcastSinkLogic(shape)
@@ -857,10 +861,12 @@ object PartitionHub {
    * @param bufferSize Total number of elements that can be buffered. If this buffer is full, the producer
    *   is backpressured.
    */
-  def statefulSink[T](
-      partitioner: () => (ConsumerInfo, T) => Long,
-      startAfterNrOfConsumers: Int,
-      bufferSize: Int = defaultBufferSize): Sink[T, Source[T, NotUsed]] =
+  def statefulSink[T]
+    (
+        partitioner: () => (ConsumerInfo, T) => Long,
+        startAfterNrOfConsumers: Int,
+        bufferSize: Int = defaultBufferSize)
+    : Sink[T, Source[T, NotUsed]] =
     Sink.fromGraph(new PartitionHub[T](partitioner, startAfterNrOfConsumers, bufferSize))
 
   /**
@@ -892,10 +898,12 @@ object PartitionHub {
    * @param bufferSize Total number of elements that can be buffered. If this buffer is full, the producer
    *   is backpressured.
    */
-  def sink[T](
-      partitioner: (Int, T) => Int,
-      startAfterNrOfConsumers: Int,
-      bufferSize: Int = defaultBufferSize): Sink[T, Source[T, NotUsed]] = {
+  def sink[T]
+    (
+        partitioner: (Int, T) => Int,
+        startAfterNrOfConsumers: Int,
+        bufferSize: Int = defaultBufferSize)
+    : Sink[T, Source[T, NotUsed]] = {
     val fun: (ConsumerInfo, T) => Long = { (info, elem) =>
       val idx = partitioner(info.size, elem)
       if (idx < 0) -1L
@@ -1091,10 +1099,11 @@ object PartitionHub {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class PartitionHub[T](
-    partitioner: () => (PartitionHub.ConsumerInfo, T) => Long,
-    startAfterNrOfConsumers: Int,
-    bufferSize: Int)
+@InternalApi private[akka] class PartitionHub[T]
+  (
+      partitioner: () => (PartitionHub.ConsumerInfo, T) => Long,
+      startAfterNrOfConsumers: Int,
+      bufferSize: Int)
     extends GraphStageWithMaterializedValue[SinkShape[T], Source[T, NotUsed]] {
   import PartitionHub.ConsumerInfo
   import PartitionHub.Internal._
@@ -1291,8 +1300,10 @@ object PartitionHub {
     setHandler(in, this)
   }
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, Source[T, NotUsed]) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, Source[T, NotUsed]) = {
     val idCounter = new AtomicLong
 
     val logic = new PartitionSinkLogic(shape)

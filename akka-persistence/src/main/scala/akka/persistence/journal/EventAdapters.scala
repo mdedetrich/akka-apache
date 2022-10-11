@@ -22,10 +22,11 @@ import akka.util.ccompat._
  * `EventAdapters` serves as a per-journal collection of bound event adapters.
  */
 @ccompatUsedUntil213
-class EventAdapters(
-    map: ConcurrentHashMap[Class[_], EventAdapter],
-    bindings: immutable.Seq[(Class[_], EventAdapter)],
-    log: LoggingAdapter) {
+class EventAdapters
+  (
+      map: ConcurrentHashMap[Class[_], EventAdapter],
+      bindings: immutable.Seq[(Class[_], EventAdapter)],
+      log: LoggingAdapter) {
 
   /**
    * Finds the "most specific" matching adapter for the given class (i.e. it may return an adapter that can work on a
@@ -73,10 +74,12 @@ private[akka] object EventAdapters {
       apply(system, adapters, adapterBindings)
   }
 
-  private def apply(
-      system: ExtendedActorSystem,
-      adapters: Map[Name, FQN],
-      adapterBindings: Map[FQN, BoundAdapters]): EventAdapters = {
+  private def apply
+    (
+        system: ExtendedActorSystem,
+        adapters: Map[Name, FQN],
+        adapterBindings: Map[FQN, BoundAdapters])
+    : EventAdapters = {
 
     val adapterNames = adapters.keys.toSet
     for {

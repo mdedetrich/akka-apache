@@ -117,10 +117,12 @@ final class ReceiveBuilder[T] private (
    * @tparam M type of signal to match
    * @return this behavior builder
    */
-  def onSignal[M <: Signal](
-      `type`: Class[M],
-      test: JPredicate[M],
-      handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] =
+  def onSignal[M <: Signal]
+    (
+        `type`: Class[M],
+        test: JPredicate[M],
+        handler: JFunction[M, Behavior[T]])
+    : ReceiveBuilder[T] =
     withSignal(`type`, OptionVal.Some(test), handler)
 
   /**
@@ -140,18 +142,22 @@ final class ReceiveBuilder[T] private (
         override def apply(param: Signal): Behavior[T] = handler.create()
       })
 
-  private def withMessage[M <: T](
-      `type`: OptionVal[Class[M]],
-      test: OptionVal[JPredicate[M]],
-      handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] = {
+  private def withMessage[M <: T]
+    (
+        `type`: OptionVal[Class[M]],
+        test: OptionVal[JPredicate[M]],
+        handler: JFunction[M, Behavior[T]])
+    : ReceiveBuilder[T] = {
     messageHandlers = Case[T, M](`type`, test, handler).asInstanceOf[Case[T, T]] +: messageHandlers
     this
   }
 
-  private def withSignal[M <: Signal](
-      `type`: Class[M],
-      test: OptionVal[JPredicate[M]],
-      handler: JFunction[M, Behavior[T]]): ReceiveBuilder[T] = {
+  private def withSignal[M <: Signal]
+    (
+        `type`: Class[M],
+        test: OptionVal[JPredicate[M]],
+        handler: JFunction[M, Behavior[T]])
+    : ReceiveBuilder[T] = {
     signalHandlers = Case[T, M](OptionVal.Some(`type`), test, handler).asInstanceOf[Case[T, Signal]] +: signalHandlers
     this
   }
@@ -164,10 +170,11 @@ object ReceiveBuilder {
 
   /** INTERNAL API */
   @InternalApi
-  private[javadsl] final case class Case[BT, MT](
-      `type`: OptionVal[Class[_ <: MT]],
-      test: OptionVal[JPredicate[MT]],
-      handler: JFunction[MT, Behavior[BT]])
+  private[javadsl] final case class Case[BT, MT]
+    (
+        `type`: OptionVal[Class[_ <: MT]],
+        test: OptionVal[JPredicate[MT]],
+        handler: JFunction[MT, Behavior[BT]])
 
   /** INTERNAL API */
   @InternalApi
@@ -197,9 +204,10 @@ object ReceiveBuilder {
  * INTERNAL API
  */
 @InternalApi
-private final class BuiltReceive[T](
-    messageHandlers: Array[ReceiveBuilder.Case[T, T]],
-    signalHandlers: Array[ReceiveBuilder.Case[T, Signal]])
+private final class BuiltReceive[T]
+  (
+      messageHandlers: Array[ReceiveBuilder.Case[T, T]],
+      signalHandlers: Array[ReceiveBuilder.Case[T, Signal]])
     extends Receive[T] {
   import ReceiveBuilder.Case
 

@@ -98,11 +98,12 @@ class ResendUnfulfillableException
  *               will be not stored but rejected with [[java.lang.IllegalArgumentException]]
  */
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
-final case class AckedSendBuffer[T <: HasSequenceNumber](
-    capacity: Int,
-    nonAcked: IndexedSeq[T] = Vector.empty[T],
-    nacked: IndexedSeq[T] = Vector.empty[T],
-    maxSeq: SeqNo = SeqNo(-1)) {
+final case class AckedSendBuffer[T <: HasSequenceNumber]
+  (
+      capacity: Int,
+      nonAcked: IndexedSeq[T] = Vector.empty[T],
+      nacked: IndexedSeq[T] = Vector.empty[T],
+      maxSeq: SeqNo = SeqNo(-1)) {
 
   /**
    * Processes an incoming acknowledgement and returns a new buffer with only unacknowledged elements remaining.
@@ -156,10 +157,12 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
  * @param buf Buffer of messages that are waiting for delivery
  */
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
-final case class AckedReceiveBuffer[T <: HasSequenceNumber](
-    lastDelivered: SeqNo = SeqNo(-1),
-    cumulativeAck: SeqNo = SeqNo(-1),
-    buf: SortedSet[T] = TreeSet.empty[T])(implicit val seqOrdering: Ordering[T]) {
+final case class AckedReceiveBuffer[T <: HasSequenceNumber]
+  (
+      lastDelivered: SeqNo = SeqNo(-1),
+      cumulativeAck: SeqNo = SeqNo(-1),
+      buf: SortedSet[T] = TreeSet.empty[T])
+  (implicit val seqOrdering: Ordering[T]) {
 
   import SeqNo.ord.max
 

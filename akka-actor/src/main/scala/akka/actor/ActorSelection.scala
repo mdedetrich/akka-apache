@@ -306,10 +306,11 @@ trait ScalaActorSelection {
  * message is delivered by traversing the various actor paths involved.
  */
 @SerialVersionUID(2L) // it has protobuf serialization in akka-remote
-private[akka] final case class ActorSelectionMessage(
-    msg: Any,
-    elements: immutable.Iterable[SelectionPathElement],
-    wildcardFanOut: Boolean)
+private[akka] final case class ActorSelectionMessage
+  (
+      msg: Any,
+      elements: immutable.Iterable[SelectionPathElement],
+      wildcardFanOut: Boolean)
     extends AutoReceivedMessage
     with PossiblyHarmful
     with WrappedMessage {

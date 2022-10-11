@@ -110,9 +110,11 @@ final case class ActorIdentity(correlationId: Any, ref: Option[ActorRef]) {
  *   that the remote node hosting the watched actor was detected as unreachable
  */
 @SerialVersionUID(1L)
-final case class Terminated private[akka] (@BeanProperty actor: ActorRef)(
-    @BeanProperty val existenceConfirmed: Boolean,
-    @BeanProperty val addressTerminated: Boolean)
+final case class Terminated private[akka]
+  (@BeanProperty actor: ActorRef)
+  (
+      @BeanProperty val existenceConfirmed: Boolean,
+      @BeanProperty val addressTerminated: Boolean)
     extends AutoReceivedMessage
     with PossiblyHarmful
     with DeadLetterSuppression
@@ -158,13 +160,13 @@ trait NotInfluenceReceiveTimeout
  * For instance, if you try to create an Actor that doesn't extend Actor.
  */
 @SerialVersionUID(1L)
-final case class IllegalActorStateException private[akka] (message: String) extends AkkaException(message)
+final case class IllegalActorStateException private[akka](message: String) extends AkkaException(message)
 
 /**
  * ActorKilledException is thrown when an Actor receives the [[akka.actor.Kill]] message
  */
 @SerialVersionUID(1L)
-final case class ActorKilledException private[akka] (message: String) extends AkkaException(message) with NoStackTrace
+final case class ActorKilledException private[akka](message: String) extends AkkaException(message) with NoStackTrace
 
 /**
  * An InvalidActorNameException is thrown when you try to convert something, usually a String, to an Actor name
@@ -212,11 +214,12 @@ object ActorInitializationException {
  * @param messageOption is the message which was optionally passed into preRestart()
  */
 @SerialVersionUID(1L)
-final case class PreRestartException private[akka] (
-    actor: ActorRef,
-    cause: Throwable,
-    originalCause: Throwable,
-    messageOption: Option[Any])
+final case class PreRestartException private[akka]
+  (
+      actor: ActorRef,
+      cause: Throwable,
+      originalCause: Throwable,
+      messageOption: Option[Any])
     extends ActorInitializationException(
       actor,
       "exception in preRestart(" +
@@ -234,7 +237,7 @@ final case class PreRestartException private[akka] (
  * @param originalCause is the exception which caused the restart in the first place
  */
 @SerialVersionUID(1L)
-final case class PostRestartException private[akka] (actor: ActorRef, cause: Throwable, originalCause: Throwable)
+final case class PostRestartException private[akka](actor: ActorRef, cause: Throwable, originalCause: Throwable)
     extends ActorInitializationException(
       actor,
       "exception post restart (" + (if (originalCause == null) "null" else originalCause.getClass) + ")",
@@ -262,14 +265,14 @@ object OriginalRestartException {
  * Currently only `null` is an invalid message.
  */
 @SerialVersionUID(1L)
-final case class InvalidMessageException private[akka] (message: String) extends AkkaException(message)
+final case class InvalidMessageException private[akka](message: String) extends AkkaException(message)
 
 /**
  * A DeathPactException is thrown by an Actor that receives a Terminated(someActor) message
  * that it doesn't handle itself, effectively crashing the Actor and escalating to the supervisor.
  */
 @SerialVersionUID(1L)
-final case class DeathPactException private[akka] (dead: ActorRef)
+final case class DeathPactException private[akka](dead: ActorRef)
     extends AkkaException("Monitored actor [" + dead + "] terminated")
     with NoStackTrace
 
@@ -278,16 +281,17 @@ final case class DeathPactException private[akka] (dead: ActorRef)
  * avoid cascading interrupts to other threads than the originally interrupted one.
  */
 @SerialVersionUID(1L)
-class ActorInterruptedException private[akka] (cause: Throwable) extends AkkaException(cause.getMessage, cause)
+class ActorInterruptedException private[akka](cause: Throwable) extends AkkaException(cause.getMessage, cause)
 
 /**
  * This message is published to the EventStream whenever an Actor receives a message it doesn't understand
  */
 @SerialVersionUID(1L)
-final case class UnhandledMessage(
-    @BeanProperty message: Any,
-    @BeanProperty sender: ActorRef,
-    @BeanProperty recipient: ActorRef)
+final case class UnhandledMessage
+  (
+      @BeanProperty message: Any,
+      @BeanProperty sender: ActorRef,
+      @BeanProperty recipient: ActorRef)
     extends NoSerializationVerificationNeeded
     with WrappedMessage
     with AllDeadLetters

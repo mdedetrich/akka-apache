@@ -14,11 +14,12 @@ import scala.concurrent.duration._
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class AggregateWithBoundary[In, Agg, Out](
-    allocate: () => Agg,
-    aggregate: (Agg, In) => (Agg, Boolean),
-    harvest: Agg => Out,
-    emitOnTimer: Option[(Agg => Boolean, FiniteDuration)])
+private[akka] final case class AggregateWithBoundary[In, Agg, Out]
+  (
+      allocate: () => Agg,
+      aggregate: (Agg, In) => (Agg, Boolean),
+      harvest: Agg => Out,
+      emitOnTimer: Option[(Agg => Boolean, FiniteDuration)])
     extends GraphStage[FlowShape[In, Out]] {
 
   emitOnTimer.foreach {

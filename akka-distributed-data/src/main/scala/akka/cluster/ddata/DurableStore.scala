@@ -82,7 +82,7 @@ object DurableStore {
    * the wrapped `ReplicatedData` including its serializerId and
    * manifest.
    */
-  final class DurableDataEnvelope private[akka] (private[akka] val dataEnvelope: DataEnvelope)
+  final class DurableDataEnvelope private[akka](private[akka] val dataEnvelope: DataEnvelope)
       extends ReplicatorMessage {
 
     def this(data: ReplicatedData) = this(DataEnvelope(data))
@@ -104,11 +104,12 @@ object LmdbDurableStore {
 
   private case object WriteBehind extends DeadLetterSuppression
 
-  private final case class Lmdb(
-      env: Env[ByteBuffer],
-      db: Dbi[ByteBuffer],
-      keyBuffer: ByteBuffer,
-      valueBuffer: ByteBuffer)
+  private final case class Lmdb
+    (
+        env: Env[ByteBuffer],
+        db: Dbi[ByteBuffer],
+        keyBuffer: ByteBuffer,
+        valueBuffer: ByteBuffer)
 }
 
 final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {

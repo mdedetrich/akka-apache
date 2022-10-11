@@ -45,10 +45,12 @@ object ShardingDocExample {
 
     final case class State(tasks: Vector[String])
 
-    def apply(
-        id: String,
-        db: DB,
-        consumerController: ActorRef[ConsumerController.Start[Command]]): Behavior[Command] = {
+    def apply
+      (
+          id: String,
+          db: DB,
+          consumerController: ActorRef[ConsumerController.Start[Command]])
+      : Behavior[Command] = {
       Behaviors.setup[Command] { context =>
         new TodoList(context, id, db).start(consumerController)
       }
@@ -136,8 +138,10 @@ object ShardingDocExample {
 
     private implicit val askTimeout: Timeout = 5.seconds
 
-    private def start(
-        producerController: ActorRef[ShardingProducerController.Start[TodoList.Command]]): Behavior[Command] = {
+    private def start
+      (
+          producerController: ActorRef[ShardingProducerController.Start[TodoList.Command]])
+      : Behavior[Command] = {
       val requestNextAdapter: ActorRef[ShardingProducerController.RequestNext[TodoList.Command]] =
         context.messageAdapter(WrappedRequestNext.apply)
       producerController ! ShardingProducerController.Start(requestNextAdapter)

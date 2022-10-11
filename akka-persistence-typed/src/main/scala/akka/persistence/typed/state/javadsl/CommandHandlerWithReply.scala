@@ -73,9 +73,11 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    *
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
-  def forState[S <: State](
-      stateClass: Class[S],
-      statePredicate: Predicate[S]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def forState[S <: State]
+    (
+        stateClass: Class[S],
+        statePredicate: Predicate[S])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     val builder = new CommandHandlerWithReplyBuilderByState[Command, S, State](stateClass, statePredicate)
     builders = builder.asInstanceOf[CommandHandlerWithReplyBuilderByState[Command, State, State]] :: builders
     builder
@@ -177,8 +179,10 @@ object CommandHandlerWithReplyBuilderByState {
    * @param stateClass The handlers defined by this builder are used when the state is an instance of the `stateClass`
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
-  def builder[Command, S <: State, State](
-      stateClass: Class[S]): CommandHandlerWithReplyBuilderByState[Command, S, State] =
+  def builder[Command, S <: State, State]
+    (
+        stateClass: Class[S])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] =
     new CommandHandlerWithReplyBuilderByState(stateClass, statePredicate = trueStatePredicate)
 
   /**
@@ -186,22 +190,26 @@ object CommandHandlerWithReplyBuilderByState {
    *                       useful for example when state type is an Optional
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
-  def builder[Command, State](
-      statePredicate: Predicate[State]): CommandHandlerWithReplyBuilderByState[Command, State, State] =
+  def builder[Command, State]
+    (
+        statePredicate: Predicate[State])
+    : CommandHandlerWithReplyBuilderByState[Command, State, State] =
     new CommandHandlerWithReplyBuilderByState(classOf[Any].asInstanceOf[Class[State]], statePredicate)
 
   /**
    * INTERNAL API
    */
-  @InternalApi private final case class CommandHandlerCase[Command, State](
-      commandPredicate: Command => Boolean,
-      statePredicate: State => Boolean,
-      handler: BiFunction[State, Command, ReplyEffect[State]])
+  @InternalApi private final case class CommandHandlerCase[Command, State]
+    (
+        commandPredicate: Command => Boolean,
+        statePredicate: State => Boolean,
+        handler: BiFunction[State, Command, ReplyEffect[State]])
 }
 
-final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @InternalApi private[persistence] (
-    private val stateClass: Class[S],
-    private val statePredicate: Predicate[S]) {
+final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @InternalApi private[persistence]
+  (
+      private val stateClass: Class[S],
+      private val statePredicate: Predicate[S]) {
 
   import CommandHandlerWithReplyBuilderByState.CommandHandlerCase
 
@@ -224,9 +232,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand(
-      predicate: Predicate[Command],
-      handler: BiFunction[S, Command, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def onCommand
+    (
+        predicate: Predicate[Command],
+        handler: BiFunction[S, Command, ReplyEffect[State]])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(cmd => predicate.test(cmd), handler)
     this
   }
@@ -241,9 +251,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand(
-      predicate: Predicate[Command],
-      handler: JFunction[Command, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def onCommand
+    (
+        predicate: Predicate[Command],
+        handler: JFunction[Command, ReplyEffect[State]])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(
       cmd => predicate.test(cmd),
       new BiFunction[S, Command, ReplyEffect[State]] {
@@ -259,9 +271,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: BiFunction[S, C, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: BiFunction[S, C, ReplyEffect[State]])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     addCase(
       cmd => commandClass.isAssignableFrom(cmd.getClass),
       handler.asInstanceOf[BiFunction[S, Command, ReplyEffect[State]]])
@@ -278,9 +292,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: JFunction[C, ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: JFunction[C, ReplyEffect[State]])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     onCommand[C](
       commandClass,
       new BiFunction[S, C, ReplyEffect[State]] {
@@ -297,9 +313,11 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: Supplier[ReplyEffect[State]]): CommandHandlerWithReplyBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: Supplier[ReplyEffect[State]])
+    : CommandHandlerWithReplyBuilderByState[Command, S, State] = {
     onCommand[C](
       commandClass,
       new BiFunction[S, C, ReplyEffect[State]] {
@@ -383,8 +401,9 @@ final class CommandHandlerWithReplyBuilderByState[Command, S <: State, State] @I
    * Compose this builder with another builder. The handlers in this builder will be tried first followed
    * by the handlers in `other`.
    */
-  def orElse[S2 <: State](other: CommandHandlerWithReplyBuilderByState[Command, S2, State])
-      : CommandHandlerWithReplyBuilderByState[Command, S2, State] = {
+  def orElse[S2 <: State]
+    (other: CommandHandlerWithReplyBuilderByState[Command, S2, State])
+    : CommandHandlerWithReplyBuilderByState[Command, S2, State] = {
     val newBuilder =
       new CommandHandlerWithReplyBuilderByState[Command, S2, State](other.stateClass, other.statePredicate)
     // problem with overloaded constructor with `cases` as parameter

@@ -50,10 +50,11 @@ final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: A
  * @param timeout the timeout applied to querying all alive regions
  * @param replyTo the actor to send the result to
  */
-final case class GetClusterShardingStats(
-    entityTypeKey: EntityTypeKey[_],
-    timeout: FiniteDuration,
-    replyTo: ActorRef[ClusterShardingStats])
+final case class GetClusterShardingStats
+  (
+      entityTypeKey: EntityTypeKey[_],
+      timeout: FiniteDuration,
+      replyTo: ActorRef[ClusterShardingStats])
     extends ClusterShardingQuery {
 
   /**
@@ -63,9 +64,10 @@ final case class GetClusterShardingStats(
    * entire cluster. If the given `timeout` is reached without answers from all
    * shard regions the reply will contain an empty map of regions.
    */
-  def this(
-      entityTypeKey: javadsl.EntityTypeKey[_],
-      timeout: java.time.Duration,
-      replyTo: ActorRef[ClusterShardingStats]) =
+  def this
+    (
+        entityTypeKey: javadsl.EntityTypeKey[_],
+        timeout: java.time.Duration,
+        replyTo: ActorRef[ClusterShardingStats]) =
     this(entityTypeKey.asScala, JavaDurationConverters.asFiniteDuration(timeout), replyTo)
 }

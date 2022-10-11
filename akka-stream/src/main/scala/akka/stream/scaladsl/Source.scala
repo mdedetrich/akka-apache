@@ -32,9 +32,10 @@ import akka.util.ConstantFun
  * an “atomic” source, e.g. from a collection or a file. Materialization turns a Source into
  * a Reactive Streams `Publisher` (at least conceptually).
  */
-final class Source[+Out, +Mat](
-    override val traversalBuilder: LinearTraversalBuilder,
-    override val shape: SourceShape[Out])
+final class Source[+Out, +Mat]
+  (
+      override val traversalBuilder: LinearTraversalBuilder,
+      override val shape: SourceShape[Out])
     extends FlowOpsMat[Out, Mat]
     with Graph[SourceShape[Out], Mat] {
 
@@ -48,8 +49,11 @@ final class Source[+Out, +Mat](
 
   override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] = viaMat(flow)(Keep.left)
 
-  override def viaMat[T, Mat2, Mat3](flow: Graph[FlowShape[Out, T], Mat2])(
-      combine: (Mat, Mat2) => Mat3): Source[T, Mat3] = {
+  override def viaMat[T, Mat2, Mat3]
+    (flow: Graph[FlowShape[Out, T], Mat2])
+    (
+        combine: (Mat, Mat2) => Mat3)
+    : Source[T, Mat3] = {
     if (flow.traversalBuilder eq Flow.identityTraversalBuilder)
       if (combine == Keep.left)
         // optimization by returning this
@@ -229,8 +233,11 @@ final class Source[+Out, +Mat](
    * Combines several sources with fan-in strategy like `Merge` or `Concat` and returns `Source`.
    */
   @deprecated("Use `Source.combine` on companion object instead", "2.5.5")
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
-      strategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
+  def combine[T, U]
+    (first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)
+    (
+        strategy: Int => Graph[UniformFanInShape[T, U], NotUsed])
+    : Source[U, NotUsed] =
     Source.combine(first, second, rest: _*)(strategy)
 
   /**
@@ -281,8 +288,10 @@ object Source {
    * You can use [[Source.async]] to create asynchronous boundaries between synchronous Java ``Stream``
    * and the rest of flow.
    */
-  def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]](
-      stream: () => java.util.stream.BaseStream[T, S]): Source[T, NotUsed] =
+  def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]]
+    (
+        stream: () => java.util.stream.BaseStream[T, S])
+    : Source[T, NotUsed] =
     StreamConverters.fromJavaStream(stream);
 
   /**
@@ -384,8 +393,10 @@ object Source {
    * with a [[StreamDetachedException]]
    */
   @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "2.6.0")
-  def fromSourceCompletionStage[T, M](
-      completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
+  def fromSourceCompletionStage[T, M]
+    (
+        completion: CompletionStage[_ <: Graph[SourceShape[T], M]])
+    : Source[T, CompletionStage[M]] =
     fromFutureSource(completion.toScala).mapMaterializedValue(_.toJava)
 
   /**
@@ -634,11 +645,13 @@ object Source {
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  def actorRef[T](
-      completionMatcher: PartialFunction[Any, CompletionStrategy],
-      failureMatcher: PartialFunction[Any, Throwable],
-      bufferSize: Int,
-      overflowStrategy: OverflowStrategy): Source[T, ActorRef] = {
+  def actorRef[T]
+    (
+        completionMatcher: PartialFunction[Any, CompletionStrategy],
+        failureMatcher: PartialFunction[Any, Throwable],
+        bufferSize: Int,
+        overflowStrategy: OverflowStrategy)
+    : Source[T, ActorRef] = {
     require(bufferSize >= 0, "bufferSize must be greater than or equal to 0")
     require(!overflowStrategy.isBackpressure, "Backpressure overflowStrategy not supported")
     Source
@@ -694,11 +707,13 @@ object Source {
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def actorRefWithAck[T](
-      ackTo: Option[ActorRef],
-      ackMessage: Any,
-      completionMatcher: PartialFunction[Any, CompletionStrategy],
-      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
+  @InternalApi private[akka] def actorRefWithAck[T]
+    (
+        ackTo: Option[ActorRef],
+        ackMessage: Any,
+        completionMatcher: PartialFunction[Any, CompletionStrategy],
+        failureMatcher: PartialFunction[Any, Throwable])
+    : Source[T, ActorRef] = {
     Source.fromGraph(new ActorRefBackpressureSource(ackTo, ackMessage, completionMatcher, failureMatcher))
   }
 
@@ -716,10 +731,12 @@ object Source {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    */
-  def actorRefWithBackpressure[T](
-      ackMessage: Any,
-      completionMatcher: PartialFunction[Any, CompletionStrategy],
-      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
+  def actorRefWithBackpressure[T]
+    (
+        ackMessage: Any,
+        completionMatcher: PartialFunction[Any, CompletionStrategy],
+        failureMatcher: PartialFunction[Any, Throwable])
+    : Source[T, ActorRef] = {
     Source.fromGraph(new ActorRefBackpressureSource(None, ackMessage, completionMatcher, failureMatcher))
   }
 
@@ -757,8 +774,11 @@ object Source {
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
-      strategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
+  def combine[T, U]
+    (first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)
+    (
+        strategy: Int => Graph[UniformFanInShape[T, U], NotUsed])
+    : Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))
@@ -777,8 +797,12 @@ object Source {
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]] with a materialized value.
    */
-  def combineMat[T, U, M1, M2, M](first: Source[T, M1], second: Source[T, M2])(
-      strategy: Int => Graph[UniformFanInShape[T, U], NotUsed])(matF: (M1, M2) => M): Source[U, M] = {
+  def combineMat[T, U, M1, M2, M]
+    (first: Source[T, M1], second: Source[T, M2])
+    (
+        strategy: Int => Graph[UniformFanInShape[T, U], NotUsed])
+    (matF: (M1, M2) => M)
+    : Source[U, M] = {
     val secondPartiallyCombined = GraphDSL.createGraph(second) { implicit b => secondShape =>
       import GraphDSL.Implicits._
       val c = b.add(strategy(2))
@@ -906,10 +930,12 @@ object Source {
    * @param maxConcurrentOffers maximum number of pending offers when buffer is full, should be greater than 0, not
    *                            applicable when `OverflowStrategy.dropNew` is used
    */
-  def queue[T](
-      bufferSize: Int,
-      overflowStrategy: OverflowStrategy,
-      maxConcurrentOffers: Int): Source[T, SourceQueueWithComplete[T]] =
+  def queue[T]
+    (
+        bufferSize: Int,
+        overflowStrategy: OverflowStrategy,
+        maxConcurrentOffers: Int)
+    : Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
       new QueueSource(bufferSize, overflowStrategy, maxConcurrentOffers).withAttributes(DefaultAttributes.queueSource))
 
@@ -964,10 +990,12 @@ object Source {
    *             is received. Stream calls close and completes when `Future` from read function returns None.
    * @param close - function that closes resource
    */
-  def unfoldResourceAsync[T, S](
-      create: () => Future[S],
-      read: (S) => Future[Option[T]],
-      close: (S) => Future[Done]): Source[T, NotUsed] =
+  def unfoldResourceAsync[T, S]
+    (
+        create: () => Future[S],
+        read: (S) => Future[Option[T]],
+        close: (S) => Future[Done])
+    : Source[T, NotUsed] =
     Source.fromGraph(new UnfoldResourceSourceAsync(create, read, close))
 
   /**
@@ -982,9 +1010,11 @@ object Source {
    *
    * '''Cancels when''' downstream cancels
    */
-  def mergePrioritizedN[T](
-      sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
-      eagerComplete: Boolean): Source[T, NotUsed] = {
+  def mergePrioritizedN[T]
+    (
+        sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
+        eagerComplete: Boolean)
+    : Source[T, NotUsed] = {
     sourcesAndPriorities match {
       case immutable.Seq()            => Source.empty
       case immutable.Seq((source, _)) => source.mapMaterializedValue(_ => NotUsed)

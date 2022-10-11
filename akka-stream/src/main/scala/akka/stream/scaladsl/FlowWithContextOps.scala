@@ -74,8 +74,11 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see [[akka.stream.scaladsl.FlowOpsMat.viaMat]]
    */
-  def viaMat[Out2, Ctx2, Mat2, Mat3](flow: Graph[FlowShape[(Out, Ctx), (Out2, Ctx2)], Mat2])(
-      combine: (Mat, Mat2) => Mat3): ReprMat[Out2, Ctx2, Mat3]
+  def viaMat[Out2, Ctx2, Mat2, Mat3]
+    (flow: Graph[FlowShape[(Out, Ctx), (Out2, Ctx2)], Mat2])
+    (
+        combine: (Mat, Mat2) => Mat3)
+    : ReprMat[Out2, Ctx2, Mat3]
 
   /**
    * Context-preserving variant of [[akka.stream.scaladsl.FlowOps.map]].
@@ -205,8 +208,11 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see [[akka.stream.scaladsl.FlowOps.log]]
    */
-  def log(name: String, extract: Out => Any = ConstantFun.scalaIdentityFunction)(
-      implicit log: LoggingAdapter = null): Repr[Out, Ctx] = {
+  def log
+    (name: String, extract: Out => Any = ConstantFun.scalaIdentityFunction)
+    (
+        implicit log: LoggingAdapter = null)
+    : Repr[Out, Ctx] = {
     val extractWithContext: ((Out, Ctx)) => Any = { case (e, _) => extract(e) }
     via(flow.log(name, extractWithContext)(log))
   }
@@ -216,11 +222,14 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see [[akka.stream.scaladsl.FlowOps.logWithMarker]]
    */
-  def logWithMarker(
-      name: String,
-      marker: (Out, Ctx) => LogMarker,
-      extract: Out => Any = ConstantFun.scalaIdentityFunction)(
-      implicit log: MarkerLoggingAdapter = null): Repr[Out, Ctx] = {
+  def logWithMarker
+    (
+        name: String,
+        marker: (Out, Ctx) => LogMarker,
+        extract: Out => Any = ConstantFun.scalaIdentityFunction)
+    (
+        implicit log: MarkerLoggingAdapter = null)
+    : Repr[Out, Ctx] = {
     val extractWithContext: ((Out, Ctx)) => Any = { case (e, _) => extract(e) }
     via(flow.logWithMarker(name, marker.tupled, extractWithContext)(log))
   }
@@ -254,12 +263,14 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
    *
    * @see [[akka.stream.scaladsl.FlowOps.throttle]]
    */
-  def throttle(
-      cost: Int,
-      per: FiniteDuration,
-      maximumBurst: Int,
-      costCalculation: (Out) => Int,
-      mode: ThrottleMode): Repr[Out, Ctx] =
+  def throttle
+    (
+        cost: Int,
+        per: FiniteDuration,
+        maximumBurst: Int,
+        costCalculation: (Out) => Int,
+        mode: ThrottleMode)
+    : Repr[Out, Ctx] =
     via(flow.throttle(cost, per, maximumBurst, a => costCalculation(a._1), mode))
 
   private[akka] def flow[T, C]: Flow[(T, C), (T, C), NotUsed] = Flow[(T, C)]

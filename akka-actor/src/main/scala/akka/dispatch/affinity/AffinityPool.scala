@@ -110,14 +110,15 @@ private[affinity] object AffinityPool {
  */
 @InternalApi
 @ApiMayChange
-private[akka] class AffinityPool(
-    id: String,
-    parallelism: Int,
-    affinityGroupSize: Int,
-    threadFactory: ThreadFactory,
-    idleCpuLevel: Int,
-    final val queueSelector: QueueSelector,
-    rejectionHandler: RejectionHandler)
+private[akka] class AffinityPool
+  (
+      id: String,
+      parallelism: Int,
+      affinityGroupSize: Int,
+      threadFactory: ThreadFactory,
+      idleCpuLevel: Int,
+      final val queueSelector: QueueSelector,
+      rejectionHandler: RejectionHandler)
     extends AbstractExecutorService {
 
   if (parallelism <= 0)

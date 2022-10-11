@@ -20,9 +20,11 @@ import akka.cluster.sharding.typed.delivery.ShardingConsumerController
  * INTERNAL API
  */
 @InternalApi private[akka] object ShardingConsumerControllerImpl {
-  def apply[A, B](
-      consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B],
-      settings: ShardingConsumerController.Settings): Behavior[ConsumerController.SequencedMessage[A]] = {
+  def apply[A, B]
+    (
+        consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B],
+        settings: ShardingConsumerController.Settings)
+    : Behavior[ConsumerController.SequencedMessage[A]] = {
     Behaviors
       .setup[ConsumerController.Command[A]] { context =>
         context.setLoggerName("akka.cluster.sharding.typed.delivery.ShardingConsumerController")
@@ -33,10 +35,12 @@ import akka.cluster.sharding.typed.delivery.ShardingConsumerController
       .narrow
   }
 
-  private def waitForStart[A](
-      context: ActorContext[ConsumerController.Command[A]],
-      settings: ShardingConsumerController.Settings,
-      consumer: ActorRef[_]): Behavior[ConsumerController.Command[A]] = {
+  private def waitForStart[A]
+    (
+        context: ActorContext[ConsumerController.Command[A]],
+        settings: ShardingConsumerController.Settings,
+        consumer: ActorRef[_])
+    : Behavior[ConsumerController.Command[A]] = {
     Behaviors.withStash(settings.bufferSize) { stashBuffer =>
       Behaviors
         .receiveMessage[ConsumerController.Command[A]] {
@@ -60,17 +64,19 @@ import akka.cluster.sharding.typed.delivery.ShardingConsumerController
 
 }
 
-private class ShardingConsumerControllerImpl[A](
-    context: ActorContext[ConsumerController.Command[A]],
-    deliverTo: ActorRef[ConsumerController.Delivery[A]],
-    settings: ShardingConsumerController.Settings) {
+private class ShardingConsumerControllerImpl[A]
+  (
+      context: ActorContext[ConsumerController.Command[A]],
+      deliverTo: ActorRef[ConsumerController.Delivery[A]],
+      settings: ShardingConsumerController.Settings) {
 
-  def active(
-      // ProducerController -> producerId
-      producerControllers: Map[ActorRef[ProducerControllerImpl.InternalCommand], String],
-      // producerId -> ConsumerController
-      consumerControllers: Map[String, ActorRef[ConsumerController.Command[A]]])
-      : Behavior[ConsumerController.Command[A]] = {
+  def active
+    (
+        // ProducerController -> producerId
+        producerControllers: Map[ActorRef[ProducerControllerImpl.InternalCommand], String],
+        // producerId -> ConsumerController
+        consumerControllers: Map[String, ActorRef[ConsumerController.Command[A]]])
+    : Behavior[ConsumerController.Command[A]] = {
 
     Behaviors
       .receiveMessagePartial[ConsumerController.Command[A]] {

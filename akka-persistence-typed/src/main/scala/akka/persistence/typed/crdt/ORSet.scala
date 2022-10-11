@@ -146,10 +146,12 @@ object ORSet {
    * INTERNAL API
    * @see [[ORSet#merge]]
    */
-  @InternalApi private[akka] def mergeCommonKeys[A](
-      commonKeys: Set[A],
-      lhs: ORSet[A],
-      rhs: ORSet[A]): Map[A, ORSet.Dot] =
+  @InternalApi private[akka] def mergeCommonKeys[A]
+    (
+        commonKeys: Set[A],
+        lhs: ORSet[A],
+        rhs: ORSet[A])
+    : Map[A, ORSet.Dot] =
     mergeCommonKeys(commonKeys.iterator, lhs, rhs)
 
   private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] = {
@@ -218,18 +220,22 @@ object ORSet {
    * INTERNAL API
    * @see [[ORSet#merge]]
    */
-  @InternalApi private[akka] def mergeDisjointKeys[A](
-      keys: Set[A],
-      elementsMap: Map[A, ORSet.Dot],
-      vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] =
+  @InternalApi private[akka] def mergeDisjointKeys[A]
+    (
+        keys: Set[A],
+        elementsMap: Map[A, ORSet.Dot],
+        vvector: VersionVector,
+        accumulator: Map[A, ORSet.Dot])
+    : Map[A, ORSet.Dot] =
     mergeDisjointKeys(keys.iterator, elementsMap, vvector, accumulator)
 
-  private def mergeDisjointKeys[A](
-      keys: Iterator[A],
-      elementsMap: Map[A, ORSet.Dot],
-      vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] = {
+  private def mergeDisjointKeys[A]
+    (
+        keys: Iterator[A],
+        elementsMap: Map[A, ORSet.Dot],
+        vvector: VersionVector,
+        accumulator: Map[A, ORSet.Dot])
+    : Map[A, ORSet.Dot] = {
     keys.foldLeft(accumulator) {
       case (acc, k) =>
         val dots = elementsMap(k)
@@ -273,10 +279,11 @@ object ORSet {
  *
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
-final class ORSet[A] private[akka] (
-    val originReplica: String,
-    private[akka] val elementsMap: Map[A, ORSet.Dot],
-    private[akka] val vvector: VersionVector)
+final class ORSet[A] private[akka]
+  (
+      val originReplica: String,
+      private[akka] val elementsMap: Map[A, ORSet.Dot],
+      private[akka] val vvector: VersionVector)
     extends OpCrdt[DeltaOp] {
 
   type T = ORSet[A]

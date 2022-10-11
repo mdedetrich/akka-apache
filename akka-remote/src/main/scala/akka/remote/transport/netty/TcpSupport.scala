@@ -36,11 +36,13 @@ private[remote] trait TcpHandlers extends CommonHandlers {
 
   import ChannelLocalActor._
 
-  override def registerListener(
-      channel: Channel,
-      listener: HandleEventListener,
-      msg: ChannelBuffer,
-      remoteSocketAddress: InetSocketAddress): Unit =
+  override def registerListener
+    (
+        channel: Channel,
+        listener: HandleEventListener,
+        msg: ChannelBuffer,
+        remoteSocketAddress: InetSocketAddress)
+    : Unit =
     ChannelLocalActor.set(channel, Some(listener))
 
   override def createHandle(channel: Channel, localAddress: Address, remoteAddress: Address): AssociationHandle =
@@ -67,10 +69,11 @@ private[remote] trait TcpHandlers extends CommonHandlers {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class TcpServerHandler(
-    _transport: NettyTransport,
-    _associationListenerFuture: Future[AssociationEventListener],
-    val log: LoggingAdapter)
+private[remote] class TcpServerHandler
+  (
+      _transport: NettyTransport,
+      _associationListenerFuture: Future[AssociationEventListener],
+      val log: LoggingAdapter)
     extends ServerHandler(_transport, _associationListenerFuture)
     with TcpHandlers {
 
@@ -96,11 +99,12 @@ private[remote] class TcpClientHandler(_transport: NettyTransport, remoteAddress
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] class TcpAssociationHandle(
-    val localAddress: Address,
-    val remoteAddress: Address,
-    val transport: NettyTransport,
-    private val channel: Channel)
+private[remote] class TcpAssociationHandle
+  (
+      val localAddress: Address,
+      val remoteAddress: Address,
+      val transport: NettyTransport,
+      private val channel: Channel)
     extends AssociationHandle {
   import transport.executionContext
 

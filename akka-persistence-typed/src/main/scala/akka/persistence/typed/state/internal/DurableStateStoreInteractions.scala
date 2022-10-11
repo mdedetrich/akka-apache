@@ -36,11 +36,13 @@ private[akka] trait DurableStateStoreInteractions[C, S] {
     }
   }
 
-  protected def internalUpsert(
-      ctx: ActorContext[InternalProtocol],
-      cmd: Any,
-      state: Running.RunningState[S],
-      value: Any): Running.RunningState[S] = {
+  protected def internalUpsert
+    (
+        ctx: ActorContext[InternalProtocol],
+        cmd: Any,
+        state: Running.RunningState[S],
+        value: Any)
+    : Running.RunningState[S] = {
 
     val newRunningState = state.nextRevision()
     val persistenceId = setup.persistenceId.id
@@ -56,10 +58,12 @@ private[akka] trait DurableStateStoreInteractions[C, S] {
     newRunningState
   }
 
-  protected def internalDelete(
-      ctx: ActorContext[InternalProtocol],
-      cmd: Any,
-      state: Running.RunningState[S]): Running.RunningState[S] = {
+  protected def internalDelete
+    (
+        ctx: ActorContext[InternalProtocol],
+        cmd: Any,
+        state: Running.RunningState[S])
+    : Running.RunningState[S] = {
 
     val newRunningState = state.nextRevision().copy(state = setup.emptyState)
     val persistenceId = setup.persistenceId.id
@@ -86,7 +90,7 @@ private[akka] trait DurableStateStoreInteractions[C, S] {
 
   /** Intended to be used in .onSignal(returnPermitOnStop) by behaviors */
   protected def returnPermitOnStop
-      : PartialFunction[(ActorContext[InternalProtocol], Signal), Behavior[InternalProtocol]] = {
+    : PartialFunction[(ActorContext[InternalProtocol], Signal), Behavior[InternalProtocol]] = {
     case (_, PostStop) =>
       tryReturnRecoveryPermit("PostStop")
       Behaviors.stopped

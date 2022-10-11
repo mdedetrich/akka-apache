@@ -42,8 +42,11 @@ trait ShardedDaemonProcess extends Extension { javadslSelf: javadsl.ShardedDaemo
    * Start a specific number of actors that is then kept alive in the cluster.
    * @param behaviorFactory Given a unique id of `0` until `numberOfInstance` create the behavior for that actor.
    */
-  def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T])(
-      implicit classTag: ClassTag[T]): Unit
+  def init[T]
+    (name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T])
+    (
+        implicit classTag: ClassTag[T])
+    : Unit
 
   /**
    * Start a specific number of actors that is then kept alive in the cluster.
@@ -52,8 +55,11 @@ trait ShardedDaemonProcess extends Extension { javadslSelf: javadsl.ShardedDaemo
    * @param stopMessage sent to the actors when they need to stop because of a rebalance across the nodes of the cluster
    *                    or cluster shutdown.
    */
-  def init[T](name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T], stopMessage: T)(
-      implicit classTag: ClassTag[T]): Unit
+  def init[T]
+    (name: String, numberOfInstances: Int, behaviorFactory: Int => Behavior[T], stopMessage: T)
+    (
+        implicit classTag: ClassTag[T])
+    : Unit
 
   /**
    * Start a specific number of actors, each with a unique numeric id in the set, that is then kept alive in the cluster.
@@ -61,12 +67,15 @@ trait ShardedDaemonProcess extends Extension { javadslSelf: javadsl.ShardedDaemo
    * @param stopMessage if defined sent to the actors when they need to stop because of a rebalance across the nodes of the cluster
    *                    or cluster shutdown.
    */
-  def init[T](
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: Int => Behavior[T],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Option[T])(implicit classTag: ClassTag[T]): Unit
+  def init[T]
+    (
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: Int => Behavior[T],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Option[T])
+    (implicit classTag: ClassTag[T])
+    : Unit
 
   /**
    * Start a specific number of actors, each with a unique numeric id in the set, that is then kept alive in the cluster.
@@ -75,13 +84,16 @@ trait ShardedDaemonProcess extends Extension { javadslSelf: javadsl.ShardedDaemo
    *                    or cluster shutdown.
    * @param shardAllocationStrategy if defined used by entities to control the shard allocation
    */
-  def init[T](
-      name: String,
-      numberOfInstances: Int,
-      behaviorFactory: Int => Behavior[T],
-      settings: ShardedDaemonProcessSettings,
-      stopMessage: Option[T],
-      shardAllocationStrategy: Option[ShardAllocationStrategy])(implicit classTag: ClassTag[T]): Unit
+  def init[T]
+    (
+        name: String,
+        numberOfInstances: Int,
+        behaviorFactory: Int => Behavior[T],
+        settings: ShardedDaemonProcessSettings,
+        stopMessage: Option[T],
+        shardAllocationStrategy: Option[ShardAllocationStrategy])
+    (implicit classTag: ClassTag[T])
+    : Unit
 
   /**
    * INTERNAL API

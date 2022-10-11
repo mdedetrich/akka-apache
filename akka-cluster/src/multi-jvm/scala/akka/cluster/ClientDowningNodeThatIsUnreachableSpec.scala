@@ -35,8 +35,9 @@ class ClientDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode3
 class ClientDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode4
     extends ClientDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = false)
 
-abstract class ClientDowningNodeThatIsUnreachableSpec(
-    multiNodeConfig: ClientDowningNodeThatIsUnreachableMultiNodeConfig)
+abstract class ClientDowningNodeThatIsUnreachableSpec
+  (
+      multiNodeConfig: ClientDowningNodeThatIsUnreachableMultiNodeConfig)
     extends MultiNodeClusterSpec(multiNodeConfig) {
 
   def this(failureDetectorPuppet: Boolean) =

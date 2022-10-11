@@ -57,7 +57,7 @@ object LWWMap {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class LWWMap[A, B] private[akka] (private[akka] val underlying: ORMap[A, LWWRegister[B]])
+final class LWWMap[A, B] private[akka](private[akka] val underlying: ORMap[A, LWWRegister[B]])
     extends DeltaReplicatedData
     with ReplicatedDataSerialization
     with RemovedNodePruning {

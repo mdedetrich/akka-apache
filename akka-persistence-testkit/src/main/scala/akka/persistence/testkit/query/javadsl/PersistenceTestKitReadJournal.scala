@@ -30,26 +30,32 @@ final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitR
     with CurrentEventsByTagQuery
     with CurrentEventsBySliceQuery {
 
-  override def eventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long,
-      toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
+  override def eventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long,
+        toSequenceNr: Long)
+    : Source[EventEnvelope, NotUsed] =
     delegate.eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr).asJava
 
-  override def currentEventsByPersistenceId(
-      persistenceId: String,
-      fromSequenceNr: Long,
-      toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
+  override def currentEventsByPersistenceId
+    (
+        persistenceId: String,
+        fromSequenceNr: Long,
+        toSequenceNr: Long)
+    : Source[EventEnvelope, NotUsed] =
     delegate.currentEventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr).asJava
 
   override def currentEventsByTag(tag: String, offset: Offset): Source[EventEnvelope, NotUsed] =
     delegate.currentEventsByTag(tag, offset).asJava
 
-  override def currentEventsBySlices[Event](
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[typed.EventEnvelope[Event], NotUsed] =
+  override def currentEventsBySlices[Event]
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[typed.EventEnvelope[Event], NotUsed] =
     delegate.currentEventsBySlices(entityType, minSlice, maxSlice, offset).asJava
 
   override def sliceForPersistenceId(persistenceId: String): Int =

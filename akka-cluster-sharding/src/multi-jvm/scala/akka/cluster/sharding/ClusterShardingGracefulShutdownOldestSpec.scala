@@ -60,8 +60,9 @@ class PersistentClusterShardingGracefulShutdownOldestMultiJvmNode2
 class DDataClusterShardingGracefulShutdownOldestMultiJvmNode1 extends DDataClusterShardingGracefulShutdownOldestSpec
 class DDataClusterShardingGracefulShutdownOldestMultiJvmNode2 extends DDataClusterShardingGracefulShutdownOldestSpec
 
-abstract class ClusterShardingGracefulShutdownOldestSpec(
-    multiNodeConfig: ClusterShardingGracefulShutdownOldestSpecConfig)
+abstract class ClusterShardingGracefulShutdownOldestSpec
+  (
+      multiNodeConfig: ClusterShardingGracefulShutdownOldestSpecConfig)
     extends MultiNodeClusterShardingSpec(multiNodeConfig)
     with ImplicitSender {
 

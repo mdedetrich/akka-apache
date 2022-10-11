@@ -87,13 +87,14 @@ private[akka] object Running {
     def currentSequenceNumber: Long
   }
 
-  final case class RunningState[State](
-      seqNr: Long,
-      state: State,
-      receivedPoisonPill: Boolean,
-      version: VersionVector,
-      seenPerReplica: Map[ReplicaId, Long],
-      replicationControl: Map[ReplicaId, ReplicationStreamControl]) {
+  final case class RunningState[State]
+    (
+        seqNr: Long,
+        state: State,
+        receivedPoisonPill: Boolean,
+        version: VersionVector,
+        seenPerReplica: Map[ReplicaId, Long],
+        replicationControl: Map[ReplicaId, ReplicationStreamControl]) {
 
     def nextSequenceNr(): RunningState[State] =
       copy(seqNr = seqNr + 1)
@@ -107,10 +108,12 @@ private[akka] object Running {
     }
   }
 
-  def startReplicationStream[C, E, S](
-      setup: BehaviorSetup[C, E, S],
-      state: RunningState[S],
-      replicationSetup: ReplicationSetup): RunningState[S] = {
+  def startReplicationStream[C, E, S]
+    (
+        setup: BehaviorSetup[C, E, S],
+        state: RunningState[S],
+        replicationSetup: ReplicationSetup)
+    : RunningState[S] = {
     import scala.concurrent.duration._
     val system = setup.context.system
     val ref = setup.context.self
@@ -266,10 +269,12 @@ private[akka] object Running {
       else next
     }
 
-    def onReplicatedEvent(
-        state: Running.RunningState[S],
-        envelope: ReplicatedEventEnvelope[E],
-        replication: ReplicationSetup): Behavior[InternalProtocol] = {
+    def onReplicatedEvent
+      (
+          state: Running.RunningState[S],
+          envelope: ReplicatedEventEnvelope[E],
+          replication: ReplicationSetup)
+      : Behavior[InternalProtocol] = {
       setup.internalLogger.debugN(
         "Replica {} received replicated event. Replica seqs nrs: {}. Envelope {}",
         setup.replication,
@@ -311,11 +316,13 @@ private[akka] object Running {
       tryUnstashOne(newBehavior)
     }
 
-    private def onPublishedEvent(
-        state: Running.RunningState[S],
-        replication: ReplicationSetup,
-        replicatedMetadata: ReplicatedPublishedEventMetaData,
-        event: PublishedEventImpl): Behavior[InternalProtocol] = {
+    private def onPublishedEvent
+      (
+          state: Running.RunningState[S],
+          replication: ReplicationSetup,
+          replicatedMetadata: ReplicatedPublishedEventMetaData,
+          event: PublishedEventImpl)
+      : Behavior[InternalProtocol] = {
       val log = setup.internalLogger
       val separatorIndex = event.persistenceId.id.indexOf(PersistenceId.DefaultSeparator)
       val idPrefix = event.persistenceId.id.substring(0, separatorIndex)
@@ -395,9 +402,11 @@ private[akka] object Running {
       this
     }
 
-    private def handleExternalReplicatedEventPersist(
-        replication: ReplicationSetup,
-        event: ReplicatedEvent[E]): Behavior[InternalProtocol] = {
+    private def handleExternalReplicatedEventPersist
+      (
+          replication: ReplicationSetup,
+          event: ReplicatedEvent[E])
+      : Behavior[InternalProtocol] = {
       _currentSequenceNumber = state.seqNr + 1
       val isConcurrent: Boolean = event.originVersion <> state.version
       val updatedVersion = event.originVersion.merge(state.version)
@@ -439,10 +448,12 @@ private[akka] object Running {
         Nil)
     }
 
-    private def handleEventPersist(
-        event: E,
-        cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+    private def handleEventPersist
+      (
+          event: E,
+          cmd: Any,
+          sideEffects: immutable.Seq[SideEffect[S]])
+      : (Behavior[InternalProtocol], Boolean) = {
       try {
         // apply the event before persist so that validation exception is handled before persisting
         // the invalid event, in case such validation is implemented in the event handler.
@@ -497,10 +508,12 @@ private[akka] object Running {
       }
     }
 
-    private def handleEventPersistAll(
-        events: immutable.Seq[E],
-        cmd: Any,
-        sideEffects: immutable.Seq[SideEffect[S]]): (Behavior[InternalProtocol], Boolean) = {
+    private def handleEventPersistAll
+      (
+          events: immutable.Seq[E],
+          cmd: Any,
+          sideEffects: immutable.Seq[SideEffect[S]])
+      : (Behavior[InternalProtocol], Boolean) = {
       if (events.nonEmpty) {
         try {
           // apply the event before persist so that validation exception is handled before persisting
@@ -563,11 +576,13 @@ private[akka] object Running {
         (applySideEffects(sideEffects, state), true)
       }
     }
-    @tailrec def applyEffects(
-        msg: Any,
-        state: RunningState[S],
-        effect: Effect[E, S],
-        sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
+    @tailrec def applyEffects
+      (
+          msg: Any,
+          state: RunningState[S],
+          effect: Effect[E, S],
+          sideEffects: immutable.Seq[SideEffect[S]] = Nil)
+      : (Behavior[InternalProtocol], Boolean) = {
       if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_, _]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
@@ -620,26 +635,29 @@ private[akka] object Running {
 
   // ===============================================
 
-  def persistingEvents(
-      state: RunningState[S],
-      visibleState: RunningState[S], // previous state until write success
-      numberOfEvents: Int,
-      shouldSnapshotAfterPersist: SnapshotAfterPersist,
-      shouldPublish: Boolean,
-      sideEffects: immutable.Seq[SideEffect[S]]): Behavior[InternalProtocol] = {
+  def persistingEvents
+    (
+        state: RunningState[S],
+        visibleState: RunningState[S], // previous state until write success
+        numberOfEvents: Int,
+        shouldSnapshotAfterPersist: SnapshotAfterPersist,
+        shouldPublish: Boolean,
+        sideEffects: immutable.Seq[SideEffect[S]])
+    : Behavior[InternalProtocol] = {
     setup.setMdcPhase(PersistenceMdc.PersistingEvents)
     new PersistingEvents(state, visibleState, numberOfEvents, shouldSnapshotAfterPersist, shouldPublish, sideEffects)
   }
 
   /** INTERNAL API */
-  @InternalApi private[akka] class PersistingEvents(
-      var state: RunningState[S],
-      var visibleState: RunningState[S], // previous state until write success
-      numberOfEvents: Int,
-      shouldSnapshotAfterPersist: SnapshotAfterPersist,
-      shouldPublish: Boolean,
-      var sideEffects: immutable.Seq[SideEffect[S]],
-      persistStartTime: Long = System.nanoTime())
+  @InternalApi private[akka] class PersistingEvents
+    (
+        var state: RunningState[S],
+        var visibleState: RunningState[S], // previous state until write success
+        numberOfEvents: Int,
+        shouldSnapshotAfterPersist: SnapshotAfterPersist,
+        shouldPublish: Boolean,
+        var sideEffects: immutable.Seq[SideEffect[S]],
+        persistStartTime: Long = System.nanoTime())
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithSeqNrAccessible {
 
@@ -779,10 +797,11 @@ private[akka] object Running {
   // ===============================================
 
   /** INTERNAL API */
-  @InternalApi private[akka] class StoringSnapshot(
-      state: RunningState[S],
-      sideEffects: immutable.Seq[SideEffect[S]],
-      snapshotReason: SnapshotAfterPersist)
+  @InternalApi private[akka] class StoringSnapshot
+    (
+        state: RunningState[S],
+        sideEffects: immutable.Seq[SideEffect[S]],
+        snapshotReason: SnapshotAfterPersist)
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithSeqNrAccessible {
     setup.setMdcPhase(PersistenceMdc.StoringSnapshot)
@@ -894,10 +913,12 @@ private[akka] object Running {
       behavior
   }
 
-  def applySideEffect(
-      effect: SideEffect[S],
-      state: RunningState[S],
-      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
+  def applySideEffect
+    (
+        effect: SideEffect[S],
+        state: RunningState[S],
+        behavior: Behavior[InternalProtocol])
+    : Behavior[InternalProtocol] = {
     effect match {
       case _: Stop.type @unchecked =>
         Behaviors.stopped
@@ -972,15 +993,19 @@ private[akka] object Running {
   }
 
   @InternalStableApi
-  private[akka] def onWriteFailed(
-      @unused ctx: ActorContext[_],
-      @unused reason: Throwable,
-      @unused event: PersistentRepr): Unit = ()
+  private[akka] def onWriteFailed
+    (
+        @unused ctx: ActorContext[_],
+        @unused reason: Throwable,
+        @unused event: PersistentRepr)
+    : Unit = ()
   @InternalStableApi
-  private[akka] def onWriteRejected(
-      @unused ctx: ActorContext[_],
-      @unused reason: Throwable,
-      @unused event: PersistentRepr): Unit = ()
+  private[akka] def onWriteRejected
+    (
+        @unused ctx: ActorContext[_],
+        @unused reason: Throwable,
+        @unused event: PersistentRepr)
+    : Unit = ()
   @InternalStableApi
   private[akka] def onWriteSuccess(@unused ctx: ActorContext[_], @unused event: PersistentRepr): Unit = ()
   @InternalStableApi

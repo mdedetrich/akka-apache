@@ -291,8 +291,11 @@ object LineNumbers {
     }
   }
 
-  private def readMethod(d: DataInputStream, codeTag: Int, lineNumberTableTag: Int, filter: Option[String])(
-      implicit c: Constants): Option[(Int, Int)] = {
+  private def readMethod
+    (d: DataInputStream, codeTag: Int, lineNumberTableTag: Int, filter: Option[String])
+    (
+        implicit c: Constants)
+    : Option[(Int, Int)] = {
     skip(d, 2) // access flags
     val name = d.readUnsignedShort() // name
     skip(d, 2) // signature

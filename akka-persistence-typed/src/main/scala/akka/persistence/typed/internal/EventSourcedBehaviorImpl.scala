@@ -87,24 +87,25 @@ private[akka] object EventSourcedBehaviorImpl {
 }
 
 @InternalApi
-private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
-    persistenceId: PersistenceId,
-    emptyState: State,
-    commandHandler: EventSourcedBehavior.CommandHandler[Command, Event, State],
-    eventHandler: EventSourcedBehavior.EventHandler[State, Event],
-    loggerClass: Class[_],
-    journalPluginId: Option[String] = None,
-    snapshotPluginId: Option[String] = None,
-    tagger: Event => Set[String] = (_: Event) => Set.empty[String],
-    eventAdapter: EventAdapter[Event, Any] = NoOpEventAdapter.instance[Event],
-    snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
-    snapshotWhen: (State, Event, Long) => Boolean = ConstantFun.scalaAnyThreeToFalse,
-    recovery: Recovery = Recovery(),
-    retention: RetentionCriteria = RetentionCriteria.disabled,
-    supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
-    override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty,
-    replication: Option[ReplicationSetup] = None,
-    publishEvents: Boolean = true)
+private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State]
+  (
+      persistenceId: PersistenceId,
+      emptyState: State,
+      commandHandler: EventSourcedBehavior.CommandHandler[Command, Event, State],
+      eventHandler: EventSourcedBehavior.EventHandler[State, Event],
+      loggerClass: Class[_],
+      journalPluginId: Option[String] = None,
+      snapshotPluginId: Option[String] = None,
+      tagger: Event => Set[String] = (_: Event) => Set.empty[String],
+      eventAdapter: EventAdapter[Event, Any] = NoOpEventAdapter.instance[Event],
+      snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
+      snapshotWhen: (State, Event, Long) => Boolean = ConstantFun.scalaAnyThreeToFalse,
+      recovery: Recovery = Recovery(),
+      retention: RetentionCriteria = RetentionCriteria.disabled,
+      supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
+      override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty,
+      replication: Option[ReplicationSetup] = None,
+      publishEvents: Boolean = true)
     extends EventSourcedBehavior[Command, Event, State] {
 
   import EventSourcedBehaviorImpl.WriterIdentity
@@ -198,10 +199,12 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
           def interceptor: BehaviorInterceptor[Any, InternalProtocol] = new BehaviorInterceptor[Any, InternalProtocol] {
 
             import BehaviorInterceptor._
-            override def aroundReceive(
-                ctx: typed.TypedActorContext[Any],
-                msg: Any,
-                target: ReceiveTarget[InternalProtocol]): Behavior[InternalProtocol] = {
+            override def aroundReceive
+              (
+                  ctx: typed.TypedActorContext[Any],
+                  msg: Any,
+                  target: ReceiveTarget[InternalProtocol])
+              : Behavior[InternalProtocol] = {
               val innerMsg = msg match {
                 case res: JournalProtocol.Response           => InternalProtocol.JournalResponse(res)
                 case res: SnapshotProtocol.Response          => InternalProtocol.SnapshotterResponse(res)
@@ -212,10 +215,12 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
               target(ctx, innerMsg)
             }
 
-            override def aroundSignal(
-                ctx: typed.TypedActorContext[Any],
-                signal: Signal,
-                target: SignalTarget[InternalProtocol]): Behavior[InternalProtocol] = {
+            override def aroundSignal
+              (
+                  ctx: typed.TypedActorContext[Any],
+                  signal: Signal,
+                  target: SignalTarget[InternalProtocol])
+              : Behavior[InternalProtocol] = {
               if (signal == PostStop) {
                 eventSourcedSetup.cancelRecoveryTimer()
                 // clear stash to be GC friendly
@@ -237,8 +242,10 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
   @InternalStableApi
   private[akka] def initialize(@unused context: ActorContext[_]): Unit = ()
 
-  override def receiveSignal(
-      handler: PartialFunction[(State, Signal), Unit]): EventSourcedBehavior[Command, Event, State] =
+  override def receiveSignal
+    (
+        handler: PartialFunction[(State, Signal), Unit])
+    : EventSourcedBehavior[Command, Event, State] =
     copy(signalHandler = handler)
 
   override def withJournalPluginId(id: String): EventSourcedBehavior[Command, Event, State] = {
@@ -251,8 +258,10 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
     copy(snapshotPluginId = if (id != "") Some(id) else None)
   }
 
-  override def withSnapshotSelectionCriteria(
-      selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State] = {
+  override def withSnapshotSelectionCriteria
+    (
+        selection: SnapshotSelectionCriteria)
+    : EventSourcedBehavior[Command, Event, State] = {
     copy(recovery = Recovery(selection.toClassic))
   }
 
@@ -271,8 +280,10 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def snapshotAdapter(adapter: SnapshotAdapter[State]): EventSourcedBehavior[Command, Event, State] =
     copy(snapshotAdapter = adapter)
 
-  override def onPersistFailure(
-      backoffStrategy: BackoffSupervisorStrategy): EventSourcedBehavior[Command, Event, State] =
+  override def onPersistFailure
+    (
+        backoffStrategy: BackoffSupervisorStrategy)
+    : EventSourcedBehavior[Command, Event, State] =
     copy(supervisionStrategy = backoffStrategy)
 
   override def withRecovery(recovery: TypedRecovery): EventSourcedBehavior[Command, Event, State] = {
@@ -283,8 +294,10 @@ private[akka] final case class EventSourcedBehaviorImpl[Command, Event, State](
     copy(publishEvents = enabled)
   }
 
-  override private[akka] def withReplication(
-      context: ReplicationContextImpl): EventSourcedBehavior[Command, Event, State] = {
+  override private[akka] def withReplication
+    (
+        context: ReplicationContextImpl)
+    : EventSourcedBehavior[Command, Event, State] = {
     copy(replication =
       Some(ReplicationSetup(context.replicationId.replicaId, context.replicasAndQueryPlugins, context)))
   }
@@ -320,11 +333,12 @@ object ReplicatedEventMetadata {
  *                at each location as they are received at different times
  */
 @InternalApi
-private[akka] final case class ReplicatedEventMetadata(
-    originReplica: ReplicaId,
-    originSequenceNr: Long,
-    version: VersionVector,
-    concurrent: Boolean) // whether when the event handler was executed the event was concurrent
+private[akka] final case class ReplicatedEventMetadata
+  (
+      originReplica: ReplicaId,
+      originSequenceNr: Long,
+      version: VersionVector,
+      concurrent: Boolean) // whether when the event handler was executed the event was concurrent
 
 object ReplicatedSnapshotMetadata {
 
@@ -349,11 +363,12 @@ private[akka] final case class ReplicatedSnapshotMetadata(version: VersionVector
  * merged with the current local version.
  */
 @InternalApi
-private[akka] final case class ReplicatedEvent[E](
-    event: E,
-    originReplica: ReplicaId,
-    originSequenceNr: Long,
-    originVersion: VersionVector)
+private[akka] final case class ReplicatedEvent[E]
+  (
+      event: E,
+      originReplica: ReplicaId,
+      originSequenceNr: Long,
+      originVersion: VersionVector)
 @InternalApi
 private[akka] case object ReplicatedEventAck
 
@@ -363,12 +378,13 @@ final class ReplicatedPublishedEventMetaData(val replicaId: ReplicaId, private[a
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class PublishedEventImpl(
-    persistenceId: PersistenceId,
-    sequenceNumber: Long,
-    payload: Any,
-    timestamp: Long,
-    replicatedMetaData: Option[ReplicatedPublishedEventMetaData])
+private[akka] final case class PublishedEventImpl
+  (
+      persistenceId: PersistenceId,
+      sequenceNumber: Long,
+      payload: Any,
+      timestamp: Long,
+      replicatedMetaData: Option[ReplicatedPublishedEventMetaData])
     extends PublishedEvent
     with InternalProtocol {
   import scala.compat.java8.OptionConverters._

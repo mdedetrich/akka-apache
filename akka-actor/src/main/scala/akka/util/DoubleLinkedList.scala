@@ -14,11 +14,12 @@ import scala.collection.AbstractIterator
  * Mutable non-thread-safe double-linked list abstraction, with a flexible node type.
  */
 @InternalApi
-private[akka] final class DoubleLinkedList[Node](
-    getPrevious: Node => OptionVal[Node],
-    getNext: Node => OptionVal[Node],
-    setPrevious: (Node, OptionVal[Node]) => Unit,
-    setNext: (Node, OptionVal[Node]) => Unit) {
+private[akka] final class DoubleLinkedList[Node]
+  (
+      getPrevious: Node => OptionVal[Node],
+      getNext: Node => OptionVal[Node],
+      setPrevious: (Node, OptionVal[Node]) => Unit,
+      setNext: (Node, OptionVal[Node]) => Unit) {
 
   private[this] var first: OptionVal[Node] = OptionVal.none
   private[this] var last: OptionVal[Node] = OptionVal.none

@@ -10,12 +10,13 @@ import akka.util.ByteString
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class ChunkedMessage(
-    serialized: ByteString,
-    firstChunk: Boolean,
-    lastChunk: Boolean,
-    serializerId: Int,
-    manifest: String) {
+@InternalApi private[akka] final case class ChunkedMessage
+  (
+      serialized: ByteString,
+      firstChunk: Boolean,
+      lastChunk: Boolean,
+      serializerId: Int,
+      manifest: String) {
 
   override def toString: String =
     s"ChunkedMessage(${serialized.size},$firstChunk,$lastChunk,$serializerId,$manifest)"

@@ -58,10 +58,11 @@ private[akka] final class FunctionRef[-T](override val path: ActorPath, send: (T
  * provides only stubs for the effects an Actor can perform and replaces
  * created child Actors by a synchronous Inbox (see `Inbox.sync`).
  */
-@InternalApi private[akka] class StubbedActorContext[T](
-    val system: ActorSystemStub,
-    val path: ActorPath,
-    currentBehaviorProvider: () => Behavior[T])
+@InternalApi private[akka] class StubbedActorContext[T]
+  (
+      val system: ActorSystemStub,
+      val path: ActorPath,
+      currentBehaviorProvider: () => Behavior[T])
     extends ActorContextImpl[T] {
 
   def this(system: ActorSystemStub, name: String, currentBehaviorProvider: () => Behavior[T]) = {

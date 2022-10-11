@@ -127,11 +127,13 @@ class PerformanceSpec
 
   val loadCycles = system.settings.config.getInt("akka.persistence.performance.cycles.load")
 
-  def stressPersistentActor(
-      persistentActor: ActorRef[Command],
-      probe: TestProbe[Reply],
-      failAt: Option[Long],
-      description: String): Unit = {
+  def stressPersistentActor
+    (
+        persistentActor: ActorRef[Command],
+        probe: TestProbe[Reply],
+        failAt: Option[Long],
+        description: String)
+    : Unit = {
     failAt.foreach { persistentActor ! FailAt(_) }
     val m = new Measure(loadCycles)
     m.startMeasure()

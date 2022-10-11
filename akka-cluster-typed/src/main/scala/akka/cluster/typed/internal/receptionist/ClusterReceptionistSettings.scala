@@ -54,9 +54,10 @@ private[akka] object ClusterReceptionistSettings {
  * Internal API
  */
 @InternalApi
-private[akka] case class ClusterReceptionistSettings(
-    writeConsistency: WriteConsistency,
-    pruningInterval: FiniteDuration,
-    pruneRemovedOlderThan: FiniteDuration,
-    distributedKeyCount: Int,
-    replicatorSettings: ReplicatorSettings)
+private[akka] case class ClusterReceptionistSettings
+  (
+      writeConsistency: WriteConsistency,
+      pruningInterval: FiniteDuration,
+      pruneRemovedOlderThan: FiniteDuration,
+      distributedKeyCount: Int,
+      replicatorSettings: ReplicatorSettings)

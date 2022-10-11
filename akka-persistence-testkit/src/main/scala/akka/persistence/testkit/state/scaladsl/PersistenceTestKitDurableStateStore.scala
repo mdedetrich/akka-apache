@@ -124,11 +124,13 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
         inclusive = true)
     }
 
-  override def currentChangesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed] =
+  override def currentChangesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed] =
     this.synchronized {
       val currentGlobalOffset = lastGlobalOffset.get()
       changesBySlices(entityType, minSlice, maxSlice, offset).takeWhile(
@@ -141,11 +143,13 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
         inclusive = true)
     }
 
-  override def changesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed] =
+  override def changesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed] =
     this.synchronized {
       val fromOffset = offset match {
         case NoOffset             => EarliestOffset
@@ -200,13 +204,14 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
 
 }
 
-private final case class Record[A](
-    globalOffset: Long,
-    persistenceId: String,
-    revision: Long,
-    value: Option[A],
-    tag: String,
-    timestamp: Long = System.currentTimeMillis) {
+private final case class Record[A]
+  (
+      globalOffset: Long,
+      persistenceId: String,
+      revision: Long,
+      value: Option[A],
+      tag: String,
+      timestamp: Long = System.currentTimeMillis) {
   def toDurableStateChange: DurableStateChange[A] = {
     value match {
       case Some(v) =>

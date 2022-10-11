@@ -42,10 +42,11 @@ private object ClusterShardingHealthCheck {
  * INTERNAL API (ctr)
  */
 @ApiMayChange
-final class ClusterShardingHealthCheck private[akka] (
-    system: ActorSystem,
-    settings: ClusterShardingHealthCheckSettings,
-    shardRegion: String => ActorRef)
+final class ClusterShardingHealthCheck private[akka]
+  (
+      system: ActorSystem,
+      settings: ClusterShardingHealthCheckSettings,
+      shardRegion: String => ActorRef)
     extends (() => Future[Boolean]) {
 
   private val log = Logging(system, classOf[ClusterShardingHealthCheck])

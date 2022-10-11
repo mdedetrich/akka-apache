@@ -32,10 +32,11 @@ import akka.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey, 
  * Two level structure for keeping service registry to be able to shard entries over multiple ddata keys (to not
  * get too large ddata messages)
  */
-@InternalApi private[akka] final case class ShardedServiceRegistry(
-    serviceRegistries: Map[DDataKey, ServiceRegistry],
-    nodes: Set[UniqueAddress],
-    unreachable: Set[UniqueAddress]) {
+@InternalApi private[akka] final case class ShardedServiceRegistry
+  (
+      serviceRegistries: Map[DDataKey, ServiceRegistry],
+      nodes: Set[UniqueAddress],
+      unreachable: Set[UniqueAddress]) {
 
   private val keys = serviceRegistries.keySet.toArray
 
@@ -77,8 +78,10 @@ import akka.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey, 
     ServiceRegistry.collectChangedKeys(previousRegistry, newRegistry)
   }
 
-  def entriesPerDdataKey(
-      entries: Map[AbstractServiceKey, Set[Entry]]): Map[DDataKey, Map[AbstractServiceKey, Set[Entry]]] =
+  def entriesPerDdataKey
+    (
+        entries: Map[AbstractServiceKey, Set[Entry]])
+    : Map[DDataKey, Map[AbstractServiceKey, Set[Entry]]] =
     entries.foldLeft(Map.empty[DDataKey, Map[AbstractServiceKey, Set[Entry]]]) {
       case (acc, (key, entries)) =>
         val ddataKey = ddataKeyFor(key.asServiceKey)

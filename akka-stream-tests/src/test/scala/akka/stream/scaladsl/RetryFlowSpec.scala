@@ -547,7 +547,7 @@ class RetryFlowSpec extends StreamSpec("""
   class ConstructBench[In, Ctx, Out](retryWith: ((In, Ctx), (Out, Ctx)) => Option[(In, Ctx)]) {
 
     val throughDangerousFlow
-        : FlowWithContext[In, Ctx, Out, Ctx, (TestSubscriber.Probe[(In, Ctx)], TestPublisher.Probe[(Out, Ctx)])] =
+      : FlowWithContext[In, Ctx, Out, Ctx, (TestSubscriber.Probe[(In, Ctx)], TestPublisher.Probe[(Out, Ctx)])] =
       FlowWithContext.fromTuples(
         Flow.fromSinkAndSourceMat(TestSink.probe[(In, Ctx)], TestSource.probe[(Out, Ctx)])(Keep.both))
 

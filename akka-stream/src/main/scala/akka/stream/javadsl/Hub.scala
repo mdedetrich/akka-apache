@@ -73,9 +73,11 @@ object MergeHub {
    * @param clazz Type of elements this hub emits and consumes
    * @param perProducerBufferSize Buffer space used per producer. Default value is 16.
    */
-  def withDraining[T](
-      @unused clazz: Class[T],
-      perProducerBufferSize: Int): Source[T, akka.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
+  def withDraining[T]
+    (
+        @unused clazz: Class[T],
+        perProducerBufferSize: Int)
+    : Source[T, akka.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
     akka.stream.scaladsl.MergeHub
       .sourceWithDraining[T](perProducerBufferSize)
       .mapMaterializedValue {
@@ -217,11 +219,13 @@ object PartitionHub {
    * @param bufferSize Total number of elements that can be buffered. If this buffer is full, the producer
    *   is backpressured.
    */
-  def ofStateful[T](
-      @unused clazz: Class[T],
-      partitioner: Supplier[ToLongBiFunction[ConsumerInfo, T]],
-      startAfterNrOfConsumers: Int,
-      bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
+  def ofStateful[T]
+    (
+        @unused clazz: Class[T],
+        partitioner: Supplier[ToLongBiFunction[ConsumerInfo, T]],
+        startAfterNrOfConsumers: Int,
+        bufferSize: Int)
+    : Sink[T, Source[T, NotUsed]] = {
     val p: () => (akka.stream.scaladsl.PartitionHub.ConsumerInfo, T) => Long = () => {
       val f = partitioner.get()
       (info, elem) => f.applyAsLong(info, elem)
@@ -261,10 +265,12 @@ object PartitionHub {
    *   This is only used initially when the operator is starting up, i.e. it is not honored when consumers have
    *   been removed (canceled).
    */
-  def ofStateful[T](
-      clazz: Class[T],
-      partitioner: Supplier[ToLongBiFunction[ConsumerInfo, T]],
-      startAfterNrOfConsumers: Int): Sink[T, Source[T, NotUsed]] =
+  def ofStateful[T]
+    (
+        clazz: Class[T],
+        partitioner: Supplier[ToLongBiFunction[ConsumerInfo, T]],
+        startAfterNrOfConsumers: Int)
+    : Sink[T, Source[T, NotUsed]] =
     ofStateful(clazz, partitioner, startAfterNrOfConsumers, akka.stream.scaladsl.PartitionHub.defaultBufferSize)
 
   /**
@@ -296,11 +302,13 @@ object PartitionHub {
    * @param bufferSize Total number of elements that can be buffered. If this buffer is full, the producer
    *   is backpressured.
    */
-  def of[T](
-      @unused clazz: Class[T],
-      partitioner: BiFunction[Integer, T, Integer],
-      startAfterNrOfConsumers: Int,
-      bufferSize: Int): Sink[T, Source[T, NotUsed]] =
+  def of[T]
+    (
+        @unused clazz: Class[T],
+        partitioner: BiFunction[Integer, T, Integer],
+        startAfterNrOfConsumers: Int,
+        bufferSize: Int)
+    : Sink[T, Source[T, NotUsed]] =
     akka.stream.scaladsl.PartitionHub
       .sink[T]((size, elem) => partitioner.apply(size, elem), startAfterNrOfConsumers, bufferSize)
       .mapMaterializedValue(_.asJava)
@@ -335,10 +343,12 @@ object PartitionHub {
    * @param bufferSize Total number of elements that can be buffered. If this buffer is full, the producer
    *   is backpressured.
    */
-  def of[T](
-      clazz: Class[T],
-      partitioner: BiFunction[Integer, T, Integer],
-      startAfterNrOfConsumers: Int): Sink[T, Source[T, NotUsed]] =
+  def of[T]
+    (
+        clazz: Class[T],
+        partitioner: BiFunction[Integer, T, Integer],
+        startAfterNrOfConsumers: Int)
+    : Sink[T, Source[T, NotUsed]] =
     of(clazz, partitioner, startAfterNrOfConsumers, akka.stream.scaladsl.PartitionHub.defaultBufferSize)
 
   @DoNotInherit trait ConsumerInfo {

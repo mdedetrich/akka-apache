@@ -52,10 +52,12 @@ class EventSourcedBehaviorWatchSpec
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  private def setup(
-      pf: PartialFunction[(String, Signal), Unit],
-      settings: EventSourcedSettings,
-      context: ActorContext[_]): BehaviorSetup[Command, String, String] =
+  private def setup
+    (
+        pf: PartialFunction[(String, Signal), Unit],
+        settings: EventSourcedSettings,
+        context: ActorContext[_])
+    : BehaviorSetup[Command, String, String] =
     new BehaviorSetup[Command, String, String](
       context.asInstanceOf[ActorContext[InternalProtocol]],
       nextPid,

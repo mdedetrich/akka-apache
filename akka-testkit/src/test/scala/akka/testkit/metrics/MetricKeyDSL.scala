@@ -6,7 +6,7 @@ package akka.testkit.metrics
 
 trait MetricKeyDSL {
 
-  case class MetricKey private[MetricKeyDSL] (path: String) {
+  case class MetricKey private[MetricKeyDSL](path: String) {
 
     import MetricKey._
 

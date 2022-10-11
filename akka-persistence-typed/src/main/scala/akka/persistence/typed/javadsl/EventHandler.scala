@@ -62,9 +62,11 @@ final class EventHandlerBuilder[State, Event]() {
    *
    * @return A new, mutable, EventHandlerBuilderByState
    */
-  def forState[S <: State](
-      stateClass: Class[S],
-      statePredicate: Predicate[S]): EventHandlerBuilderByState[S, State, Event] = {
+  def forState[S <: State]
+    (
+        stateClass: Class[S],
+        statePredicate: Predicate[S])
+    : EventHandlerBuilderByState[S, State, Event] = {
     val builder = new EventHandlerBuilderByState[S, State, Event](stateClass, statePredicate)
     builders = builder.asInstanceOf[EventHandlerBuilderByState[State, State, Event]] :: builders
     builder
@@ -181,15 +183,17 @@ object EventHandlerBuilderByState {
   /**
    * INTERNAL API
    */
-  @InternalApi private final case class EventHandlerCase[State, Event](
-      statePredicate: State => Boolean,
-      eventPredicate: Event => Boolean,
-      handler: BiFunction[State, Event, State])
+  @InternalApi private final case class EventHandlerCase[State, Event]
+    (
+        statePredicate: State => Boolean,
+        eventPredicate: Event => Boolean,
+        handler: BiFunction[State, Event, State])
 }
 
-final class EventHandlerBuilderByState[S <: State, State, Event](
-    private val stateClass: Class[S],
-    private val statePredicate: Predicate[S]) {
+final class EventHandlerBuilderByState[S <: State, State, Event]
+  (
+      private val stateClass: Class[S],
+      private val statePredicate: Predicate[S]) {
 
   import EventHandlerBuilderByState.EventHandlerCase
 
@@ -211,9 +215,11 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your event handlers.
    */
-  def onEvent[E <: Event](
-      eventClass: Class[E],
-      handler: BiFunction[S, E, State]): EventHandlerBuilderByState[S, State, Event] = {
+  def onEvent[E <: Event]
+    (
+        eventClass: Class[E],
+        handler: BiFunction[S, E, State])
+    : EventHandlerBuilderByState[S, State, Event] = {
     addCase(e => eventClass.isAssignableFrom(e.getClass), handler.asInstanceOf[BiFunction[State, Event, State]])
     this
   }
@@ -228,9 +234,11 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your event handlers.
    */
-  def onEvent[E <: Event](
-      eventClass: Class[E],
-      handler: JFunction[E, State]): EventHandlerBuilderByState[S, State, Event] = {
+  def onEvent[E <: Event]
+    (
+        eventClass: Class[E],
+        handler: JFunction[E, State])
+    : EventHandlerBuilderByState[S, State, Event] = {
     onEvent[E](
       eventClass,
       new BiFunction[S, E, State] {
@@ -247,9 +255,11 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your event handlers.
    */
-  def onEvent[E <: Event](
-      eventClass: Class[E],
-      handler: Supplier[State]): EventHandlerBuilderByState[S, State, Event] = {
+  def onEvent[E <: Event]
+    (
+        eventClass: Class[E],
+        handler: Supplier[State])
+    : EventHandlerBuilderByState[S, State, Event] = {
 
     val supplierBiFunction = new BiFunction[S, E, State] {
       def apply(t: S, u: E): State = handler.get()
@@ -301,8 +311,10 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    * Compose this builder with another builder. The handlers in this builder will be tried first followed
    * by the handlers in `other`.
    */
-  def orElse[S2 <: State](
-      other: EventHandlerBuilderByState[S2, State, Event]): EventHandlerBuilderByState[S2, State, Event] = {
+  def orElse[S2 <: State]
+    (
+        other: EventHandlerBuilderByState[S2, State, Event])
+    : EventHandlerBuilderByState[S2, State, Event] = {
     val newBuilder = new EventHandlerBuilderByState[S2, State, Event](other.stateClass, other.statePredicate)
     // problem with overloaded constructor with `cases` as parameter
     newBuilder.cases = other.cases ::: cases

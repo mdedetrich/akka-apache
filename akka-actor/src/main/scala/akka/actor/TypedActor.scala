@@ -179,11 +179,12 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
    *
    * Represents the serialized form of a MethodCall, uses readResolve and writeReplace to marshall the call
    */
-  private[akka] final case class SerializedMethodCall(
-      ownerType: Class[_],
-      methodName: String,
-      parameterTypes: Array[Class[_]],
-      serializedParameters: Array[(Int, String, Array[Byte])]) {
+  private[akka] final case class SerializedMethodCall
+    (
+        ownerType: Class[_],
+        methodName: String,
+        parameterTypes: Array[Class[_]],
+        serializedParameters: Array[(Int, String, Array[Byte])]) {
 
     // TODO implement writeObject and readObject to serialize
     // TODO Possible optimization is to special encode the parameter-types to conserve space
@@ -261,10 +262,11 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
    *
    * Implementation of TypedActor as an Actor
    */
-  private[akka] class TypedActor[R <: AnyRef, T <: R](
-      val proxyVar: AtomVar[R],
-      createInstance: => T,
-      interfaces: immutable.Seq[Class[_]])
+  private[akka] class TypedActor[R <: AnyRef, T <: R]
+    (
+        val proxyVar: AtomVar[R],
+        createInstance: => T,
+        interfaces: immutable.Seq[Class[_]])
       extends Actor {
     self =>
     // if we were remote deployed we need to create a local proxy
@@ -444,10 +446,11 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
   /**
    * INTERNAL API
    */
-  private[akka] class TypedActorInvocationHandler(
-      @transient val extension: TypedActorExtension,
-      @transient val actorVar: AtomVar[ActorRef],
-      @transient val timeout: Timeout)
+  private[akka] class TypedActorInvocationHandler
+    (
+        @transient val extension: TypedActorExtension,
+        @transient val actorVar: AtomVar[ActorRef],
+        @transient val timeout: Timeout)
       extends InvocationHandler
       with Serializable {
 
@@ -494,9 +497,10 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
   /**
    * INTERNAL API
    */
-  private[akka] final case class SerializedTypedActorInvocationHandler(
-      val actor: ActorRef,
-      val timeout: FiniteDuration) {
+  private[akka] final case class SerializedTypedActorInvocationHandler
+    (
+        val actor: ActorRef,
+        val timeout: FiniteDuration) {
     @throws(classOf[ObjectStreamException]) private def readResolve(): AnyRef =
       JavaSerializer.currentSystem.value match {
         case null =>
@@ -581,13 +585,14 @@ object TypedProps {
  * It's used in TypedActorFactory.typedActorOf to configure a TypedActor instance.
  */
 @SerialVersionUID(1L)
-final case class TypedProps[T <: AnyRef] protected[TypedProps] (
-    interfaces: immutable.Seq[Class[_]],
-    creator: () => T,
-    dispatcher: String = TypedProps.defaultDispatcherId,
-    deploy: Deploy = Props.defaultDeploy,
-    timeout: Option[Timeout] = TypedProps.defaultTimeout,
-    loader: Option[ClassLoader] = TypedProps.defaultLoader) {
+final case class TypedProps[T <: AnyRef] protected[TypedProps]
+  (
+      interfaces: immutable.Seq[Class[_]],
+      creator: () => T,
+      dispatcher: String = TypedProps.defaultDispatcherId,
+      deploy: Deploy = Props.defaultDeploy,
+      timeout: Option[Timeout] = TypedProps.defaultTimeout,
+      loader: Option[ClassLoader] = TypedProps.defaultLoader) {
 
   /**
    * Uses the supplied class as the factory for the TypedActor implementation,
@@ -719,10 +724,12 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
   /**
    * INTERNAL API
    */
-  private[akka] def createActorRefProxy[R <: AnyRef, T <: R](
-      props: TypedProps[T],
-      proxyVar: AtomVar[R],
-      actorRef: => ActorRef): R = {
+  private[akka] def createActorRefProxy[R <: AnyRef, T <: R]
+    (
+        props: TypedProps[T],
+        proxyVar: AtomVar[R],
+        actorRef: => ActorRef)
+    : R = {
     // Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
     val actorVar = new AtomVar[ActorRef](null)
     val proxy = Proxy

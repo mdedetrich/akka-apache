@@ -33,8 +33,11 @@ object EventSourcedActorFailureSpec {
       }
     }
 
-    override def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-        recoveryCallback: PersistentRepr => Unit): Future[Unit] = {
+    override def asyncReplayMessages
+      (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+      (
+          recoveryCallback: PersistentRepr => Unit)
+      : Future[Unit] = {
 
       val readFromStore = read(persistenceId, fromSequenceNr, toSequenceNr, max)
       if (readFromStore.isEmpty)

@@ -129,7 +129,7 @@ object LWWRegister {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class LWWRegister[A] private[akka] (private[akka] val node: UniqueAddress, val value: A, val timestamp: Long)
+final class LWWRegister[A] private[akka](private[akka] val node: UniqueAddress, val value: A, val timestamp: Long)
     extends ReplicatedData
     with ReplicatedDataSerialization {
   import LWWRegister.{ defaultClock, Clock }

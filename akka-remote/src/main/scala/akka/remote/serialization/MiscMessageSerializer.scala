@@ -122,7 +122,9 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def serializeStatusFailure(failure: Status.Failure): Array[Byte] =
     payloadSupport.payloadBuilder(failure.cause).build().toByteArray
 
-  def serializeStatusReplySuccess(r: StatusReply[Any]): Array[Byte] =
+  def serializeStatusReplySuccess
+    (r: StatusReply[Any])
+    : Array[Byte] =
     // no specific message, serialized id and manifest together with payload is enough (no wrapping overhead)
     payloadSupport.payloadBuilder(r.getValue).build().toByteArray
 
@@ -255,11 +257,13 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     builder.build().toByteArray
   }
 
-  private def buildGenericRoutingPool(
-      nrOfInstances: Int,
-      routerDispatcher: String,
-      usePoolDispatcher: Boolean,
-      resizer: Option[Resizer]): WireFormats.GenericRoutingPool = {
+  private def buildGenericRoutingPool
+    (
+        nrOfInstances: Int,
+        routerDispatcher: String,
+        usePoolDispatcher: Boolean,
+        resizer: Option[Resizer])
+    : WireFormats.GenericRoutingPool = {
     val builder = WireFormats.GenericRoutingPool.newBuilder()
     builder.setNrOfInstances(nrOfInstances)
     if (routerDispatcher != Dispatchers.DefaultDispatcherId) {

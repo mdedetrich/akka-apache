@@ -23,11 +23,12 @@ object CounterSpec {
 
   import ReplicationBaseSpec._
 
-  def apply(
-      entityId: String,
-      replicaId: ReplicaId,
-      snapshotEvery: Long = 100,
-      eventProbe: Option[ActorRef[Counter.Updated]] = None) =
+  def apply
+    (
+        entityId: String,
+        replicaId: ReplicaId,
+        snapshotEvery: Long = 100,
+        eventProbe: Option[ActorRef[Counter.Updated]] = None) =
     Behaviors.setup[PlainCounter.Command] { context =>
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("CounterSpec", entityId, replicaId),

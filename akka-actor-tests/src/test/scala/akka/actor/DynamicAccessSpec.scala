@@ -63,7 +63,9 @@ class DynamicAccessSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll
       dynamicAccess.classIsOnClasspath("akka.actor.Actor") should ===(true)
     }
 
-    def instantiateWithDefaultOrStringCtor(fqcn: String): Try[TestSuperclass] =
+    def instantiateWithDefaultOrStringCtor
+      (fqcn: String)
+      : Try[TestSuperclass] =
       // recoverWith doesn't work with scala 2.13.0-M5
       // https://github.com/scala/bug/issues/11242
       dynamicAccess.createInstanceFor[TestSuperclass](fqcn, Nil) match {

@@ -106,13 +106,16 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
      * @param interval      interval of the timer to check the maxGap and maxDuration condition
      * @param currentTimeMs source of the system time, can be simulated time in testing
      */
-    def aggregateWithTimeBoundary[Agg, Emit](allocate: => Agg)(
-        aggregate: (Agg, Out) => (Agg, Boolean),
-        harvest: Agg => Emit,
-        maxGap: Option[FiniteDuration],
-        maxDuration: Option[FiniteDuration],
-        interval: FiniteDuration,
-        currentTimeMs: => Long): source.Repr[Emit] = {
+    def aggregateWithTimeBoundary[Agg, Emit]
+      (allocate: => Agg)
+      (
+          aggregate: (Agg, Out) => (Agg, Boolean),
+          harvest: Agg => Emit,
+          maxGap: Option[FiniteDuration],
+          maxDuration: Option[FiniteDuration],
+          interval: FiniteDuration,
+          currentTimeMs: => Long)
+      : source.Repr[Emit] = {
       require(
         maxDuration.nonEmpty || maxGap.nonEmpty,
         s"required timing condition maxGap and maxDuration are both missing, use aggregateWithBoundary if it's intended")

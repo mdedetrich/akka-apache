@@ -49,10 +49,11 @@ case object RecoveryCompleted extends RecoveryCompleted {
  * @param replayMax maximum number of messages to replay. Default is no limit.
  */
 @SerialVersionUID(1L)
-final case class Recovery(
-    fromSnapshot: SnapshotSelectionCriteria = SnapshotSelectionCriteria.Latest,
-    toSequenceNr: Long = Long.MaxValue,
-    replayMax: Long = Long.MaxValue)
+final case class Recovery
+  (
+      fromSnapshot: SnapshotSelectionCriteria = SnapshotSelectionCriteria.Latest,
+      toSequenceNr: Long = Long.MaxValue,
+      replayMax: Long = Long.MaxValue)
 
 object Recovery {
 

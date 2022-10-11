@@ -54,8 +54,11 @@ object MaterializerState {
 
   /** INTERNAL API */
   @InternalApi
-  private[akka] def requestFromSupervisor(supervisor: ActorRef)(
-      implicit ec: ExecutionContext): Future[immutable.Seq[StreamSnapshot]] = {
+  private[akka] def requestFromSupervisor
+    (supervisor: ActorRef)
+    (
+        implicit ec: ExecutionContext)
+    : Future[immutable.Seq[StreamSnapshot]] = {
     // Arbitrary timeout: operation should always be quick, when it times out it will be because the materializer stopped
     implicit val timeout: Timeout = 10.seconds
     supervisor
@@ -170,10 +173,11 @@ sealed trait ConnectionSnapshot {
  * INTERNAL API
  */
 @InternalApi
-final private[akka] case class StreamSnapshotImpl(
-    self: ActorPath,
-    activeInterpreters: Seq[RunningInterpreter],
-    newShells: Seq[UninitializedInterpreter])
+final private[akka] case class StreamSnapshotImpl
+  (
+      self: ActorPath,
+      activeInterpreters: Seq[RunningInterpreter],
+      newShells: Seq[UninitializedInterpreter])
     extends StreamSnapshot {
   override def toString: String = s"StreamSnapshot($self, $activeInterpreters, $newShells)"
 }
@@ -189,12 +193,13 @@ private[akka] final case class UninitializedInterpreterImpl(logics: immutable.Se
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class RunningInterpreterImpl(
-    logics: immutable.Seq[LogicSnapshot],
-    connections: immutable.Seq[ConnectionSnapshot],
-    queueStatus: String,
-    runningLogicsCount: Int,
-    stoppedLogics: immutable.Seq[LogicSnapshot])
+private[akka] final case class RunningInterpreterImpl
+  (
+      logics: immutable.Seq[LogicSnapshot],
+      connections: immutable.Seq[ConnectionSnapshot],
+      queueStatus: String,
+      runningLogicsCount: Int,
+      stoppedLogics: immutable.Seq[LogicSnapshot])
     extends RunningInterpreter
     with HideImpl
 
@@ -213,11 +218,12 @@ private[akka] final case class LogicSnapshotImpl(index: Int, label: String, attr
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class ConnectionSnapshotImpl(
-    id: Int,
-    in: LogicSnapshot,
-    out: LogicSnapshot,
-    state: ConnectionSnapshot.ConnectionState)
+private[akka] final case class ConnectionSnapshotImpl
+  (
+      id: Int,
+      in: LogicSnapshot,
+      out: LogicSnapshot,
+      state: ConnectionSnapshot.ConnectionState)
     extends ConnectionSnapshot
     with HideImpl
 

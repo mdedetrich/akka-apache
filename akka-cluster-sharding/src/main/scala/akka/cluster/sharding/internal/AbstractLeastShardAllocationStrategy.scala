@@ -76,10 +76,12 @@ private[akka] abstract class AbstractLeastShardAllocationStrategy extends ActorS
   protected def clusterState: CurrentClusterState = cluster.state
   protected def selfMember: Member = cluster.selfMember
 
-  override def allocateShard(
-      requester: ActorRef,
-      shardId: ShardId,
-      currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]]): Future[ActorRef] = {
+  override def allocateShard
+    (
+        requester: ActorRef,
+        shardId: ShardId,
+        currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]])
+    : Future[ActorRef] = {
     val regionEntries = regionEntriesFor(currentShardAllocations)
     if (regionEntries.isEmpty) {
       // very unlikely to ever happen but possible because of cluster state view not yet updated when collecting
@@ -112,8 +114,10 @@ private[akka] abstract class AbstractLeastShardAllocationStrategy extends ActorS
     }
   }
 
-  final protected def mostSuitableRegion(
-      regionEntries: Iterable[RegionEntry]): (ActorRef, immutable.IndexedSeq[ShardId]) = {
+  final protected def mostSuitableRegion
+    (
+        regionEntries: Iterable[RegionEntry])
+    : (ActorRef, immutable.IndexedSeq[ShardId]) = {
     val mostSuitableEntry = regionEntries.min(ShardSuitabilityOrdering)
     mostSuitableEntry.region -> mostSuitableEntry.shardIds
   }

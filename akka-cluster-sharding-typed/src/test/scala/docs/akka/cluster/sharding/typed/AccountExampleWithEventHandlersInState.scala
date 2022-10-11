@@ -131,9 +131,11 @@ object AccountExampleWithEventHandlersInState {
         }
     }
 
-    private def replyClosed(
-        accountNumber: String,
-        replyTo: ActorRef[StatusReply[Done]]): ReplyEffect[Event, Account] = {
+    private def replyClosed
+      (
+          accountNumber: String,
+          replyTo: ActorRef[StatusReply[Done]])
+      : ReplyEffect[Event, Account] = {
       Effect.reply(replyTo)(StatusReply.Error(s"Account $accountNumber is closed"))
     }
 

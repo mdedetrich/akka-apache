@@ -30,10 +30,12 @@ import akka.stream.stage.StageLogging
  */
 private[remote] object AeronSource {
 
-  private def pollTask(
-      sub: Subscription,
-      handler: MessageHandler,
-      onMessage: AsyncCallback[EnvelopeBuffer]): () => Boolean = { () =>
+  private def pollTask
+    (
+        sub: Subscription,
+        handler: MessageHandler,
+        onMessage: AsyncCallback[EnvelopeBuffer])
+    : () => Boolean = { () =>
     {
       handler.reset()
       sub.poll(handler.fragmentsHandler, 1)
@@ -78,14 +80,15 @@ private[remote] object AeronSource {
  * @param spinning the amount of busy spinning to be done synchronously before deferring to the TaskRunner
  *                 when waiting for data
  */
-private[remote] class AeronSource(
-    channel: String,
-    streamId: Int,
-    aeron: Aeron,
-    taskRunner: TaskRunner,
-    pool: EnvelopeBufferPool,
-    flightRecorder: RemotingFlightRecorder,
-    spinning: Int)
+private[remote] class AeronSource
+  (
+      channel: String,
+      streamId: Int,
+      aeron: Aeron,
+      taskRunner: TaskRunner,
+      pool: EnvelopeBufferPool,
+      flightRecorder: RemotingFlightRecorder,
+      spinning: Int)
     extends GraphStageWithMaterializedValue[SourceShape[EnvelopeBuffer], AeronSource.AeronLifecycle] {
 
   import AeronSource._

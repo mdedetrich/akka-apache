@@ -257,7 +257,7 @@ private[akka] object ArterySettings {
   def apply(config: Config) = new ArterySettings(config)
 
   /** INTERNAL API */
-  private[remote] final class Compression private[ArterySettings] (config: Config) {
+  private[remote] final class Compression private[ArterySettings](config: Config) {
     import config._
 
     private[akka] final val Enabled = ActorRefs.Enabled || Manifests.Enabled

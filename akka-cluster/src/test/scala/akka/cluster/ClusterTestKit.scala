@@ -191,14 +191,16 @@ abstract class RollingUpgradeClusterSpec(config: Config) extends AkkaSpec(config
    * @param enforced      toggle `akka.cluster.configuration-compatibility-check.enforce-on-join` on or off
    * @param shouldRejoin  the condition being tested on attempted re-join: members up or terminated
    */
-  def upgradeCluster(
-      clusterSize: Int,
-      baseConfig: Config,
-      upgradeConfig: Config,
-      timeout: FiniteDuration,
-      awaitAll: FiniteDuration,
-      enforced: Boolean,
-      shouldRejoin: Boolean): Unit = {
+  def upgradeCluster
+    (
+        clusterSize: Int,
+        baseConfig: Config,
+        upgradeConfig: Config,
+        timeout: FiniteDuration,
+        awaitAll: FiniteDuration,
+        enforced: Boolean,
+        shouldRejoin: Boolean)
+    : Unit = {
     require(clusterSize > 1, s"'clusterSize' must be > 1 but was $clusterSize")
 
     val util = new ClusterTestUtil(system.name)

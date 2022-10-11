@@ -127,11 +127,13 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
     case object Run extends Command
     private case class WrappedRequestNext(r: ProducerController.RequestNext[Consumer.Command]) extends Command
 
-    def apply(
-        producerController: ActorRef[ProducerController.Command[Consumer.Command]],
-        testSettings: TestSettings,
-        plotRef: ActorRef[PlotResult],
-        reporter: BenchmarkFileReporter): Behavior[Command] = {
+    def apply
+      (
+          producerController: ActorRef[ProducerController.Command[Consumer.Command]],
+          testSettings: TestSettings,
+          plotRef: ActorRef[PlotResult],
+          reporter: BenchmarkFileReporter)
+      : Behavior[Command] = {
       val numberOfMessages = testSettings.totalMessages
 
       Behaviors.setup { context =>
@@ -159,11 +161,13 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
       }
     }
 
-    def reportEnd(
-        startTime: Long,
-        testSettings: TestSettings,
-        plotRef: ActorRef[PlotResult],
-        resultReporter: BenchmarkFileReporter): Unit = {
+    def reportEnd
+      (
+          startTime: Long,
+          testSettings: TestSettings,
+          plotRef: ActorRef[PlotResult],
+          resultReporter: BenchmarkFileReporter)
+      : Unit = {
       val numberOfMessages = testSettings.totalMessages
       val took = NANOSECONDS.toMillis(System.nanoTime - startTime)
       val throughput = numberOfMessages * 1000.0 / took
@@ -186,11 +190,13 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
     private case class WrappedRequestNext(r: WorkPullingProducerController.RequestNext[Consumer.Command])
         extends Command
 
-    def apply(
-        producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]],
-        testSettings: TestSettings,
-        plotRef: ActorRef[PlotResult],
-        resultReporter: BenchmarkFileReporter): Behavior[Command] = {
+    def apply
+      (
+          producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]],
+          testSettings: TestSettings,
+          plotRef: ActorRef[PlotResult],
+          resultReporter: BenchmarkFileReporter)
+      : Behavior[Command] = {
       val numberOfMessages = testSettings.totalMessages
 
       Behaviors.setup { context =>
@@ -231,11 +237,13 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
     private case class WrappedRequestNext(r: ShardingProducerController.RequestNext[Consumer.Command]) extends Command
     private case object PrintStatus extends Command
 
-    def apply(
-        producerController: ActorRef[ShardingProducerController.Command[Consumer.Command]],
-        testSettings: TestSettings,
-        plotRef: ActorRef[PlotResult],
-        resultReporter: BenchmarkFileReporter): Behavior[Command] = {
+    def apply
+      (
+          producerController: ActorRef[ShardingProducerController.Command[Consumer.Command]],
+          testSettings: TestSettings,
+          plotRef: ActorRef[PlotResult],
+          resultReporter: BenchmarkFileReporter)
+      : Behavior[Command] = {
       val numberOfMessages = testSettings.totalMessages
 
       Behaviors.withTimers { timers =>

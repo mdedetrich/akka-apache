@@ -36,7 +36,7 @@ private[akka] object EventSourcedRememberEntitiesShardStore {
   /**
    * Persistent state of the Shard.
    */
-  final case class State private[akka] (entities: Set[EntityId] = Set.empty) extends ClusterShardingSerializable
+  final case class State private[akka](entities: Set[EntityId] = Set.empty) extends ClusterShardingSerializable
 
   /**
    * `State` change for starting a set of entities in this `Shard`
@@ -62,10 +62,11 @@ private[akka] object EventSourcedRememberEntitiesShardStore {
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */
 @InternalApi
-private[akka] final class EventSourcedRememberEntitiesShardStore(
-    typeName: String,
-    shardId: ShardRegion.ShardId,
-    settings: ClusterShardingSettings)
+private[akka] final class EventSourcedRememberEntitiesShardStore
+  (
+      typeName: String,
+      shardId: ShardRegion.ShardId,
+      settings: ClusterShardingSettings)
     extends PersistentActor
     with ActorLogging {
 

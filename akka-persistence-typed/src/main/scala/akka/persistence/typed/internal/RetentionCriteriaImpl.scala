@@ -11,10 +11,11 @@ import akka.persistence.typed.scaladsl
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class SnapshotCountRetentionCriteriaImpl(
-    snapshotEveryNEvents: Int,
-    keepNSnapshots: Int,
-    deleteEventsOnSnapshot: Boolean)
+@InternalApi private[akka] final case class SnapshotCountRetentionCriteriaImpl
+  (
+      snapshotEveryNEvents: Int,
+      keepNSnapshots: Int,
+      deleteEventsOnSnapshot: Boolean)
     extends javadsl.SnapshotCountRetentionCriteria
     with scaladsl.SnapshotCountRetentionCriteria {
 

@@ -38,32 +38,50 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
   def collectCancellable(c: Cancellable): Cancellable
 
   abstract class ScheduleAdapter {
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
-        implicit executor: ExecutionContext): Cancellable
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable
 
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit executor: ExecutionContext): Cancellable
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable
   }
 
   class ScheduleWithFixedDelayAdapter extends ScheduleAdapter {
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
-        implicit executor: ExecutionContext): Cancellable =
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable =
       system.scheduler.scheduleWithFixedDelay(initialDelay, delay)(runnable)
 
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit executor: ExecutionContext): Cancellable =
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable =
       system.scheduler.scheduleWithFixedDelay(initialDelay, delay, receiver, message)
 
     override def toString: String = "scheduleWithFixedDelay"
   }
 
   class ScheduleAtFixedRateAdapter extends ScheduleAdapter {
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
-        implicit executor: ExecutionContext): Cancellable =
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable =
       system.scheduler.scheduleAtFixedRate(initialDelay, delay)(runnable)
 
-    def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)(
-        implicit executor: ExecutionContext): Cancellable =
+    def schedule
+      (initialDelay: FiniteDuration, delay: FiniteDuration, receiver: ActorRef, message: Any)
+      (
+          implicit executor: ExecutionContext)
+      : Cancellable =
       system.scheduler.scheduleAtFixedRate(initialDelay, delay, receiver, message)
 
     override def toString: String = "scheduleAtFixedRate"
@@ -705,8 +723,11 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
   }
 
   @nowarn
-  def withScheduler(start: Long = 0L, _startTick: Int = 0, config: Config = ConfigFactory.empty)(
-      thunk: (Scheduler with Closeable, Driver) => Unit): Unit = {
+  def withScheduler
+    (start: Long = 0L, _startTick: Int = 0, config: Config = ConfigFactory.empty)
+    (
+        thunk: (Scheduler with Closeable, Driver) => Unit)
+    : Unit = {
     val lbq = new AtomicReference[LinkedBlockingQueue[Long]](new LinkedBlockingQueue[Long])
     val prb = TestProbe()
     val tf = system.asInstanceOf[ActorSystemImpl].threadFactory

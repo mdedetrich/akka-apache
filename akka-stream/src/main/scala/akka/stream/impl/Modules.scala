@@ -65,10 +65,11 @@ import akka.stream.impl.StreamLayout.AtomicModule
  * that mediate the flow of elements downstream and the propagation of
  * back-pressure upstream.
  */
-@InternalApi private[akka] final class PublisherSource[Out](
-    p: Publisher[Out],
-    val attributes: Attributes,
-    shape: SourceShape[Out])
+@InternalApi private[akka] final class PublisherSource[Out]
+  (
+      p: Publisher[Out],
+      val attributes: Attributes,
+      shape: SourceShape[Out])
     extends SourceModule[Out, NotUsed](shape) {
 
   override protected def label: String = s"PublisherSource($p)"

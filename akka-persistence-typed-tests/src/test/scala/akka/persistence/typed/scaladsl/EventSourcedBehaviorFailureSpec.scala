@@ -86,11 +86,12 @@ class EventSourcedBehaviorFailureSpec
 
   implicit val testSettings: TestKitSettings = TestKitSettings(system)
 
-  def failingPersistentActor(
-      pid: PersistenceId,
-      probe: ActorRef[String],
-      additionalSignalHandler: PartialFunction[(String, Signal), Unit] = PartialFunction.empty)
-      : EventSourcedBehavior[String, String, String] =
+  def failingPersistentActor
+    (
+        pid: PersistenceId,
+        probe: ActorRef[String],
+        additionalSignalHandler: PartialFunction[(String, Signal), Unit] = PartialFunction.empty)
+    : EventSourcedBehavior[String, String, String] =
     EventSourcedBehavior[String, String, String](
       pid,
       "",

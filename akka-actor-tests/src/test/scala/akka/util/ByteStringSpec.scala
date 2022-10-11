@@ -176,9 +176,12 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
   }
 
   @nowarn
-  def likeVecIts(a: ByteString, b: ByteString)(
-      body: (BufferedIterator[Byte], BufferedIterator[Byte]) => Any,
-      strict: Boolean = true): Boolean = {
+  def likeVecIts
+    (a: ByteString, b: ByteString)
+    (
+        body: (BufferedIterator[Byte], BufferedIterator[Byte]) => Any,
+        strict: Boolean = true)
+    : Boolean = {
     val (bsAIt, bsBIt) = (a.iterator, b.iterator)
     val (vecAIt, vecBIt) = (Vector(a: _*).iterator.buffered, Vector(b: _*).iterator.buffered)
     (body(bsAIt, bsBIt) == body(vecAIt, vecBIt)) &&

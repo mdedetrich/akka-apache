@@ -33,9 +33,11 @@ class WorkPullingSpec
 
   private def producerId: String = s"p-$idCount"
 
-  private def awaitWorkersRegistered(
-      controller: ActorRef[WorkPullingProducerController.Command[TestConsumer.Job]],
-      count: Int): Unit = {
+  private def awaitWorkersRegistered
+    (
+        controller: ActorRef[WorkPullingProducerController.Command[TestConsumer.Job]],
+        count: Int)
+    : Unit = {
     val probe = createTestProbe[WorkPullingProducerController.WorkerStats]()
     probe.awaitAssert {
       controller ! WorkPullingProducerController.GetWorkerStats(probe.ref)

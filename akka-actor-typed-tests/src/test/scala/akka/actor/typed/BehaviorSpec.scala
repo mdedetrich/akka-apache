@@ -505,18 +505,22 @@ class InterceptScalaBehaviorSpec extends ImmutableWithSignalScalaBehaviorSpec wi
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Either[Signal, Command]]("tapListener")
     val tap = new BehaviorInterceptor[Command, Command] {
-      override def aroundReceive(
-          context: TypedActorContext[Command],
-          message: Command,
-          target: ReceiveTarget[Command]): Behavior[Command] = {
+      override def aroundReceive
+        (
+            context: TypedActorContext[Command],
+            message: Command,
+            target: ReceiveTarget[Command])
+        : Behavior[Command] = {
         inbox.ref ! Right(message)
         target(context, message)
       }
 
-      override def aroundSignal(
-          context: TypedActorContext[Command],
-          signal: Signal,
-          target: SignalTarget[Command]): Behavior[Command] = {
+      override def aroundSignal
+        (
+            context: TypedActorContext[Command],
+            signal: Signal,
+            target: SignalTarget[Command])
+        : Behavior[Command] = {
         inbox.ref ! Left(signal)
         target(context, signal)
       }
@@ -631,18 +635,22 @@ class TapJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec with Reuse
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Either[Signal, Command]]("tapListener")
     val tap = new BehaviorInterceptor[Command, Command] {
-      override def aroundReceive(
-          context: TypedActorContext[Command],
-          message: Command,
-          target: ReceiveTarget[Command]): Behavior[Command] = {
+      override def aroundReceive
+        (
+            context: TypedActorContext[Command],
+            message: Command,
+            target: ReceiveTarget[Command])
+        : Behavior[Command] = {
         inbox.ref ! Right(message)
         target(context, message)
       }
 
-      override def aroundSignal(
-          context: TypedActorContext[Command],
-          signal: Signal,
-          target: SignalTarget[Command]): Behavior[Command] = {
+      override def aroundSignal
+        (
+            context: TypedActorContext[Command],
+            signal: Signal,
+            target: SignalTarget[Command])
+        : Behavior[Command] = {
         inbox.ref ! Left(signal)
         target(context, signal)
       }

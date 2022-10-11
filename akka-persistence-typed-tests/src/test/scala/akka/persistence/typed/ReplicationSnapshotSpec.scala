@@ -25,16 +25,20 @@ object ReplicationSnapshotSpec {
   def behaviorWithSnapshotting(entityId: String, replicaId: ReplicaId): Behavior[Command] =
     behaviorWithSnapshotting(entityId, replicaId, None)
 
-  def behaviorWithSnapshotting(
-      entityId: String,
-      replicaId: ReplicaId,
-      eventProbe: ActorRef[EventAndContext]): Behavior[Command] =
+  def behaviorWithSnapshotting
+    (
+        entityId: String,
+        replicaId: ReplicaId,
+        eventProbe: ActorRef[EventAndContext])
+    : Behavior[Command] =
     behaviorWithSnapshotting(entityId, replicaId, Some(eventProbe))
 
-  def behaviorWithSnapshotting(
-      entityId: String,
-      replicaId: ReplicaId,
-      probe: Option[ActorRef[EventAndContext]]): Behavior[Command] = {
+  def behaviorWithSnapshotting
+    (
+        entityId: String,
+        replicaId: ReplicaId,
+        probe: Option[ActorRef[EventAndContext]])
+    : Behavior[Command] = {
     ReplicatedEventSourcing.commonJournalConfig(
       ReplicationId(EntityType, entityId, replicaId),
       AllReplicas,

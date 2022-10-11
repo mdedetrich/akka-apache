@@ -108,7 +108,9 @@ object BasicPersistentBehaviorCompileOnly {
   import MyPersistentBehavior._
 
   object RecoveryBehavior {
-    def apply(persistenceId: PersistenceId): Behavior[Command] =
+    def apply
+      (persistenceId: PersistenceId)
+      : Behavior[Command] =
       // #recovery
       EventSourcedBehavior[Command, Event, State](
         persistenceId = persistenceId,
@@ -123,7 +125,9 @@ object BasicPersistentBehaviorCompileOnly {
   }
 
   object RecoveryDisabledBehavior {
-    def apply(): Behavior[Command] =
+    def apply
+      ()
+      : Behavior[Command] =
       // #recovery-disabled
       EventSourcedBehavior[Command, Event, State](
         persistenceId = PersistenceId.ofUniqueId("abc"),
@@ -135,7 +139,9 @@ object BasicPersistentBehaviorCompileOnly {
   }
 
   object TaggingBehavior {
-    def apply(): Behavior[Command] =
+    def apply
+      ()
+      : Behavior[Command] =
       // #tagging
       EventSourcedBehavior[Command, Event, State](
         persistenceId = PersistenceId.ofUniqueId("abc"),
@@ -172,7 +178,9 @@ object BasicPersistentBehaviorCompileOnly {
   }
 
   object WrapBehavior {
-    def apply(): Behavior[Command] =
+    def apply
+      ()
+      : Behavior[Command] =
       // #wrapPersistentBehavior
       Behaviors.setup[Command] { context =>
         EventSourcedBehavior[Command, Event, State](
@@ -190,7 +198,9 @@ object BasicPersistentBehaviorCompileOnly {
   }
 
   object Supervision {
-    def apply(): Behavior[Command] =
+    def apply
+      ()
+      : Behavior[Command] =
       // #supervision
       EventSourcedBehavior[Command, Event, State](
         persistenceId = PersistenceId.ofUniqueId("abc"),

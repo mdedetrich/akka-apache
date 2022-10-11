@@ -24,8 +24,11 @@ private[akka] abstract class EffectImpl[+Event, State]
   override def thenRun(chainedEffect: State => Unit): EffectImpl[Event, State] =
     CompositeEffect(this, new Callback[State](chainedEffect))
 
-  override def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: State => ReplyMessage): EffectImpl[Event, State] =
+  override def thenReply[ReplyMessage]
+    (replyTo: ActorRef[ReplyMessage])
+    (
+        replyWithMessage: State => ReplyMessage)
+    : EffectImpl[Event, State] =
     CompositeEffect(this, new ReplyEffectImpl[ReplyMessage, State](replyTo, replyWithMessage))
 
   override def thenUnstashAll(): EffectImpl[Event, State] =
@@ -42,17 +45,20 @@ private[akka] abstract class EffectImpl[+Event, State]
 /** INTERNAL API */
 @InternalApi
 private[akka] object CompositeEffect {
-  def apply[Event, State](
-      effect: scaladsl.EffectBuilder[Event, State],
-      sideEffects: SideEffect[State]): CompositeEffect[Event, State] =
+  def apply[Event, State]
+    (
+        effect: scaladsl.EffectBuilder[Event, State],
+        sideEffects: SideEffect[State])
+    : CompositeEffect[Event, State] =
     CompositeEffect[Event, State](effect, sideEffects :: Nil)
 }
 
 /** INTERNAL API */
 @InternalApi
-private[akka] final case class CompositeEffect[Event, State](
-    persistingEffect: scaladsl.EffectBuilder[Event, State],
-    _sideEffects: immutable.Seq[SideEffect[State]])
+private[akka] final case class CompositeEffect[Event, State]
+  (
+      persistingEffect: scaladsl.EffectBuilder[Event, State],
+      _sideEffects: immutable.Seq[SideEffect[State]])
     extends EffectImpl[Event, State] {
 
   override val events: immutable.Seq[Event] = persistingEffect.events

@@ -70,10 +70,12 @@ object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {
   }
 
   /** INTERNAL API */
-  private[util] def checkSameVersion(
-      productName: String,
-      dependencies: immutable.Seq[String],
-      versions: Map[String, Version]): Option[String] = {
+  private[util] def checkSameVersion
+    (
+        productName: String,
+        dependencies: immutable.Seq[String],
+        versions: Map[String, Version])
+    : Option[String] = {
     @nowarn("msg=deprecated")
     val filteredVersions = versions.filterKeys(dependencies.toSet)
     val values = filteredVersions.values.toSet
@@ -170,11 +172,13 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
    *
    * @return `true` if versions are the same
    */
-  def checkSameVersion(
-      productName: String,
-      dependencies: immutable.Seq[String],
-      logWarning: Boolean,
-      throwException: Boolean): Boolean = {
+  def checkSameVersion
+    (
+        productName: String,
+        dependencies: immutable.Seq[String],
+        logWarning: Boolean,
+        throwException: Boolean)
+    : Boolean = {
     ManifestInfo.checkSameVersion(productName, dependencies, versions) match {
       case Some(message) =>
         if (logWarning)

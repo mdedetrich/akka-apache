@@ -321,14 +321,16 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
  *
  * INTERNAL API.
  */
-private[akka] class PlayerHandler(
-    server: InetSocketAddress,
-    private var reconnects: Int,
-    backoff: FiniteDuration,
-    poolSize: Int,
-    fsm: ActorRef,
-    log: LoggingAdapter,
-    scheduler: Scheduler)(implicit executor: ExecutionContext)
+private[akka] class PlayerHandler
+  (
+      server: InetSocketAddress,
+      private var reconnects: Int,
+      backoff: FiniteDuration,
+      poolSize: Int,
+      fsm: ActorRef,
+      log: LoggingAdapter,
+      scheduler: Scheduler)
+  (implicit executor: ExecutionContext)
     extends SimpleChannelUpstreamHandler {
 
   import ClientFSM._

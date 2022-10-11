@@ -39,7 +39,7 @@ private[stream] final case class SinkRefImpl[In](initialPartnerRef: ActorRef) ex
  * the ref.
  */
 @InternalApi
-private[stream] final class SinkRefStageImpl[In] private[akka] (val initialPartnerRef: OptionVal[ActorRef])
+private[stream] final class SinkRefStageImpl[In] private[akka](val initialPartnerRef: OptionVal[ActorRef])
     extends GraphStageWithMaterializedValue[SinkShape[In], SourceRef[In]] {
   import SinkRefStageImpl.ActorRefStage
 
@@ -55,9 +55,11 @@ private[stream] final class SinkRefStageImpl[In] private[akka] (val initialPartn
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, SourceRef[In]) =
     throw new IllegalStateException("Not supported")
 
-  private[akka] override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes,
-      eagerMaterializer: Materializer): (GraphStageLogic, SourceRef[In]) = {
+  private[akka] override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes,
+        eagerMaterializer: Materializer)
+    : (GraphStageLogic, SourceRef[In]) = {
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with InHandler {
       override protected def logSource: Class[_] = classOf[SinkRefStageImpl[_]]

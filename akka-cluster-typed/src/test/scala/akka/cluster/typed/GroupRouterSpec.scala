@@ -51,10 +51,12 @@ object GroupRouterSpec {
     sealed trait Command
     private case class SawPong(worker: ActorRef[_]) extends Command
     case class DonePinging(pongs: Int, uniqueWorkers: Set[ActorRef[_]])
-    def apply(
-        router: ActorRef[PingActor.Ping],
-        requestedPings: Int,
-        tellMeWhenDone: ActorRef[DonePinging]): Behavior[Command] =
+    def apply
+      (
+          router: ActorRef[PingActor.Ping],
+          requestedPings: Int,
+          tellMeWhenDone: ActorRef[DonePinging])
+      : Behavior[Command] =
       Behaviors.setup { ctx =>
         val pongAdapter = ctx.messageAdapter[PingActor.Pong] {
           case PingActor.Pong(ref) => SawPong(ref)

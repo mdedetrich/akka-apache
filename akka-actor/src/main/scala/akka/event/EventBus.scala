@@ -184,7 +184,9 @@ trait SubchannelClassification { this: EventBus =>
    * INTERNAL API
    * Expensive call! Avoid calling directly from event bus subscribe / unsubscribe.
    */
-  private[akka] def hasSubscriptions(subscriber: Subscriber): Boolean =
+  private[akka] def hasSubscriptions
+    (subscriber: Subscriber)
+    : Boolean =
     // FIXME binary incompatible, but I think it is safe to filter out this problem,
     //       since it is only called from new functionality in EventStreamUnsubscriber
     cache.values.exists { _ contains subscriber }
@@ -270,9 +272,10 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier =>
 
   protected def system: ActorSystem
 
-  private class ManagedActorClassificationMappings(
-      val seqNr: Int,
-      val backing: Map[ActorRef, immutable.TreeSet[ActorRef]]) {
+  private class ManagedActorClassificationMappings
+    (
+        val seqNr: Int,
+        val backing: Map[ActorRef, immutable.TreeSet[ActorRef]]) {
 
     def get(monitored: ActorRef): immutable.TreeSet[ActorRef] = backing.getOrElse(monitored, empty)
 

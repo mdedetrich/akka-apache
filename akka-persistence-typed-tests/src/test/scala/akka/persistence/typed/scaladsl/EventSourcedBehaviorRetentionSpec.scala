@@ -46,13 +46,14 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
 
   final case class State(value: Int, history: Vector[Int]) extends CborSerializable
 
-  def counter(
-      @unused ctx: ActorContext[Command],
-      persistenceId: PersistenceId,
-      probe: Option[ActorRef[(State, Event)]] = None,
-      snapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,
-      eventSignalProbe: Option[ActorRef[Try[EventSourcedSignal]]] = None)
-      : EventSourcedBehavior[Command, Event, State] = {
+  def counter
+    (
+        @unused ctx: ActorContext[Command],
+        persistenceId: PersistenceId,
+        probe: Option[ActorRef[(State, Event)]] = None,
+        snapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,
+        eventSignalProbe: Option[ActorRef[Try[EventSourcedSignal]]] = None)
+    : EventSourcedBehavior[Command, Event, State] = {
     EventSourcedBehavior[Command, Event, State](
       persistenceId,
       emptyState = State(0, Vector.empty),

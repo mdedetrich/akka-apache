@@ -132,26 +132,30 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
     }
 
     trait CommunicationSetup extends Named {
-      def decorateFlow(
-          leftClosing: TLSClosing,
-          rightClosing: TLSClosing,
-          rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]): Flow[SslTlsOutbound, SslTlsInbound, NotUsed]
+      def decorateFlow
+        (
+            leftClosing: TLSClosing,
+            rightClosing: TLSClosing,
+            rhs: Flow[SslTlsInbound, SslTlsOutbound, Any])
+        : Flow[SslTlsOutbound, SslTlsInbound, NotUsed]
       def cleanup(): Unit = ()
     }
 
     object ClientInitiates extends CommunicationSetup {
-      def decorateFlow(
-          leftClosing: TLSClosing,
-          rightClosing: TLSClosing,
-          rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) =
+      def decorateFlow
+        (
+            leftClosing: TLSClosing,
+            rightClosing: TLSClosing,
+            rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) =
         clientTls(leftClosing).atop(serverTls(rightClosing).reversed).join(rhs)
     }
 
     object ServerInitiates extends CommunicationSetup {
-      def decorateFlow(
-          leftClosing: TLSClosing,
-          rightClosing: TLSClosing,
-          rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) =
+      def decorateFlow
+        (
+            leftClosing: TLSClosing,
+            rightClosing: TLSClosing,
+            rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) =
         serverTls(leftClosing).atop(clientTls(rightClosing).reversed).join(rhs)
     }
 
@@ -162,10 +166,11 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
 
     object ClientInitiatesViaTcp extends CommunicationSetup {
       var binding: Tcp.ServerBinding = null
-      def decorateFlow(
-          leftClosing: TLSClosing,
-          rightClosing: TLSClosing,
-          rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
+      def decorateFlow
+        (
+            leftClosing: TLSClosing,
+            rightClosing: TLSClosing,
+            rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(serverTls(rightClosing).reversed.join(rhs))
         clientTls(leftClosing).join(Tcp(system).outgoingConnection(binding.localAddress))
       }
@@ -174,10 +179,11 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
 
     object ServerInitiatesViaTcp extends CommunicationSetup {
       var binding: Tcp.ServerBinding = null
-      def decorateFlow(
-          leftClosing: TLSClosing,
-          rightClosing: TLSClosing,
-          rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
+      def decorateFlow
+        (
+            leftClosing: TLSClosing,
+            rightClosing: TLSClosing,
+            rhs: Flow[SslTlsInbound, SslTlsOutbound, Any]) = {
         binding = server(clientTls(rightClosing).reversed.join(rhs))
         serverTls(leftClosing).join(Tcp(system).outgoingConnection(binding.localAddress))
       }

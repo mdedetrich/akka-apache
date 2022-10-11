@@ -234,24 +234,28 @@ object Entity {
    * @param createBehavior Create the behavior for an entity given a [[EntityContext]] (includes entityId)
    * @tparam M The type of message the entity accepts
    */
-  def apply[M](typeKey: EntityTypeKey[M])(
-      createBehavior: EntityContext[M] => Behavior[M]): Entity[M, ShardingEnvelope[M]] =
+  def apply[M]
+    (typeKey: EntityTypeKey[M])
+    (
+        createBehavior: EntityContext[M] => Behavior[M])
+    : Entity[M, ShardingEnvelope[M]] =
     new Entity(createBehavior, typeKey, None, Props.empty, None, None, None, None, None)
 }
 
 /**
  * Defines how the entity should be created. Used in [[ClusterSharding#init]].
  */
-final class Entity[M, E] private[akka] (
-    val createBehavior: EntityContext[M] => Behavior[M],
-    val typeKey: EntityTypeKey[M],
-    val stopMessage: Option[M],
-    val entityProps: Props,
-    val settings: Option[ClusterShardingSettings],
-    val messageExtractor: Option[ShardingMessageExtractor[E, M]],
-    val allocationStrategy: Option[ShardAllocationStrategy],
-    val role: Option[String],
-    val dataCenter: Option[DataCenter]) {
+final class Entity[M, E] private[akka]
+  (
+      val createBehavior: EntityContext[M] => Behavior[M],
+      val typeKey: EntityTypeKey[M],
+      val stopMessage: Option[M],
+      val entityProps: Props,
+      val settings: Option[ClusterShardingSettings],
+      val messageExtractor: Option[ShardingMessageExtractor[E, M]],
+      val allocationStrategy: Option[ShardAllocationStrategy],
+      val role: Option[String],
+      val dataCenter: Option[DataCenter]) {
 
   /**
    * [[akka.actor.typed.Props]] of the entity actors, such as dispatcher settings.
@@ -313,15 +317,17 @@ final class Entity[M, E] private[akka] (
    */
   def withDataCenter(newDataCenter: DataCenter): Entity[M, E] = copy(dataCenter = Some(newDataCenter))
 
-  private def copy(
-      createBehavior: EntityContext[M] => Behavior[M] = createBehavior,
-      typeKey: EntityTypeKey[M] = typeKey,
-      stopMessage: Option[M] = stopMessage,
-      entityProps: Props = entityProps,
-      settings: Option[ClusterShardingSettings] = settings,
-      allocationStrategy: Option[ShardAllocationStrategy] = allocationStrategy,
-      role: Option[String] = role,
-      dataCenter: Option[DataCenter] = dataCenter): Entity[M, E] = {
+  private def copy
+    (
+        createBehavior: EntityContext[M] => Behavior[M] = createBehavior,
+        typeKey: EntityTypeKey[M] = typeKey,
+        stopMessage: Option[M] = stopMessage,
+        entityProps: Props = entityProps,
+        settings: Option[ClusterShardingSettings] = settings,
+        allocationStrategy: Option[ShardAllocationStrategy] = allocationStrategy,
+        role: Option[String] = role,
+        dataCenter: Option[DataCenter] = dataCenter)
+    : Entity[M, E] = {
     new Entity(
       createBehavior,
       typeKey,
@@ -349,10 +355,11 @@ final class Entity[M, E] private[akka] (
  * @param entityTypeKey the key of the entity type
  * @param entityId the business domain identifier of the entity
  */
-final class EntityContext[M](
-    val entityTypeKey: EntityTypeKey[M],
-    val entityId: String,
-    val shard: ActorRef[ClusterSharding.ShardCommand]) {
+final class EntityContext[M]
+  (
+      val entityTypeKey: EntityTypeKey[M],
+      val entityId: String,
+      val shard: ActorRef[ClusterSharding.ShardCommand]) {
 
   /**
    * INTERNAL API

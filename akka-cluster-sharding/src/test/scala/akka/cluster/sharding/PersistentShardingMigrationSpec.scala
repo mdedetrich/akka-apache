@@ -158,8 +158,10 @@ class PersistentShardingMigrationSpec extends AkkaSpec(PersistentShardingMigrati
       }
     }
 
-    def withSystem(config: Config, typeName: String, systemName: String)(
-        f: (ActorSystem, ActorRef, TestProbe) => Unit) = {
+    def withSystem
+      (config: Config, typeName: String, systemName: String)
+      (
+          f: (ActorSystem, ActorRef, TestProbe) => Unit) = {
       val system = ActorSystem(systemName, config)
       val cluster = Cluster(system)
       cluster.join(cluster.selfAddress)

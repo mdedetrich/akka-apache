@@ -65,12 +65,15 @@ trait RetrySupport {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  def retry[T](
-      attempt: () => Future[T],
-      attempts: Int,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double)(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] = {
+  def retry[T]
+    (
+        attempt: () => Future[T],
+        attempts: Int,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    (implicit ec: ExecutionContext, scheduler: Scheduler)
+    : Future[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
     require(minBackoff != null, "Parameter minBackoff should not be null.")
     require(maxBackoff != null, "Parameter maxBackoff should not be null.")
@@ -103,9 +106,12 @@ trait RetrySupport {
    * )
    * }}}
    */
-  def retry[T](attempt: () => Future[T], attempts: Int, delay: FiniteDuration)(
-      implicit ec: ExecutionContext,
-      scheduler: Scheduler): Future[T] = {
+  def retry[T]
+    (attempt: () => Future[T], attempts: Int, delay: FiniteDuration)
+    (
+        implicit ec: ExecutionContext,
+        scheduler: Scheduler)
+    : Future[T] = {
     retry(attempt, attempts, _ => Some(delay))
   }
 
@@ -134,24 +140,33 @@ trait RetrySupport {
    * )
    * }}}
    */
-  def retry[T](attempt: () => Future[T], attempts: Int, delayFunction: Int => Option[FiniteDuration])(
-      implicit ec: ExecutionContext,
-      scheduler: Scheduler): Future[T] = {
+  def retry[T]
+    (attempt: () => Future[T], attempts: Int, delayFunction: Int => Option[FiniteDuration])
+    (
+        implicit ec: ExecutionContext,
+        scheduler: Scheduler)
+    : Future[T] = {
     RetrySupport.retry(attempt, attempts, delayFunction, attempted = 0)
   }
 }
 
 object RetrySupport extends RetrySupport {
 
-  private def retry[T](attempt: () => Future[T], maxAttempts: Int, attempted: Int)(
-      implicit ec: ExecutionContext): Future[T] =
+  private def retry[T]
+    (attempt: () => Future[T], maxAttempts: Int, attempted: Int)
+    (
+        implicit ec: ExecutionContext)
+    : Future[T] =
     retry(attempt, maxAttempts, ConstantFun.scalaAnyToNone, attempted)(ec, null)
 
-  private def retry[T](
-      attempt: () => Future[T],
-      maxAttempts: Int,
-      delayFunction: Int => Option[FiniteDuration],
-      attempted: Int)(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] = {
+  private def retry[T]
+    (
+        attempt: () => Future[T],
+        maxAttempts: Int,
+        delayFunction: Int => Option[FiniteDuration],
+        attempted: Int)
+    (implicit ec: ExecutionContext, scheduler: Scheduler)
+    : Future[T] = {
 
     def tryAttempt(): Future[T] = {
       try {

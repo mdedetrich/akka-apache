@@ -36,10 +36,11 @@ private[remote] object FlushBeforeDeathWatchNotification {
  * INTERNAL API
  */
 @InternalApi
-private[remote] class FlushBeforeDeathWatchNotification(
-    done: Promise[Done],
-    timeout: FiniteDuration,
-    association: Association)
+private[remote] class FlushBeforeDeathWatchNotification
+  (
+      done: Promise[Done],
+      timeout: FiniteDuration,
+      association: Association)
     extends Actor
     with ActorLogging {
   import FlushBeforeDeathWatchNotification.Timeout

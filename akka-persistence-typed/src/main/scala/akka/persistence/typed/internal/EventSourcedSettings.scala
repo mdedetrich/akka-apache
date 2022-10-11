@@ -73,14 +73,15 @@ import akka.persistence.Persistence
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class EventSourcedSettings(
-    stashCapacity: Int,
-    stashOverflowStrategy: StashOverflowStrategy,
-    logOnStashing: Boolean,
-    recoveryEventTimeout: FiniteDuration,
-    journalPluginId: String,
-    snapshotPluginId: String,
-    useContextLoggerForInternalLogging: Boolean) {
+private[akka] final case class EventSourcedSettings
+  (
+      stashCapacity: Int,
+      stashOverflowStrategy: StashOverflowStrategy,
+      logOnStashing: Boolean,
+      recoveryEventTimeout: FiniteDuration,
+      journalPluginId: String,
+      snapshotPluginId: String,
+      useContextLoggerForInternalLogging: Boolean) {
 
   require(journalPluginId != null, "journal plugin id must not be null; use empty string for 'default' journal")
   require(

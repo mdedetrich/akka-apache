@@ -213,11 +213,13 @@ object ActorSystem {
    * Scala API: Creates a new actor system with the specified name and settings
    * The core actor system settings are defined in [[BootstrapSetup]]
    */
-  def apply[T](
-      guardianBehavior: Behavior[T],
-      name: String,
-      setup: ActorSystemSetup,
-      guardianProps: Props = Props.empty): ActorSystem[T] = {
+  def apply[T]
+    (
+        guardianBehavior: Behavior[T],
+        name: String,
+        setup: ActorSystemSetup,
+        guardianProps: Props = Props.empty)
+    : ActorSystem[T] = {
     createInternal(name, guardianBehavior, guardianProps, setup)
   }
 
@@ -265,11 +267,13 @@ object ActorSystem {
    * which runs Akka Typed [[Behavior]] on an emulation layer. In this
    * system typed and classic actors can coexist.
    */
-  private def createInternal[T](
-      name: String,
-      guardianBehavior: Behavior[T],
-      guardianProps: Props,
-      setup: ActorSystemSetup): ActorSystem[T] = {
+  private def createInternal[T]
+    (
+        name: String,
+        guardianBehavior: Behavior[T],
+        guardianProps: Props,
+        setup: ActorSystemSetup)
+    : ActorSystem[T] = {
 
     Behavior.validateAsInitial(guardianBehavior)
     require(Behavior.isAlive(guardianBehavior))

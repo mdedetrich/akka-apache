@@ -171,10 +171,12 @@ object IntroSpec {
         }
       }
 
-    private def session(
-        room: ActorRef[PublishSessionMessage],
-        screenName: String,
-        client: ActorRef[SessionEvent]): Behavior[SessionCommand] =
+    private def session
+      (
+          room: ActorRef[PublishSessionMessage],
+          screenName: String,
+          client: ActorRef[SessionEvent])
+      : Behavior[SessionCommand] =
       Behaviors.receiveMessage {
         case PostMessage(message) =>
           // from client, publish to others via the room

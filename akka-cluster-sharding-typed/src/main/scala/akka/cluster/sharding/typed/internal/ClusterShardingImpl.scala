@@ -153,14 +153,16 @@ import akka.util.JavaDurationConverters._
         dataCenter = entity.dataCenter.asScala))
   }
 
-  private def internalInit[M, E](
-      behavior: EntityContext[M] => Behavior[M],
-      entityProps: Props,
-      typeKey: scaladsl.EntityTypeKey[M],
-      stopMessage: Option[M],
-      settings: ClusterShardingSettings,
-      extractor: ShardingMessageExtractor[E, M],
-      allocationStrategy: Option[ShardAllocationStrategy]): ActorRef[E] = {
+  private def internalInit[M, E]
+    (
+        behavior: EntityContext[M] => Behavior[M],
+        entityProps: Props,
+        typeKey: scaladsl.EntityTypeKey[M],
+        stopMessage: Option[M],
+        settings: ClusterShardingSettings,
+        extractor: ShardingMessageExtractor[E, M],
+        allocationStrategy: Option[ShardAllocationStrategy])
+    : ActorRef[E] = {
 
     val extractorAdapter = new ExtractorAdapter(extractor)
     val extractEntityId: ShardRegion.ExtractEntityId = {
@@ -248,10 +250,12 @@ import akka.util.JavaDurationConverters._
       typeKey.asInstanceOf[EntityTypeKeyImpl[M]])
   }
 
-  override def entityRefFor[M](
-      typeKey: scaladsl.EntityTypeKey[M],
-      entityId: String,
-      dataCenter: DataCenter): scaladsl.EntityRef[M] = {
+  override def entityRefFor[M]
+    (
+        typeKey: scaladsl.EntityTypeKey[M],
+        entityId: String,
+        dataCenter: DataCenter)
+    : scaladsl.EntityRef[M] = {
     if (dataCenter == cluster.selfMember.dataCenter)
       entityRefFor(typeKey, entityId).asInstanceOf[EntityRefImpl[M]].withDataCenter(Some(dataCenter))
     else
@@ -269,10 +273,12 @@ import akka.util.JavaDurationConverters._
       typeKey.asInstanceOf[EntityTypeKeyImpl[M]])
   }
 
-  override def entityRefFor[M](
-      typeKey: javadsl.EntityTypeKey[M],
-      entityId: String,
-      dataCenter: String): javadsl.EntityRef[M] = {
+  override def entityRefFor[M]
+    (
+        typeKey: javadsl.EntityTypeKey[M],
+        entityId: String,
+        dataCenter: String)
+    : javadsl.EntityRef[M] = {
     if (dataCenter == cluster.selfMember.dataCenter)
       entityRefFor(typeKey, entityId).asInstanceOf[EntityRefImpl[M]].withDataCenter(Some(dataCenter))
     else
@@ -308,16 +314,19 @@ import akka.util.JavaDurationConverters._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class EntityRefImpl[M](
-    shardRegion: akka.actor.ActorRef,
-    override val entityId: String,
-    override val typeKey: EntityTypeKeyImpl[M],
-    override val dataCenter: Option[String] = None)
+@InternalApi private[akka] final class EntityRefImpl[M]
+  (
+      shardRegion: akka.actor.ActorRef,
+      override val entityId: String,
+      override val typeKey: EntityTypeKeyImpl[M],
+      override val dataCenter: Option[String] = None)
     extends javadsl.EntityRef[M]
     with scaladsl.EntityRef[M]
     with InternalRecipientRef[M] {
 
-  override def hashCode(): Int =
+  override def hashCode
+    ()
+    : Int =
     // 3 and 5 chosen as primes which are +/- 1 from a power-of-two
     ((entityId.hashCode * 3) + typeKey.hashCode) * 5 + dataCenter.hashCode
 
@@ -389,11 +398,13 @@ import akka.util.JavaDurationConverters._
     val promiseRef: PromiseActorRef = _promiseRef
 
     @InternalStableApi
-    private[akka] def ask[T](
-        shardRegion: akka.actor.ActorRef,
-        entityId: String,
-        message: T,
-        @unused timeout: Timeout): Future[U] = {
+    private[akka] def ask[T]
+      (
+          shardRegion: akka.actor.ActorRef,
+          entityId: String,
+          message: T,
+          @unused timeout: Timeout)
+      : Future[U] = {
       shardRegion ! ShardingEnvelope(entityId, message)
       future
     }

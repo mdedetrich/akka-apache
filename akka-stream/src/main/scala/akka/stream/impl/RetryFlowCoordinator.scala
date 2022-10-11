@@ -32,12 +32,13 @@ import akka.util.OptionVal
  *       externalOut
  * ```
  */
-@InternalApi private[akka] final class RetryFlowCoordinator[In, Out](
-    minBackoff: FiniteDuration,
-    maxBackoff: FiniteDuration,
-    randomFactor: Double,
-    maxRetries: Int,
-    decideRetry: (In, Out) => Option[In])
+@InternalApi private[akka] final class RetryFlowCoordinator[In, Out]
+  (
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      randomFactor: Double,
+      maxRetries: Int,
+      decideRetry: (In, Out) => Option[In])
     extends GraphStage[BidiShape[In, In, Out, Out]] {
 
   private val externalIn = Inlet[In]("RetryFlow.externalIn")
@@ -115,7 +116,9 @@ import akka.util.OptionVal
     setHandler(
       externalOut,
       new OutHandler {
-        override def onPull(): Unit =
+        override def onPull
+          ()
+          : Unit =
           // external demand
           if (!hasBeenPulled(internalIn)) pull(internalIn)
       })

@@ -36,9 +36,11 @@ object SnapshotMutableStateSpec {
 
   final class MutableState(var value: Int) extends CborSerializable
 
-  def counter(
-      persistenceId: PersistenceId,
-      probe: ActorRef[String]): EventSourcedBehavior[Command, Event, MutableState] = {
+  def counter
+    (
+        persistenceId: PersistenceId,
+        probe: ActorRef[String])
+    : EventSourcedBehavior[Command, Event, MutableState] = {
     EventSourcedBehavior[Command, Event, MutableState](
       persistenceId,
       emptyState = new MutableState(0),

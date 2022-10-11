@@ -315,7 +315,7 @@ final case class RootActorPath(address: Address, name: String = "/") extends Act
 }
 
 @SerialVersionUID(1L)
-final class ChildActorPath private[akka] (val parent: ActorPath, val name: String, override private[akka] val uid: Int)
+final class ChildActorPath private[akka](val parent: ActorPath, val name: String, override private[akka] val uid: Int)
     extends ActorPath {
   if (name.indexOf('/') != -1)
     throw new IllegalArgumentException("/ is a path separator and is not legal in ActorPath names: [%s]".format(name))
@@ -412,11 +412,13 @@ final class ChildActorPath private[akka] (val parent: ActorPath, val name: Strin
    * @param diff difference in offset for each child element, due to different address
    * @param rootString function to construct the root element string
    */
-  private def buildToString(
-      sb: JStringBuilder,
-      length: Int,
-      diff: Int,
-      rootString: RootActorPath => String): JStringBuilder = {
+  private def buildToString
+    (
+        sb: JStringBuilder,
+        length: Int,
+        diff: Int,
+        rootString: RootActorPath => String)
+    : JStringBuilder = {
     @tailrec
     def rec(p: ActorPath): JStringBuilder = p match {
       case r: RootActorPath =>

@@ -69,8 +69,11 @@ private[persistence] trait AsyncWriteProxy extends AsyncWriteJournal with Stash 
       case None    => storeNotInitialized
     }
 
-  def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: PersistentRepr => Unit): Future[Unit] =
+  def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: PersistentRepr => Unit)
+    : Future[Unit] =
     store match {
       case Some(s) =>
         val replayCompletionPromise = Promise[Unit]()
@@ -129,10 +132,11 @@ private[persistence] object AsyncWriteTarget {
 @SerialVersionUID(1L)
 class AsyncReplayTimeoutException(msg: String) extends AkkaException(msg)
 
-private class ReplayMediator(
-    replayCallback: PersistentRepr => Unit,
-    replayCompletionPromise: Promise[Unit],
-    replayTimeout: Duration)
+private class ReplayMediator
+  (
+      replayCallback: PersistentRepr => Unit,
+      replayCompletionPromise: Promise[Unit],
+      replayTimeout: Duration)
     extends Actor {
   import AsyncWriteTarget._
 

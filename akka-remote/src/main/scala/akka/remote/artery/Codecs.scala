@@ -50,14 +50,15 @@ private[remote] object Encoder {
 /**
  * INTERNAL API
  */
-private[remote] class Encoder(
-    uniqueLocalAddress: UniqueAddress,
-    system: ExtendedActorSystem,
-    outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
-    bufferPool: EnvelopeBufferPool,
-    @unused streamId: Int,
-    debugLogSend: Boolean,
-    version: Byte)
+private[remote] class Encoder
+  (
+      uniqueLocalAddress: UniqueAddress,
+      system: ExtendedActorSystem,
+      outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope],
+      bufferPool: EnvelopeBufferPool,
+      @unused streamId: Int,
+      debugLogSend: Boolean,
+      version: Byte)
     extends GraphStageWithMaterializedValue[
       FlowShape[OutboundEnvelope, EnvelopeBuffer],
       Encoder.OutboundCompressionAccess] {
@@ -68,8 +69,10 @@ private[remote] class Encoder(
   val out: Outlet[EnvelopeBuffer] = Outlet("Artery.Encoder.out")
   val shape: FlowShape[OutboundEnvelope, EnvelopeBuffer] = FlowShape(in, out)
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, OutboundCompressionAccess) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, OutboundCompressionAccess) = {
     val logic = new GraphStageLogic(shape)
       with InHandler
       with OutHandler
@@ -238,10 +241,11 @@ private[remote] class Encoder(
  * INTERNAL API
  */
 private[remote] object Decoder {
-  private final case class RetryResolveRemoteDeployedRecipient(
-      attemptsLeft: Int,
-      recipientPath: String,
-      inboundEnvelope: InboundEnvelope)
+  private final case class RetryResolveRemoteDeployedRecipient
+    (
+        attemptsLeft: Int,
+        recipientPath: String,
+        inboundEnvelope: InboundEnvelope)
 
   private object Tick
 
@@ -304,8 +308,10 @@ private[remote] object Decoder {
     /**
      * External call from ChangeInboundCompression materialized value
      */
-    override def confirmClassManifestCompressionAdvertisementAck(
-        ack: ClassManifestCompressionAdvertisementAck): Future[Done] =
+    override def confirmClassManifestCompressionAdvertisementAck
+      (
+          ack: ClassManifestCompressionAdvertisementAck)
+      : Future[Done] =
       confirmClassManifestCompressionAdvertisementCb.invokeWithFeedback(ack)
 
     /**
@@ -339,9 +345,10 @@ private[remote] object Decoder {
 /**
  * INTERNAL API
  */
-private[remote] final class ActorRefResolveCacheWithAddress(
-    provider: RemoteActorRefProvider,
-    localAddress: UniqueAddress)
+private[remote] final class ActorRefResolveCacheWithAddress
+  (
+      provider: RemoteActorRefProvider,
+      localAddress: UniqueAddress)
     extends AbstractActorRefResolveCache[InternalActorRef] {
 
   override protected def compute(k: String): InternalActorRef =
@@ -353,13 +360,14 @@ private[remote] final class ActorRefResolveCacheWithAddress(
 /**
  * INTERNAL API
  */
-private[remote] class Decoder(
-    inboundContext: InboundContext,
-    system: ExtendedActorSystem,
-    uniqueLocalAddress: UniqueAddress,
-    settings: ArterySettings,
-    inboundCompressions: InboundCompressions,
-    inEnvelopePool: ObjectPool[ReusableInboundEnvelope])
+private[remote] class Decoder
+  (
+      inboundContext: InboundContext,
+      system: ExtendedActorSystem,
+      uniqueLocalAddress: UniqueAddress,
+      settings: ArterySettings,
+      inboundCompressions: InboundCompressions,
+      inEnvelopePool: ObjectPool[ReusableInboundEnvelope])
     extends GraphStageWithMaterializedValue[FlowShape[EnvelopeBuffer, InboundEnvelope], InboundCompressionAccess] {
 
   import Decoder.Tick
@@ -632,10 +640,11 @@ private[remote] class Decoder(
 /**
  * INTERNAL API
  */
-private[remote] class Deserializer(
-    @unused inboundContext: InboundContext,
-    system: ExtendedActorSystem,
-    bufferPool: EnvelopeBufferPool)
+private[remote] class Deserializer
+  (
+      @unused inboundContext: InboundContext,
+      system: ExtendedActorSystem,
+      bufferPool: EnvelopeBufferPool)
     extends GraphStage[FlowShape[InboundEnvelope, InboundEnvelope]] {
 
   val in: Inlet[InboundEnvelope] = Inlet("Artery.Deserializer.in")
@@ -712,11 +721,12 @@ private[remote] class Deserializer(
  * that an application message arrives in the InboundHandshake operator before the
  * handshake is completed and then it would be dropped.
  */
-private[remote] class DuplicateHandshakeReq(
-    numberOfLanes: Int,
-    inboundContext: InboundContext,
-    system: ExtendedActorSystem,
-    bufferPool: EnvelopeBufferPool)
+private[remote] class DuplicateHandshakeReq
+  (
+      numberOfLanes: Int,
+      inboundContext: InboundContext,
+      system: ExtendedActorSystem,
+      bufferPool: EnvelopeBufferPool)
     extends GraphStage[FlowShape[InboundEnvelope, InboundEnvelope]] {
 
   val in: Inlet[InboundEnvelope] = Inlet("Artery.DuplicateHandshakeReq.in")

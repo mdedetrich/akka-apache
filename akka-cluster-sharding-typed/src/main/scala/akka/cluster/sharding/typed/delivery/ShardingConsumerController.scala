@@ -82,9 +82,10 @@ object ShardingConsumerController {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        bufferSize: Int = bufferSize,
-        consumerControllerSettings: ConsumerController.Settings = consumerControllerSettings) =
+    private def copy
+      (
+          bufferSize: Int = bufferSize,
+          consumerControllerSettings: ConsumerController.Settings = consumerControllerSettings) =
       new Settings(bufferSize, consumerControllerSettings)
 
     override def toString: String =
@@ -95,8 +96,9 @@ object ShardingConsumerController {
    * The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage
    * the lifecycle and message delivery to the destination consumer actor.
    */
-  def apply[A, B](consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
-      : Behavior[ConsumerController.SequencedMessage[A]] = {
+  def apply[A, B]
+    (consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
+    : Behavior[ConsumerController.SequencedMessage[A]] = {
     Behaviors.setup { context =>
       ShardingConsumerControllerImpl(consumerBehavior, Settings(context.system))
     }
@@ -106,8 +108,10 @@ object ShardingConsumerController {
    * The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage
    * the lifecycle and message delivery to the destination consumer actor.
    */
-  def withSettings[A, B](settings: Settings)(consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
-      : Behavior[ConsumerController.SequencedMessage[A]] = {
+  def withSettings[A, B]
+    (settings: Settings)
+    (consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
+    : Behavior[ConsumerController.SequencedMessage[A]] = {
     // can't overload apply, loosing type inference
     ShardingConsumerControllerImpl(consumerBehavior, settings)
   }
@@ -116,17 +120,20 @@ object ShardingConsumerController {
    * Java API: The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage
    * the lifecycle and message delivery to the destination consumer actor.
    */
-  def create[A, B](consumerBehavior: JFunction[ActorRef[ConsumerController.Start[A]], Behavior[B]])
-      : Behavior[ConsumerController.SequencedMessage[A]] =
+  def create[A, B]
+    (consumerBehavior: JFunction[ActorRef[ConsumerController.Start[A]], Behavior[B]])
+    : Behavior[ConsumerController.SequencedMessage[A]] =
     apply(consumerBehavior.apply)
 
   /**
    * Java API: The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage
    * the lifecycle and message delivery to the destination consumer actor.
    */
-  def create[A, B](
-      consumerBehavior: JFunction[ActorRef[ConsumerController.Start[A]], Behavior[B]],
-      settings: Settings): Behavior[ConsumerController.SequencedMessage[A]] =
+  def create[A, B]
+    (
+        consumerBehavior: JFunction[ActorRef[ConsumerController.Start[A]], Behavior[B]],
+        settings: Settings)
+    : Behavior[ConsumerController.SequencedMessage[A]] =
     withSettings(settings)(consumerBehavior.apply)
 
   /**

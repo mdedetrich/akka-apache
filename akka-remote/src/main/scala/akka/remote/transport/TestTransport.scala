@@ -26,11 +26,12 @@ import akka.util.ByteString
  * production systems.
  */
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
-class TestTransport(
-    val localAddress: Address,
-    final val registry: TestTransport.AssociationRegistry,
-    val maximumPayloadBytes: Int = 32000,
-    val schemeIdentifier: String = "test")
+class TestTransport
+  (
+      val localAddress: Address,
+      final val registry: TestTransport.AssociationRegistry,
+      val maximumPayloadBytes: Int = 32000,
+      val schemeIdentifier: String = "test")
     extends Transport {
 
   import TestTransport._
@@ -86,9 +87,11 @@ class TestTransport(
     }
   }
 
-  private def createHandlePair(
-      remoteTransport: TestTransport,
-      remoteAddress: Address): (TestAssociationHandle, TestAssociationHandle) = {
+  private def createHandlePair
+    (
+        remoteTransport: TestTransport,
+        remoteAddress: Address)
+    : (TestAssociationHandle, TestAssociationHandle) = {
     val localHandle = new TestAssociationHandle(localAddress, remoteAddress, this, inbound = false)
     val remoteHandle = new TestAssociationHandle(remoteAddress, localAddress, remoteTransport, inbound = true)
 
@@ -307,9 +310,11 @@ object TestTransport {
      * @param listenerPair pair of listeners in initiator, receiver order.
      * @return
      */
-    def remoteListenerRelativeTo(
-        handle: TestAssociationHandle,
-        listenerPair: (HandleEventListener, HandleEventListener)): HandleEventListener = {
+    def remoteListenerRelativeTo
+      (
+          handle: TestAssociationHandle,
+          listenerPair: (HandleEventListener, HandleEventListener))
+      : HandleEventListener = {
       listenerPair match {
         case (initiator, receiver) => if (handle.inbound) initiator else receiver
       }
@@ -353,9 +358,11 @@ object TestTransport {
      * @param associationEventListenerFuture
      *   The future that will be completed with the listener that will handle the events for the given transport.
      */
-    def registerTransport(
-        transport: TestTransport,
-        associationEventListenerFuture: Future[AssociationEventListener]): Unit = {
+    def registerTransport
+      (
+          transport: TestTransport,
+          associationEventListenerFuture: Future[AssociationEventListener])
+      : Unit = {
       transportTable.put(transport.localAddress, (transport, associationEventListenerFuture))
     }
 
@@ -461,11 +468,12 @@ object AssociationRegistry {
 }
 
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
-final case class TestAssociationHandle(
-    localAddress: Address,
-    remoteAddress: Address,
-    transport: TestTransport,
-    inbound: Boolean)
+final case class TestAssociationHandle
+  (
+      localAddress: Address,
+      remoteAddress: Address,
+      transport: TestTransport,
+      inbound: Boolean)
     extends AssociationHandle {
 
   @volatile var writable = true

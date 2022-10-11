@@ -25,10 +25,11 @@ import akka.util.Timeout
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class TestEntityRefImpl[M](
-    override val entityId: String,
-    probe: ActorRef[M],
-    override val typeKey: scaladsl.EntityTypeKey[M])
+@InternalApi private[akka] final class TestEntityRefImpl[M]
+  (
+      override val entityId: String,
+      probe: ActorRef[M],
+      override val typeKey: scaladsl.EntityTypeKey[M])
     extends javadsl.EntityRef[M]
     with scaladsl.EntityRef[M]
     with InternalRecipientRef[M] {

@@ -54,25 +54,29 @@ import akka.util.Helpers.ConfigOps
  * @param clock The clock, returning current time in milliseconds, but can be faked for testing
  *   purposes. It is only used for measuring intervals (duration).
  */
-class PhiAccrualFailureDetector(
-    val threshold: Double,
-    val maxSampleSize: Int,
-    val minStdDeviation: FiniteDuration,
-    val acceptableHeartbeatPause: FiniteDuration,
-    val firstHeartbeatEstimate: FiniteDuration,
-    eventStream: Option[EventStream])(
-    implicit clock: Clock)
+class PhiAccrualFailureDetector
+  (
+      val threshold: Double,
+      val maxSampleSize: Int,
+      val minStdDeviation: FiniteDuration,
+      val acceptableHeartbeatPause: FiniteDuration,
+      val firstHeartbeatEstimate: FiniteDuration,
+      eventStream: Option[EventStream])
+  (
+      implicit clock: Clock)
     extends FailureDetector {
 
   /**
    * Constructor without eventStream to support backwards compatibility
    */
-  def this(
-      threshold: Double,
-      maxSampleSize: Int,
-      minStdDeviation: FiniteDuration,
-      acceptableHeartbeatPause: FiniteDuration,
-      firstHeartbeatEstimate: FiniteDuration)(implicit clock: Clock) =
+  def this
+    (
+        threshold: Double,
+        maxSampleSize: Int,
+        minStdDeviation: FiniteDuration,
+        acceptableHeartbeatPause: FiniteDuration,
+        firstHeartbeatEstimate: FiniteDuration)
+    (implicit clock: Clock) =
     this(threshold, maxSampleSize, minStdDeviation, acceptableHeartbeatPause, firstHeartbeatEstimate, None)(clock)
 
   /**

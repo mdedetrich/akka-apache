@@ -43,19 +43,25 @@ object IntegrationDocSpec {
 
   class AddressSystem {
     // #email-address-lookup
-    def lookupEmail(handle: String): Future[Option[String]] =
+    def lookupEmail
+      (handle: String)
+      : Future[Option[String]] =
       // #email-address-lookup
       Future.successful(Some(handle + "@somewhere.com"))
 
     // #phone-lookup
-    def lookupPhoneNumber(handle: String): Future[Option[String]] =
+    def lookupPhoneNumber
+      (handle: String)
+      : Future[Option[String]] =
       // #phone-lookup
       Future.successful(Some(handle.hashCode.toString))
   }
 
   class AddressSystem2 {
     // #email-address-lookup2
-    def lookupEmail(handle: String): Future[String] =
+    def lookupEmail
+      (handle: String)
+      : Future[String] =
       // #email-address-lookup2
       Future.successful(handle + "@somewhere.com")
   }

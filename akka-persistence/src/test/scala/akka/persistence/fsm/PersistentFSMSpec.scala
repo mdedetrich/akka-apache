@@ -454,8 +454,10 @@ object PersistentFSMSpec {
   case class PurchaseWasMade(items: Seq[Item]) extends ReportEvent
   case object ShoppingCardDiscarded extends ReportEvent
 
-  class SimpleTransitionFSM(_persistenceId: String, reportActor: ActorRef)(
-      implicit val domainEventClassTag: ClassTag[DomainEvent])
+  class SimpleTransitionFSM
+    (_persistenceId: String, reportActor: ActorRef)
+    (
+        implicit val domainEventClassTag: ClassTag[DomainEvent])
       extends PersistentFSM[UserState, ShoppingCart, DomainEvent] {
     override val persistenceId = _persistenceId
 
@@ -478,8 +480,10 @@ object PersistentFSMSpec {
       Props(new SimpleTransitionFSM(persistenceId, reportActor))
   }
 
-  class WebStoreCustomerFSM(_persistenceId: String, reportActor: ActorRef)(
-      implicit val domainEventClassTag: ClassTag[DomainEvent])
+  class WebStoreCustomerFSM
+    (_persistenceId: String, reportActor: ActorRef)
+    (
+        implicit val domainEventClassTag: ClassTag[DomainEvent])
       extends PersistentFSM[UserState, ShoppingCart, DomainEvent] {
 
     override def persistenceId = _persistenceId

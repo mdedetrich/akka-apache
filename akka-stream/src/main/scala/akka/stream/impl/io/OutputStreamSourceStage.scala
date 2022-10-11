@@ -64,10 +64,11 @@ final private[stream] class OutputStreamSourceStage(writeTimeout: FiniteDuration
   }
 }
 
-private[akka] class OutputStreamAdapter(
-    unfulfilledDemand: Semaphore,
-    sendToStage: AsyncCallback[AdapterToStageMessage],
-    writeTimeout: FiniteDuration)
+private[akka] class OutputStreamAdapter
+  (
+      unfulfilledDemand: Semaphore,
+      sendToStage: AsyncCallback[AdapterToStageMessage],
+      writeTimeout: FiniteDuration)
     extends OutputStream {
 
   @scala.throws(classOf[IOException])
@@ -96,7 +97,9 @@ private[akka] class OutputStreamAdapter(
   }
 
   @scala.throws(classOf[IOException])
-  override def flush(): Unit =
+  override def flush
+    ()
+    : Unit =
     // Flushing does nothing: at best we could guarantee that our own buffer
     // is empty, but that doesn't mean the element has been accepted downstream,
     // so there is little value in that.

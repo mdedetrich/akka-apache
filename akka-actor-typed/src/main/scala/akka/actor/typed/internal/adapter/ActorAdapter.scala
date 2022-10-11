@@ -329,9 +329,10 @@ import akka.util.OptionVal
 /**
  * INTERNAL API
  */
-@InternalApi private[typed] final class ComposedStoppingBehavior[T](
-    lastBehavior: Behavior[T],
-    stopBehavior: StoppedBehavior[T])
+@InternalApi private[typed] final class ComposedStoppingBehavior[T]
+  (
+      lastBehavior: Behavior[T],
+      stopBehavior: StoppedBehavior[T])
     extends ExtensibleBehavior[T] {
   override def receive(ctx: TypedActorContext[T], msg: T): Behavior[T] =
     throw new IllegalStateException("Stopping, should never receieve a message")

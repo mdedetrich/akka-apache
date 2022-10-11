@@ -42,16 +42,17 @@ private[akka] object DurableStateBehaviorImpl {
 }
 
 @InternalApi
-private[akka] final case class DurableStateBehaviorImpl[Command, State](
-    persistenceId: PersistenceId,
-    emptyState: State,
-    commandHandler: DurableStateBehavior.CommandHandler[Command, State],
-    loggerClass: Class[_],
-    durableStateStorePluginId: Option[String] = None,
-    tag: String = "",
-    snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
-    supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
-    override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty)
+private[akka] final case class DurableStateBehaviorImpl[Command, State]
+  (
+      persistenceId: PersistenceId,
+      emptyState: State,
+      commandHandler: DurableStateBehavior.CommandHandler[Command, State],
+      loggerClass: Class[_],
+      durableStateStorePluginId: Option[String] = None,
+      tag: String = "",
+      snapshotAdapter: SnapshotAdapter[State] = NoOpSnapshotAdapter.instance[State],
+      supervisionStrategy: SupervisorStrategy = SupervisorStrategy.stop,
+      override val signalHandler: PartialFunction[(State, Signal), Unit] = PartialFunction.empty)
     extends DurableStateBehavior[Command, State] {
 
   if (persistenceId eq null)
@@ -112,10 +113,12 @@ private[akka] final case class DurableStateBehaviorImpl[Command, State](
           def interceptor: BehaviorInterceptor[Any, InternalProtocol] = new BehaviorInterceptor[Any, InternalProtocol] {
 
             import BehaviorInterceptor._
-            override def aroundReceive(
-                ctx: typed.TypedActorContext[Any],
-                msg: Any,
-                target: ReceiveTarget[InternalProtocol]): Behavior[InternalProtocol] = {
+            override def aroundReceive
+              (
+                  ctx: typed.TypedActorContext[Any],
+                  msg: Any,
+                  target: ReceiveTarget[InternalProtocol])
+              : Behavior[InternalProtocol] = {
               val innerMsg = msg match {
                 case RecoveryPermitter.RecoveryPermitGranted => InternalProtocol.RecoveryPermitGranted
                 case internal: InternalProtocol              => internal // such as RecoveryTimeout
@@ -124,10 +127,12 @@ private[akka] final case class DurableStateBehaviorImpl[Command, State](
               target(ctx, innerMsg)
             }
 
-            override def aroundSignal(
-                ctx: typed.TypedActorContext[Any],
-                signal: Signal,
-                target: SignalTarget[InternalProtocol]): Behavior[InternalProtocol] = {
+            override def aroundSignal
+              (
+                  ctx: typed.TypedActorContext[Any],
+                  signal: Signal,
+                  target: SignalTarget[InternalProtocol])
+              : Behavior[InternalProtocol] = {
               if (signal == PostStop) {
                 durableStateSetup.cancelRecoveryTimer()
                 // clear stash to be GC friendly

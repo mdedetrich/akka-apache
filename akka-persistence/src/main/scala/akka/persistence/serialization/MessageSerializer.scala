@@ -102,8 +102,10 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
     }
   }
 
-  private[persistence] def persistentFSMSnapshotBuilder(
-      persistentFSMSnapshot: PersistentFSMSnapshot[Any]): mf.PersistentFSMSnapshot.Builder = {
+  private[persistence] def persistentFSMSnapshotBuilder
+    (
+        persistentFSMSnapshot: PersistentFSMSnapshot[Any])
+    : mf.PersistentFSMSnapshot.Builder = {
     val builder = mf.PersistentFSMSnapshot.newBuilder
       .setStateIdentifier(persistentFSMSnapshot.stateIdentifier)
       .setData(persistentPayloadBuilder(persistentFSMSnapshot.data.asInstanceOf[AnyRef]))
@@ -113,8 +115,10 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
     }
   }
 
-  def atLeastOnceDeliverySnapshot(
-      atLeastOnceDeliverySnapshot: mf.AtLeastOnceDeliverySnapshot): AtLeastOnceDeliverySnapshot = {
+  def atLeastOnceDeliverySnapshot
+    (
+        atLeastOnceDeliverySnapshot: mf.AtLeastOnceDeliverySnapshot)
+    : AtLeastOnceDeliverySnapshot = {
     import akka.util.ccompat.JavaConverters._
     val unconfirmedDeliveries = new VectorBuilder[UnconfirmedDelivery]()
     atLeastOnceDeliverySnapshot.getUnconfirmedDeliveriesList().iterator().asScala.foreach { next =>

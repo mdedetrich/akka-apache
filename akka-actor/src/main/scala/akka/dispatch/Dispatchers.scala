@@ -35,14 +35,15 @@ trait DispatcherPrerequisites {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class DefaultDispatcherPrerequisites(
-    threadFactory: ThreadFactory,
-    eventStream: EventStream,
-    scheduler: Scheduler,
-    dynamicAccess: DynamicAccess,
-    settings: ActorSystem.Settings,
-    mailboxes: Mailboxes,
-    defaultExecutionContext: Option[ExecutionContext])
+private[akka] final case class DefaultDispatcherPrerequisites
+  (
+      threadFactory: ThreadFactory,
+      eventStream: EventStream,
+      scheduler: Scheduler,
+      dynamicAccess: DynamicAccess,
+      settings: ActorSystem.Settings,
+      mailboxes: Mailboxes,
+      defaultExecutionContext: Option[ExecutionContext])
     extends DispatcherPrerequisites
 
 object Dispatchers {
@@ -100,10 +101,11 @@ object Dispatchers {
  * Not for user instantiation or extension
  */
 @DoNotInherit
-class Dispatchers @InternalApi private[akka] (
-    val settings: ActorSystem.Settings,
-    val prerequisites: DispatcherPrerequisites,
-    logger: LoggingAdapter) {
+class Dispatchers @InternalApi private[akka]
+  (
+      val settings: ActorSystem.Settings,
+      val prerequisites: DispatcherPrerequisites,
+      logger: LoggingAdapter) {
 
   import Dispatchers._
 

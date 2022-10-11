@@ -27,8 +27,10 @@ object PointToPointDocExample {
 
     private case class WrappedRequestNext(r: ProducerController.RequestNext[FibonacciConsumer.Command]) extends Command
 
-    def apply(
-        producerController: ActorRef[ProducerController.Command[FibonacciConsumer.Command]]): Behavior[Command] = {
+    def apply
+      (
+          producerController: ActorRef[ProducerController.Command[FibonacciConsumer.Command]])
+      : Behavior[Command] = {
       Behaviors.setup { context =>
         val requestNextAdapter =
           context.messageAdapter[ProducerController.RequestNext[FibonacciConsumer.Command]](WrappedRequestNext(_))
@@ -63,8 +65,10 @@ object PointToPointDocExample {
 
     private case class WrappedDelivery(d: ConsumerController.Delivery[Command]) extends Command
 
-    def apply(
-        consumerController: ActorRef[ConsumerController.Command[FibonacciConsumer.Command]]): Behavior[Command] = {
+    def apply
+      (
+          consumerController: ActorRef[ConsumerController.Command[FibonacciConsumer.Command]])
+      : Behavior[Command] = {
       Behaviors.setup { context =>
         val deliveryAdapter =
           context.messageAdapter[ConsumerController.Delivery[FibonacciConsumer.Command]](WrappedDelivery(_))

@@ -31,17 +31,18 @@ import akka.testkit.TestKit
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class LoggingTestKitImpl(
-    occurrences: Int,
-    logLevel: Option[Level],
-    loggerName: Option[String],
-    source: Option[String],
-    messageContains: Option[String],
-    messageRegex: Option[Regex],
-    cause: Option[Class[_ <: Throwable]],
-    mdc: Map[String, String],
-    checkExcess: Boolean,
-    custom: Option[Function[LoggingEvent, Boolean]])
+@InternalApi private[akka] final case class LoggingTestKitImpl
+  (
+      occurrences: Int,
+      logLevel: Option[Level],
+      loggerName: Option[String],
+      source: Option[String],
+      messageContains: Option[String],
+      messageRegex: Option[Regex],
+      cause: Option[Class[_ <: Throwable]],
+      mdc: Map[String, String],
+      checkExcess: Boolean,
+      custom: Option[Function[LoggingEvent, Boolean]])
     extends javadsl.LoggingTestKit
     with scaladsl.LoggingTestKit {
 

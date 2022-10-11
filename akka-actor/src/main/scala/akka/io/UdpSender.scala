@@ -17,11 +17,12 @@ import scala.annotation.nowarn
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[io] class UdpSender(
-    val udp: UdpExt,
-    channelRegistry: ChannelRegistry,
-    commander: ActorRef,
-    options: immutable.Traversable[SocketOption])
+private[io] class UdpSender
+  (
+      val udp: UdpExt,
+      channelRegistry: ChannelRegistry,
+      commander: ActorRef,
+      options: immutable.Traversable[SocketOption])
     extends Actor
     with ActorLogging
     with WithUdpSend

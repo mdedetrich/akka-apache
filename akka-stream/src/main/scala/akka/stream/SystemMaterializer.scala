@@ -76,9 +76,11 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
    */
   @InternalApi
   @nowarn("msg=deprecated")
-  private[akka] def createAdditionalLegacySystemMaterializer(
-      namePrefix: String,
-      settings: ActorMaterializerSettings): Materializer = {
+  private[akka] def createAdditionalLegacySystemMaterializer
+    (
+        namePrefix: String,
+        settings: ActorMaterializerSettings)
+    : Materializer = {
     val started =
       (materializerGuardian ? MaterializerGuardian.LegacyStartMaterializer(namePrefix, settings))
         .mapTo[MaterializerGuardian.MaterializerStarted]

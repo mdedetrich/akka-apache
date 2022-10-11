@@ -70,11 +70,12 @@ import akka.util.OptionVal
     Props(new ActorGraphInterpreter(shell)).withDeploy(Deploy.local)
 
   @InternalStableApi
-  class BatchingActorInputBoundary(
-      size: Int,
-      shell: GraphInterpreterShell,
-      publisher: Publisher[Any],
-      internalPortName: String)
+  class BatchingActorInputBoundary
+    (
+        size: Int,
+        shell: GraphInterpreterShell,
+        publisher: Publisher[Any],
+        internalPortName: String)
       extends UpstreamBoundaryStageLogic[Any]
       with OutHandler {
 
@@ -488,11 +489,12 @@ import akka.util.OptionVal
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class GraphInterpreterShell(
-    var connections: Array[Connection],
-    var logics: Array[GraphStageLogic],
-    val attributes: Attributes,
-    val mat: ExtendedActorMaterializer) {
+@InternalApi private[akka] final class GraphInterpreterShell
+  (
+      var connections: Array[Connection],
+      var logics: Array[GraphStageLogic],
+      val attributes: Attributes,
+      val mat: ExtendedActorMaterializer) {
 
   import ActorGraphInterpreter._
 
@@ -504,12 +506,13 @@ import akka.util.OptionVal
    *                if the event isn't ever processed the promise (the operator stops) is failed elsewhere
    */
   // can't be final because of SI-4440
-  case class AsyncInput(
-      shell: GraphInterpreterShell,
-      logic: GraphStageLogic,
-      evt: Any,
-      promise: Promise[Done],
-      handler: (Any) => Unit)
+  case class AsyncInput
+    (
+        shell: GraphInterpreterShell,
+        logic: GraphStageLogic,
+        evt: Any,
+        promise: Promise[Done],
+        handler: (Any) => Unit)
       extends BoundaryEvent {
 
     @InternalStableApi
@@ -601,11 +604,13 @@ import akka.util.OptionVal
   private var resumeScheduled = false
 
   def isInitialized: Boolean = self != null
-  def init(
-      self: ActorRef,
-      subMat: SubFusingActorMaterializerImpl,
-      enqueueToShortCircuit: (Any) => Unit,
-      eventLimit: Int): Int = {
+  def init
+    (
+        self: ActorRef,
+        subMat: SubFusingActorMaterializerImpl,
+        enqueueToShortCircuit: (Any) => Unit,
+        eventLimit: Int)
+    : Int = {
     this.self = self
     this.enqueueToShortCircuit = enqueueToShortCircuit
     var i = 0

@@ -37,13 +37,15 @@ object RetryFlow {
    * @param decideRetry retry condition decision function
    */
   @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
-  def withBackoff[In, Out, Mat](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxRetries: Int,
-      flow: Flow[In, Out, Mat],
-      decideRetry: akka.japi.function.Function2[In, Out, Optional[In]]): Flow[In, Out, Mat] =
+  def withBackoff[In, Out, Mat]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxRetries: Int,
+        flow: Flow[In, Out, Mat],
+        decideRetry: akka.japi.function.Function2[In, Out, Optional[In]])
+    : Flow[In, Out, Mat] =
     scaladsl.RetryFlow
       .withBackoff[In, Out, Mat](minBackoff.asScala, maxBackoff.asScala, randomFactor, maxRetries, flow.asScala) {
         (in, out) =>
@@ -76,14 +78,15 @@ object RetryFlow {
    * @param decideRetry retry condition decision function
    */
   @ApiMayChange(issue = "https://github.com/akka/akka/issues/27960")
-  def withBackoffAndContext[In, InCtx, Out, OutCtx, Mat](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxRetries: Int,
-      flow: FlowWithContext[In, InCtx, Out, OutCtx, Mat],
-      decideRetry: akka.japi.function.Function2[Pair[In, InCtx], Pair[Out, OutCtx], Optional[Pair[In, InCtx]]])
-      : FlowWithContext[In, InCtx, Out, OutCtx, Mat] =
+  def withBackoffAndContext[In, InCtx, Out, OutCtx, Mat]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxRetries: Int,
+        flow: FlowWithContext[In, InCtx, Out, OutCtx, Mat],
+        decideRetry: akka.japi.function.Function2[Pair[In, InCtx], Pair[Out, OutCtx], Optional[Pair[In, InCtx]]])
+    : FlowWithContext[In, InCtx, Out, OutCtx, Mat] =
     scaladsl.RetryFlow
       .withBackoffAndContext[In, InCtx, Out, OutCtx, Mat](
         minBackoff.asScala,

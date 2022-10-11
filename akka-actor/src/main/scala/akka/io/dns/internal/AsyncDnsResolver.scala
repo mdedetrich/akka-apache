@@ -28,10 +28,11 @@ import akka.util.PrettyDuration._
  * INTERNAL API
  */
 @InternalApi
-private[io] final class AsyncDnsResolver(
-    settings: DnsSettings,
-    cache: SimpleDnsCache,
-    clientFactory: (ActorRefFactory, List[InetSocketAddress]) => List[ActorRef])
+private[io] final class AsyncDnsResolver
+  (
+      settings: DnsSettings,
+      cache: SimpleDnsCache,
+      clientFactory: (ActorRefFactory, List[InetSocketAddress]) => List[ActorRef])
     extends Actor
     with ActorLogging {
 
@@ -106,10 +107,12 @@ private[io] final class AsyncDnsResolver(
       }
   }
 
-  private def resolveWithResolvers(
-      name: String,
-      requestType: RequestType,
-      resolvers: List[ActorRef]): Future[DnsProtocol.Resolved] =
+  private def resolveWithResolvers
+    (
+        name: String,
+        requestType: RequestType,
+        resolvers: List[ActorRef])
+    : Future[DnsProtocol.Resolved] =
     if (isInetAddress(name)) {
       Future.fromTry {
         Try {
@@ -148,10 +151,12 @@ private[io] final class AsyncDnsResolver(
     result
   }
 
-  private def resolveWithSearch(
-      name: String,
-      requestType: RequestType,
-      resolver: ActorRef): Future[DnsProtocol.Resolved] = {
+  private def resolveWithSearch
+    (
+        name: String,
+        requestType: RequestType,
+        resolver: ActorRef)
+    : Future[DnsProtocol.Resolved] = {
     if (settings.SearchDomains.nonEmpty) {
       val nameWithSearch = settings.SearchDomains.map(sd => name + "." + sd)
       // ndots is a heuristic used to try and work out whether the name passed in is a fully qualified domain name,
@@ -173,10 +178,12 @@ private[io] final class AsyncDnsResolver(
     }
   }
 
-  private def resolveFirst(
-      searchNames: List[String],
-      requestType: RequestType,
-      resolver: ActorRef): Future[DnsProtocol.Resolved] = {
+  private def resolveFirst
+    (
+        searchNames: List[String],
+        requestType: RequestType,
+        resolver: ActorRef)
+    : Future[DnsProtocol.Resolved] = {
     searchNames match {
       case searchName :: Nil =>
         resolve(searchName, requestType, resolver)

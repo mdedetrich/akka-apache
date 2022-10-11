@@ -304,8 +304,12 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * @tparam Req The request protocol, what the other actor accepts
    * @tparam Res The response protocol, what the other actor sends back
    */
-  def ask[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)(
-      mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit
+  def ask[Req, Res]
+    (target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)
+    (
+        mapResponse: Try[Res] => T)
+    (implicit responseTimeout: Timeout, classTag: ClassTag[Res])
+    : Unit
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
@@ -313,8 +317,12 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * If the status response is a [[akka.pattern.StatusReply.Error]] the returned future will be failed with the
    * exception in the error (normally a [[akka.pattern.StatusReply.ErrorMessage]]).
    */
-  def askWithStatus[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)(
-      mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit
+  def askWithStatus[Req, Res]
+    (target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)
+    (
+        mapResponse: Try[Res] => T)
+    (implicit responseTimeout: Timeout, classTag: ClassTag[Res])
+    : Unit
 
   /**
    * Sends the result of the given `Future` to this Actor (“`self`”), after adapted it with

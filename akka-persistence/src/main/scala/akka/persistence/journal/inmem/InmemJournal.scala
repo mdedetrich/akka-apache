@@ -39,12 +39,13 @@ object InmemJournal {
   final case class Delete(persistenceId: String, toSequenceNr: Long) extends Operation
 
   @InternalApi
-  private[persistence] case class ReplayWithMeta(
-      from: Long,
-      to: Long,
-      limit: Long,
-      persistenceId: String,
-      replyTo: ActorRef)
+  private[persistence] case class ReplayWithMeta
+    (
+        from: Long,
+        to: Long,
+        limit: Long,
+        persistenceId: String,
+        replyTo: ActorRef)
   @InternalApi
   private[persistence] case class MessageWithMeta(pr: PersistentRepr, meta: OptionVal[Any])
 }
@@ -93,8 +94,11 @@ object InmemJournal {
     Future.successful(highestSequenceNr(persistenceId))
   }
 
-  override def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      recoveryCallback: PersistentRepr => Unit): Future[Unit] = {
+  override def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        recoveryCallback: PersistentRepr => Unit)
+    : Future[Unit] = {
     val highest = highestSequenceNr(persistenceId)
     if (highest != 0L && max != 0L)
       read(persistenceId, fromSequenceNr, math.min(toSequenceNr, highest), max).foreach {

@@ -256,10 +256,11 @@ import akka.util.ccompat.JavaConverters._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class GroupBy[T, K](
-    val maxSubstreams: Int,
-    val keyFor: T => K,
-    val allowClosedSubstreamRecreation: Boolean = false)
+@InternalApi private[akka] final class GroupBy[T, K]
+  (
+      val maxSubstreams: Int,
+      val keyFor: T => K,
+      val allowClosedSubstreamRecreation: Boolean = false)
     extends GraphStage[FlowShape[T, Source[T, NotUsed]]] {
   val in: Inlet[T] = Inlet("GroupBy.in")
   val out: Outlet[Source[T, NotUsed]] = Outlet("GroupBy.out")
@@ -301,7 +302,9 @@ import akka.util.ccompat.JavaConverters._
           true
         } else false
 
-      private def tryCancel(cause: Throwable): Boolean =
+      private def tryCancel
+        (cause: Throwable)
+        : Boolean =
         // if there's no active substreams or there's only one but it's not been pushed yet
         if (activeSubstreamsMap.isEmpty || (activeSubstreamsMap.size == 1 && substreamWaitingToBePushed.isDefined)) {
           cancelStage(cause)
@@ -458,24 +461,29 @@ import akka.util.ccompat.JavaConverters._
   /** Splits after the current element. The current element will be the last element in the current substream. */
   case object SplitAfter extends SplitDecision
 
-  def when[T](
-      p: T => Boolean,
-      substreamCancelStrategy: SubstreamCancelStrategy): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
+  def when[T]
+    (
+        p: T => Boolean,
+        substreamCancelStrategy: SubstreamCancelStrategy)
+    : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitBefore, p, substreamCancelStrategy)
 
-  def after[T](
-      p: T => Boolean,
-      substreamCancelStrategy: SubstreamCancelStrategy): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
+  def after[T]
+    (
+        p: T => Boolean,
+        substreamCancelStrategy: SubstreamCancelStrategy)
+    : Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
     new Split(Split.SplitAfter, p, substreamCancelStrategy)
 }
 
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class Split[T](
-    val decision: Split.SplitDecision,
-    val p: T => Boolean,
-    val substreamCancelStrategy: SubstreamCancelStrategy)
+@InternalApi private[akka] final class Split[T]
+  (
+      val decision: Split.SplitDecision,
+      val p: T => Boolean,
+      val substreamCancelStrategy: SubstreamCancelStrategy)
     extends GraphStage[FlowShape[T, Source[T, NotUsed]]] {
 
   val in: Inlet[T] = Inlet("Split.in")
@@ -766,9 +774,10 @@ import akka.util.ccompat.JavaConverters._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class SubSource[T](
-    name: String,
-    private[fusing] val externalCallback: AsyncCallback[SubSink.Command])
+@InternalApi private[akka] final class SubSource[T]
+  (
+      name: String,
+      private[fusing] val externalCallback: AsyncCallback[SubSink.Command])
     extends GraphStage[SourceShape[T]] {
   import SubSink._
 

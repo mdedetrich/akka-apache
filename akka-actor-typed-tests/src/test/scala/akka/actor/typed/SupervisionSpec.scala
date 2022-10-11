@@ -53,10 +53,12 @@ object SupervisionSpec {
   class Exc2 extends Exc1("exc-2")
   class Exc3(message: String = "exc-3") extends RuntimeException(message) with NoStackTrace
 
-  def targetBehavior(
-      monitor: ActorRef[Event],
-      state: State = State(0, Map.empty),
-      slowStop: Option[CountDownLatch] = None): Behavior[Command] =
+  def targetBehavior
+    (
+        monitor: ActorRef[Event],
+        state: State = State(0, Map.empty),
+        slowStop: Option[CountDownLatch] = None)
+    : Behavior[Command] =
     receive[Command] { (context, cmd) =>
       cmd match {
         case Ping(n) =>
@@ -1180,10 +1182,12 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       // irrelevant for test case but needed to use intercept in the pyramid of doom below
       val whateverInterceptor = new BehaviorInterceptor[String, String] {
         // identity intercept
-        override def aroundReceive(
-            context: TypedActorContext[String],
-            message: String,
-            target: ReceiveTarget[String]): Behavior[String] =
+        override def aroundReceive
+          (
+              context: TypedActorContext[String],
+              message: String,
+              target: ReceiveTarget[String])
+          : Behavior[String] =
           target(context, message)
       }
 

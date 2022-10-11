@@ -113,9 +113,11 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, SinkRef[Out]) =
     throw new IllegalStateException("Not supported")
 
-  private[akka] override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes,
-      eagerMaterializer: Materializer): (GraphStageLogic, SinkRef[Out]) = {
+  private[akka] override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes,
+        eagerMaterializer: Materializer)
+    : (GraphStageLogic, SinkRef[Out]) = {
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
       override protected def logSource: Class[_] = classOf[SourceRefStageImpl[_]]

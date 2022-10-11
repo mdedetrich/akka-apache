@@ -112,20 +112,22 @@ object ClusterSingletonManagerSettings {
  *
  * @param leaseSettings LeaseSettings for acquiring before creating the singleton actor
  */
-final class ClusterSingletonManagerSettings(
-    val singletonName: String,
-    val role: Option[String],
-    val removalMargin: FiniteDuration,
-    val handOverRetryInterval: FiniteDuration,
-    val leaseSettings: Option[LeaseUsageSettings])
+final class ClusterSingletonManagerSettings
+  (
+      val singletonName: String,
+      val role: Option[String],
+      val removalMargin: FiniteDuration,
+      val handOverRetryInterval: FiniteDuration,
+      val leaseSettings: Option[LeaseUsageSettings])
     extends NoSerializationVerificationNeeded {
 
   // bin compat for akka 2.5.21
-  def this(
-      singletonName: String,
-      role: Option[String],
-      removalMargin: FiniteDuration,
-      handOverRetryInterval: FiniteDuration) =
+  def this
+    (
+        singletonName: String,
+        role: Option[String],
+        removalMargin: FiniteDuration,
+        handOverRetryInterval: FiniteDuration) =
     this(singletonName, role, removalMargin, handOverRetryInterval, None)
 
   def withSingletonName(name: String): ClusterSingletonManagerSettings = copy(singletonName = name)
@@ -144,12 +146,14 @@ final class ClusterSingletonManagerSettings(
   def withLeaseSettings(leaseSettings: LeaseUsageSettings): ClusterSingletonManagerSettings =
     copy(leaseSettings = Some(leaseSettings))
 
-  private def copy(
-      singletonName: String = singletonName,
-      role: Option[String] = role,
-      removalMargin: FiniteDuration = removalMargin,
-      handOverRetryInterval: FiniteDuration = handOverRetryInterval,
-      leaseSettings: Option[LeaseUsageSettings] = leaseSettings): ClusterSingletonManagerSettings =
+  private def copy
+    (
+        singletonName: String = singletonName,
+        role: Option[String] = role,
+        removalMargin: FiniteDuration = removalMargin,
+        handOverRetryInterval: FiniteDuration = handOverRetryInterval,
+        leaseSettings: Option[LeaseUsageSettings] = leaseSettings)
+    : ClusterSingletonManagerSettings =
     new ClusterSingletonManagerSettings(singletonName, role, removalMargin, handOverRetryInterval, leaseSettings)
 }
 

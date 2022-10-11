@@ -65,9 +65,10 @@ object ORMultiMap {
  * Note that on concurrent adds and removals for the same key (on the same set), removals can be lost.
  */
 @SerialVersionUID(1L)
-final class ORMultiMap[A, B] private[akka] (
-    private[akka] val underlying: ORMap[A, ORSet[B]],
-    private[akka] val withValueDeltas: Boolean)
+final class ORMultiMap[A, B] private[akka]
+  (
+      private[akka] val underlying: ORMap[A, ORSet[B]],
+      private[akka] val withValueDeltas: Boolean)
     extends DeltaReplicatedData
     with ReplicatedDataSerialization
     with RemovedNodePruning {
@@ -309,11 +310,13 @@ final class ORMultiMap[A, B] private[akka] (
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def replaceBinding(
-      node: UniqueAddress,
-      key: A,
-      oldElement: B,
-      newElement: B): ORMultiMap[A, B] =
+  @InternalApi private[akka] def replaceBinding
+    (
+        node: UniqueAddress,
+        key: A,
+        oldElement: B,
+        newElement: B)
+    : ORMultiMap[A, B] =
     if (newElement != oldElement)
       addBinding(node, key, newElement).removeBinding(node, key, oldElement)
     else

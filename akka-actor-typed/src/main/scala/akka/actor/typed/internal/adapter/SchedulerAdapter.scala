@@ -32,33 +32,48 @@ import akka.annotation.InternalApi
  */
 @InternalApi
 private[akka] final class SchedulerAdapter(private[akka] val classicScheduler: akka.actor.Scheduler) extends Scheduler {
-  override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def scheduleOnce
+    (delay: FiniteDuration, runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     classicScheduler.scheduleOnce(delay, runnable)
 
   override def scheduleOnce(delay: Duration, runnable: Runnable, executor: ExecutionContext): Cancellable =
     classicScheduler.scheduleOnce(delay, runnable)(executor)
 
-  override def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def scheduleWithFixedDelay
+    (initialDelay: FiniteDuration, delay: FiniteDuration)
+    (runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     classicScheduler.scheduleWithFixedDelay(initialDelay, delay)(runnable)
 
-  override def scheduleWithFixedDelay(
-      initialDelay: Duration,
-      delay: Duration,
-      runnable: Runnable,
-      executor: ExecutionContext): Cancellable =
+  override def scheduleWithFixedDelay
+    (
+        initialDelay: Duration,
+        delay: Duration,
+        runnable: Runnable,
+        executor: ExecutionContext)
+    : Cancellable =
     classicScheduler.scheduleWithFixedDelay(initialDelay, delay, runnable, executor)
 
-  override def scheduleAtFixedRate(initialDelay: FiniteDuration, interval: FiniteDuration)(runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def scheduleAtFixedRate
+    (initialDelay: FiniteDuration, interval: FiniteDuration)
+    (runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     classicScheduler.scheduleAtFixedRate(initialDelay, interval)(runnable)
 
-  override def scheduleAtFixedRate(
-      initialDelay: Duration,
-      interval: Duration,
-      runnable: Runnable,
-      executor: ExecutionContext): Cancellable =
+  override def scheduleAtFixedRate
+    (
+        initialDelay: Duration,
+        interval: Duration,
+        runnable: Runnable,
+        executor: ExecutionContext)
+    : Cancellable =
     classicScheduler.scheduleAtFixedRate(initialDelay, interval, runnable, executor)
 
 }

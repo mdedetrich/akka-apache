@@ -60,12 +60,13 @@ final class BroadcastRoutingLogic extends RoutingLogic {
  *   supervision, death watch and router management messages
  */
 @SerialVersionUID(1L)
-final case class BroadcastPool(
-    nrOfInstances: Int,
-    override val resizer: Option[Resizer] = None,
-    override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
-    override val usePoolDispatcher: Boolean = false)
+final case class BroadcastPool
+  (
+      nrOfInstances: Int,
+      override val resizer: Option[Resizer] = None,
+      override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
+      override val usePoolDispatcher: Boolean = false)
     extends Pool
     with PoolOverrideUnsetConfig[BroadcastPool] {
 
@@ -124,9 +125,10 @@ final case class BroadcastPool(
  *   router management messages
  */
 @SerialVersionUID(1L)
-final case class BroadcastGroup(
-    paths: immutable.Iterable[String],
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
+final case class BroadcastGroup
+  (
+      paths: immutable.Iterable[String],
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
     extends Group {
 
   def this(config: Config) =

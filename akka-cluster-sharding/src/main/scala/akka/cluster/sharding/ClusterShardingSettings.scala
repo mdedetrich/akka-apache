@@ -134,31 +134,35 @@ object ClusterShardingSettings {
    * API MAY CHANGE: Settings for passivation strategies may change after additional testing and feedback.
    */
   @ApiMayChange
-  final class PassivationStrategySettings private[akka] (
-      val idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-      val activeEntityLimit: Option[Int],
-      val replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-      val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings],
-      private[akka] val oldSettingUsed: Boolean) {
+  final class PassivationStrategySettings private[akka]
+    (
+        val idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+        val activeEntityLimit: Option[Int],
+        val replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
+        val admissionSettings: Option[PassivationStrategySettings.AdmissionSettings],
+        private[akka] val oldSettingUsed: Boolean) {
 
-    private[akka] def this(
-        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-        activeEntityLimit: Option[Int],
-        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-        oldSettingUsed: Boolean) =
+    private[akka] def this
+      (
+          idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+          activeEntityLimit: Option[Int],
+          replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
+          oldSettingUsed: Boolean) =
       this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings = None, oldSettingUsed)
 
-    def this(
-        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-        activeEntityLimit: Option[Int],
-        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
-        admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) =
+    def this
+      (
+          idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+          activeEntityLimit: Option[Int],
+          replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings],
+          admissionSettings: Option[PassivationStrategySettings.AdmissionSettings]) =
       this(idleEntitySettings, activeEntityLimit, replacementPolicySettings, admissionSettings, oldSettingUsed = false)
 
-    def this(
-        idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
-        activeEntityLimit: Option[Int],
-        replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings]) =
+    def this
+      (
+          idleEntitySettings: Option[PassivationStrategySettings.IdleSettings],
+          activeEntityLimit: Option[Int],
+          replacementPolicySettings: Option[PassivationStrategySettings.PolicySettings]) =
       this(
         idleEntitySettings,
         activeEntityLimit,
@@ -180,9 +184,11 @@ object ClusterShardingSettings {
     def withIdleEntityPassivation(timeout: java.time.Duration): PassivationStrategySettings =
       withIdleEntityPassivation(IdleSettings.defaults.withTimeout(timeout))
 
-    def withIdleEntityPassivation(
-        timeout: java.time.Duration,
-        interval: java.time.Duration): PassivationStrategySettings =
+    def withIdleEntityPassivation
+      (
+          timeout: java.time.Duration,
+          interval: java.time.Duration)
+      : PassivationStrategySettings =
       withIdleEntityPassivation(IdleSettings.defaults.withTimeout(timeout).withInterval(interval))
 
     def withActiveEntityLimit(limit: Int): PassivationStrategySettings =
@@ -211,12 +217,14 @@ object ClusterShardingSettings {
         admissionSettings = None,
         oldSettingUsed = true)
 
-    private def copy(
-        idleEntitySettings: Option[IdleSettings] = idleEntitySettings,
-        activeEntityLimit: Option[Int] = activeEntityLimit,
-        replacementPolicySettings: Option[PolicySettings] = replacementPolicySettings,
-        admissionSettings: Option[AdmissionSettings] = admissionSettings,
-        oldSettingUsed: Boolean = oldSettingUsed): PassivationStrategySettings =
+    private def copy
+      (
+          idleEntitySettings: Option[IdleSettings] = idleEntitySettings,
+          activeEntityLimit: Option[Int] = activeEntityLimit,
+          replacementPolicySettings: Option[PolicySettings] = replacementPolicySettings,
+          admissionSettings: Option[AdmissionSettings] = admissionSettings,
+          oldSettingUsed: Boolean = oldSettingUsed)
+      : PassivationStrategySettings =
       new PassivationStrategySettings(
         idleEntitySettings,
         activeEntityLimit,
@@ -399,11 +407,12 @@ object ClusterShardingSettings {
         }
       }
 
-      final class FrequencySketchSettings(
-          val depth: Int,
-          val counterBits: Int,
-          val widthMultiplier: Int,
-          val resetMultiplier: Double)
+      final class FrequencySketchSettings
+        (
+            val depth: Int,
+            val counterBits: Int,
+            val widthMultiplier: Int,
+            val resetMultiplier: Double)
           extends FilterSettings {
 
         def withDepth(depth: Int): FrequencySketchSettings =
@@ -418,11 +427,13 @@ object ClusterShardingSettings {
         def withResetMultiplier(multiplier: Double): FrequencySketchSettings =
           copy(resetMultiplier = multiplier)
 
-        private def copy(
-            depth: Int = depth,
-            counterBits: Int = counterBits,
-            widthMultiplier: Int = widthMultiplier,
-            resetMultiplier: Double = resetMultiplier): FrequencySketchSettings =
+        private def copy
+          (
+              depth: Int = depth,
+              counterBits: Int = counterBits,
+              widthMultiplier: Int = widthMultiplier,
+              resetMultiplier: Double = resetMultiplier)
+          : FrequencySketchSettings =
           new FrequencySketchSettings(depth, counterBits, widthMultiplier, resetMultiplier)
 
       }
@@ -451,12 +462,13 @@ object ClusterShardingSettings {
           }
       }
 
-      final class WindowSettings(
-          val initialProportion: Double,
-          val minimumProportion: Double,
-          val maximumProportion: Double,
-          val optimizer: Option[OptimizerSettings],
-          val policy: Option[PolicySettings]) {
+      final class WindowSettings
+        (
+            val initialProportion: Double,
+            val minimumProportion: Double,
+            val maximumProportion: Double,
+            val optimizer: Option[OptimizerSettings],
+            val policy: Option[PolicySettings]) {
 
         def withInitialProportion(proportion: Double): WindowSettings =
           copy(initialProportion = proportion)
@@ -473,12 +485,14 @@ object ClusterShardingSettings {
         def withPolicy(settings: PolicySettings): WindowSettings =
           copy(policy = Some(settings))
 
-        private def copy(
-            initialProportion: Double = initialProportion,
-            minimumProportion: Double = minimumProportion,
-            maximumProportion: Double = maximumProportion,
-            optimizer: Option[OptimizerSettings] = optimizer,
-            policy: Option[PolicySettings] = policy): WindowSettings =
+        private def copy
+          (
+              initialProportion: Double = initialProportion,
+              minimumProportion: Double = minimumProportion,
+              maximumProportion: Double = maximumProportion,
+              optimizer: Option[OptimizerSettings] = optimizer,
+              policy: Option[PolicySettings] = policy)
+          : WindowSettings =
           new WindowSettings(initialProportion, minimumProportion, maximumProportion, optimizer, policy)
       }
 
@@ -509,11 +523,12 @@ object ClusterShardingSettings {
         }
       }
 
-      final class HillClimbingSettings(
-          val adjustMultiplier: Double,
-          val initialStep: Double,
-          val restartThreshold: Double,
-          val stepDecay: Double)
+      final class HillClimbingSettings
+        (
+            val adjustMultiplier: Double,
+            val initialStep: Double,
+            val restartThreshold: Double,
+            val stepDecay: Double)
           extends OptimizerSettings {
 
         def withAdjustMultiplier(multiplier: Double): HillClimbingSettings =
@@ -528,11 +543,13 @@ object ClusterShardingSettings {
         def withStepDecay(decay: Double): HillClimbingSettings =
           copy(stepDecay = decay)
 
-        private def copy(
-            adjustMultiplier: Double = adjustMultiplier,
-            initialStep: Double = initialStep,
-            restartThreshold: Double = restartThreshold,
-            stepDecay: Double = stepDecay): HillClimbingSettings =
+        private def copy
+          (
+              adjustMultiplier: Double = adjustMultiplier,
+              initialStep: Double = initialStep,
+              restartThreshold: Double = restartThreshold,
+              stepDecay: Double = stepDecay)
+          : HillClimbingSettings =
           new HillClimbingSettings(adjustMultiplier, initialStep, restartThreshold, stepDecay)
       }
 
@@ -545,9 +562,10 @@ object ClusterShardingSettings {
       }
     }
 
-    final class AdmissionSettings(
-        val filter: Option[AdmissionSettings.FilterSettings],
-        val window: Option[AdmissionSettings.WindowSettings]) {
+    final class AdmissionSettings
+      (
+          val filter: Option[AdmissionSettings.FilterSettings],
+          val window: Option[AdmissionSettings.WindowSettings]) {
 
       def withFilter(settings: AdmissionSettings.FilterSettings): AdmissionSettings =
         copy(filter = Some(settings))
@@ -555,9 +573,11 @@ object ClusterShardingSettings {
       def withWindow(settings: AdmissionSettings.WindowSettings): AdmissionSettings =
         copy(window = Some(settings))
 
-      private def copy(
-          filter: Option[AdmissionSettings.FilterSettings] = filter,
-          window: Option[AdmissionSettings.WindowSettings] = window): AdmissionSettings =
+      private def copy
+        (
+            filter: Option[AdmissionSettings.FilterSettings] = filter,
+            window: Option[AdmissionSettings.WindowSettings] = window)
+        : AdmissionSettings =
         new AdmissionSettings(filter, window)
     }
 
@@ -636,10 +656,12 @@ object ClusterShardingSettings {
    */
   @InternalApi
   private[akka] object LeastRecentlyUsedPassivationStrategy {
-    def apply(
-        settings: PassivationStrategySettings.LeastRecentlyUsedSettings,
-        limit: Int,
-        idle: Option[IdlePassivationStrategy]): LeastRecentlyUsedPassivationStrategy = {
+    def apply
+      (
+          settings: PassivationStrategySettings.LeastRecentlyUsedSettings,
+          limit: Int,
+          idle: Option[IdlePassivationStrategy])
+      : LeastRecentlyUsedPassivationStrategy = {
       settings.segmentedSettings match {
         case Some(segmented) =>
           val proportions =
@@ -656,10 +678,11 @@ object ClusterShardingSettings {
    * INTERNAL API
    */
   @InternalApi
-  private[akka] case class LeastRecentlyUsedPassivationStrategy(
-      limit: Int,
-      segmented: immutable.Seq[Double],
-      idle: Option[IdlePassivationStrategy])
+  private[akka] case class LeastRecentlyUsedPassivationStrategy
+    (
+        limit: Int,
+        segmented: immutable.Seq[Double],
+        idle: Option[IdlePassivationStrategy])
       extends PassivationStrategy
 
   /**
@@ -674,10 +697,12 @@ object ClusterShardingSettings {
    */
   @InternalApi
   private[akka] object LeastFrequentlyUsedPassivationStrategy {
-    def apply(
-        settings: PassivationStrategySettings.LeastFrequentlyUsedSettings,
-        limit: Int,
-        idle: Option[IdlePassivationStrategy]): LeastFrequentlyUsedPassivationStrategy =
+    def apply
+      (
+          settings: PassivationStrategySettings.LeastFrequentlyUsedSettings,
+          limit: Int,
+          idle: Option[IdlePassivationStrategy])
+      : LeastFrequentlyUsedPassivationStrategy =
       LeastFrequentlyUsedPassivationStrategy(limit, settings.dynamicAging, idle)
   }
 
@@ -685,10 +710,11 @@ object ClusterShardingSettings {
    * INTERNAL API
    */
   @InternalApi
-  private[akka] case class LeastFrequentlyUsedPassivationStrategy(
-      limit: Int,
-      dynamicAging: Boolean,
-      idle: Option[IdlePassivationStrategy])
+  private[akka] case class LeastFrequentlyUsedPassivationStrategy
+    (
+        limit: Int,
+        dynamicAging: Boolean,
+        idle: Option[IdlePassivationStrategy])
       extends PassivationStrategy
 
   /**
@@ -713,16 +739,18 @@ object ClusterShardingSettings {
 
     case object AlwaysAdmissionFilter extends AdmissionFilter
 
-    case class FrequencySketchAdmissionFilter(
-        widthMultiplier: Int,
-        resetMultiplier: Double,
-        depth: Int,
-        counterBits: Int)
+    case class FrequencySketchAdmissionFilter
+      (
+          widthMultiplier: Int,
+          resetMultiplier: Double,
+          depth: Int,
+          counterBits: Int)
         extends AdmissionFilter
 
     object AdmissionOptimizer {
-      def apply(optimizerSettings: Option[PassivationStrategySettings.AdmissionSettings.OptimizerSettings])
-          : AdmissionOptimizer =
+      def apply
+        (optimizerSettings: Option[PassivationStrategySettings.AdmissionSettings.OptimizerSettings])
+        : AdmissionOptimizer =
         optimizerSettings match {
           case Some(settings: PassivationStrategySettings.AdmissionSettings.HillClimbingSettings) =>
             HillClimbingAdmissionOptimizer(
@@ -738,18 +766,21 @@ object ClusterShardingSettings {
 
     case object NoAdmissionOptimizer extends AdmissionOptimizer
 
-    case class HillClimbingAdmissionOptimizer(
-        adjustMultiplier: Double,
-        initialStep: Double,
-        restartThreshold: Double,
-        stepDecay: Double)
+    case class HillClimbingAdmissionOptimizer
+      (
+          adjustMultiplier: Double,
+          initialStep: Double,
+          restartThreshold: Double,
+          stepDecay: Double)
         extends AdmissionOptimizer
 
-    def apply(
-        limit: Int,
-        mainSettings: Option[PassivationStrategySettings.PolicySettings],
-        admissionSettings: PassivationStrategySettings.AdmissionSettings,
-        idle: Option[IdlePassivationStrategy]): CompositePassivationStrategy = {
+    def apply
+      (
+          limit: Int,
+          mainSettings: Option[PassivationStrategySettings.PolicySettings],
+          admissionSettings: PassivationStrategySettings.AdmissionSettings,
+          idle: Option[IdlePassivationStrategy])
+      : CompositePassivationStrategy = {
       val mainStrategy = PassivationStrategy(mainSettings, limit = 0, idle = None)
       val windowStrategy = PassivationStrategy(admissionSettings.window.flatMap(_.policy), limit = 0, idle = None)
       val initialWindowProportion = admissionSettings.window.fold(0.0)(_.initialProportion)
@@ -774,16 +805,17 @@ object ClusterShardingSettings {
    * INTERNAL API
    */
   @InternalApi
-  private[akka] case class CompositePassivationStrategy(
-      limit: Int,
-      mainStrategy: PassivationStrategy,
-      windowStrategy: PassivationStrategy,
-      initialWindowProportion: Double,
-      minimumWindowProportion: Double,
-      maximumWindowProportion: Double,
-      windowOptimizer: CompositePassivationStrategy.AdmissionOptimizer,
-      admissionFilter: CompositePassivationStrategy.AdmissionFilter,
-      idle: Option[IdlePassivationStrategy])
+  private[akka] case class CompositePassivationStrategy
+    (
+        limit: Int,
+        mainStrategy: PassivationStrategy,
+        windowStrategy: PassivationStrategy,
+        initialWindowProportion: Double,
+        minimumWindowProportion: Double,
+        maximumWindowProportion: Double,
+        windowOptimizer: CompositePassivationStrategy.AdmissionOptimizer,
+        admissionFilter: CompositePassivationStrategy.AdmissionFilter,
+        idle: Option[IdlePassivationStrategy])
       extends PassivationStrategy
 
   /**
@@ -813,10 +845,12 @@ object ClusterShardingSettings {
         }
       }
 
-    def apply(
-        policySettings: Option[PassivationStrategySettings.PolicySettings],
-        limit: Int,
-        idle: Option[IdlePassivationStrategy]): PassivationStrategy = policySettings match {
+    def apply
+      (
+          policySettings: Option[PassivationStrategySettings.PolicySettings],
+          limit: Int,
+          idle: Option[IdlePassivationStrategy])
+      : PassivationStrategy = policySettings match {
       case Some(settings: PassivationStrategySettings.LeastRecentlyUsedSettings) =>
         LeastRecentlyUsedPassivationStrategy(settings, limit, idle)
       case Some(_: PassivationStrategySettings.MostRecentlyUsedSettings) =>
@@ -901,28 +935,29 @@ object ClusterShardingSettings {
     }
   }
 
-  class TuningParameters(
-      val coordinatorFailureBackoff: FiniteDuration,
-      val retryInterval: FiniteDuration,
-      val bufferSize: Int,
-      val handOffTimeout: FiniteDuration,
-      val shardStartTimeout: FiniteDuration,
-      val shardFailureBackoff: FiniteDuration,
-      val entityRestartBackoff: FiniteDuration,
-      val rebalanceInterval: FiniteDuration,
-      val snapshotAfter: Int,
-      val keepNrOfBatches: Int,
-      val leastShardAllocationRebalanceThreshold: Int,
-      val leastShardAllocationMaxSimultaneousRebalance: Int,
-      val waitingForStateTimeout: FiniteDuration,
-      val updatingStateTimeout: FiniteDuration,
-      val entityRecoveryStrategy: String,
-      val entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
-      val entityRecoveryConstantRateStrategyNumberOfEntities: Int,
-      val coordinatorStateWriteMajorityPlus: Int,
-      val coordinatorStateReadMajorityPlus: Int,
-      val leastShardAllocationAbsoluteLimit: Int,
-      val leastShardAllocationRelativeLimit: Double) {
+  class TuningParameters
+    (
+        val coordinatorFailureBackoff: FiniteDuration,
+        val retryInterval: FiniteDuration,
+        val bufferSize: Int,
+        val handOffTimeout: FiniteDuration,
+        val shardStartTimeout: FiniteDuration,
+        val shardFailureBackoff: FiniteDuration,
+        val entityRestartBackoff: FiniteDuration,
+        val rebalanceInterval: FiniteDuration,
+        val snapshotAfter: Int,
+        val keepNrOfBatches: Int,
+        val leastShardAllocationRebalanceThreshold: Int,
+        val leastShardAllocationMaxSimultaneousRebalance: Int,
+        val waitingForStateTimeout: FiniteDuration,
+        val updatingStateTimeout: FiniteDuration,
+        val entityRecoveryStrategy: String,
+        val entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
+        val entityRecoveryConstantRateStrategyNumberOfEntities: Int,
+        val coordinatorStateWriteMajorityPlus: Int,
+        val coordinatorStateReadMajorityPlus: Int,
+        val leastShardAllocationAbsoluteLimit: Int,
+        val leastShardAllocationRelativeLimit: Double) {
 
     require(
       entityRecoveryStrategy == "all" || entityRecoveryStrategy == "constant",
@@ -933,26 +968,27 @@ object ClusterShardingSettings {
       "Use the ClusterShardingSettings factory methods or the constructor including " +
       "leastShardAllocationAbsoluteLimit and leastShardAllocationRelativeLimit instead",
       since = "2.6.10")
-    def this(
-        coordinatorFailureBackoff: FiniteDuration,
-        retryInterval: FiniteDuration,
-        bufferSize: Int,
-        handOffTimeout: FiniteDuration,
-        shardStartTimeout: FiniteDuration,
-        shardFailureBackoff: FiniteDuration,
-        entityRestartBackoff: FiniteDuration,
-        rebalanceInterval: FiniteDuration,
-        snapshotAfter: Int,
-        keepNrOfBatches: Int,
-        leastShardAllocationRebalanceThreshold: Int,
-        leastShardAllocationMaxSimultaneousRebalance: Int,
-        waitingForStateTimeout: FiniteDuration,
-        updatingStateTimeout: FiniteDuration,
-        entityRecoveryStrategy: String,
-        entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
-        entityRecoveryConstantRateStrategyNumberOfEntities: Int,
-        coordinatorStateWriteMajorityPlus: Int,
-        coordinatorStateReadMajorityPlus: Int) =
+    def this
+      (
+          coordinatorFailureBackoff: FiniteDuration,
+          retryInterval: FiniteDuration,
+          bufferSize: Int,
+          handOffTimeout: FiniteDuration,
+          shardStartTimeout: FiniteDuration,
+          shardFailureBackoff: FiniteDuration,
+          entityRestartBackoff: FiniteDuration,
+          rebalanceInterval: FiniteDuration,
+          snapshotAfter: Int,
+          keepNrOfBatches: Int,
+          leastShardAllocationRebalanceThreshold: Int,
+          leastShardAllocationMaxSimultaneousRebalance: Int,
+          waitingForStateTimeout: FiniteDuration,
+          updatingStateTimeout: FiniteDuration,
+          entityRecoveryStrategy: String,
+          entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
+          entityRecoveryConstantRateStrategyNumberOfEntities: Int,
+          coordinatorStateWriteMajorityPlus: Int,
+          coordinatorStateReadMajorityPlus: Int) =
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -981,24 +1017,25 @@ object ClusterShardingSettings {
       "Use the ClusterShardingSettings factory methods or the constructor including " +
       "coordinatorStateWriteMajorityPlus and coordinatorStateReadMajorityPlus instead",
       since = "2.6.5")
-    def this(
-        coordinatorFailureBackoff: FiniteDuration,
-        retryInterval: FiniteDuration,
-        bufferSize: Int,
-        handOffTimeout: FiniteDuration,
-        shardStartTimeout: FiniteDuration,
-        shardFailureBackoff: FiniteDuration,
-        entityRestartBackoff: FiniteDuration,
-        rebalanceInterval: FiniteDuration,
-        snapshotAfter: Int,
-        keepNrOfBatches: Int,
-        leastShardAllocationRebalanceThreshold: Int,
-        leastShardAllocationMaxSimultaneousRebalance: Int,
-        waitingForStateTimeout: FiniteDuration,
-        updatingStateTimeout: FiniteDuration,
-        entityRecoveryStrategy: String,
-        entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
-        entityRecoveryConstantRateStrategyNumberOfEntities: Int) =
+    def this
+      (
+          coordinatorFailureBackoff: FiniteDuration,
+          retryInterval: FiniteDuration,
+          bufferSize: Int,
+          handOffTimeout: FiniteDuration,
+          shardStartTimeout: FiniteDuration,
+          shardFailureBackoff: FiniteDuration,
+          entityRestartBackoff: FiniteDuration,
+          rebalanceInterval: FiniteDuration,
+          snapshotAfter: Int,
+          keepNrOfBatches: Int,
+          leastShardAllocationRebalanceThreshold: Int,
+          leastShardAllocationMaxSimultaneousRebalance: Int,
+          waitingForStateTimeout: FiniteDuration,
+          updatingStateTimeout: FiniteDuration,
+          entityRecoveryStrategy: String,
+          entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
+          entityRecoveryConstantRateStrategyNumberOfEntities: Int) =
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -1022,23 +1059,24 @@ object ClusterShardingSettings {
 
     // included for binary compatibility
     @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "2.6.5")
-    def this(
-        coordinatorFailureBackoff: FiniteDuration,
-        retryInterval: FiniteDuration,
-        bufferSize: Int,
-        handOffTimeout: FiniteDuration,
-        shardStartTimeout: FiniteDuration,
-        shardFailureBackoff: FiniteDuration,
-        entityRestartBackoff: FiniteDuration,
-        rebalanceInterval: FiniteDuration,
-        snapshotAfter: Int,
-        leastShardAllocationRebalanceThreshold: Int,
-        leastShardAllocationMaxSimultaneousRebalance: Int,
-        waitingForStateTimeout: FiniteDuration,
-        updatingStateTimeout: FiniteDuration,
-        entityRecoveryStrategy: String,
-        entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
-        entityRecoveryConstantRateStrategyNumberOfEntities: Int) = {
+    def this
+      (
+          coordinatorFailureBackoff: FiniteDuration,
+          retryInterval: FiniteDuration,
+          bufferSize: Int,
+          handOffTimeout: FiniteDuration,
+          shardStartTimeout: FiniteDuration,
+          shardFailureBackoff: FiniteDuration,
+          entityRestartBackoff: FiniteDuration,
+          rebalanceInterval: FiniteDuration,
+          snapshotAfter: Int,
+          leastShardAllocationRebalanceThreshold: Int,
+          leastShardAllocationMaxSimultaneousRebalance: Int,
+          waitingForStateTimeout: FiniteDuration,
+          updatingStateTimeout: FiniteDuration,
+          entityRecoveryStrategy: String,
+          entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
+          entityRecoveryConstantRateStrategyNumberOfEntities: Int) = {
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -1061,20 +1099,21 @@ object ClusterShardingSettings {
 
     // included for binary compatibility
     @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "2.6.5")
-    def this(
-        coordinatorFailureBackoff: FiniteDuration,
-        retryInterval: FiniteDuration,
-        bufferSize: Int,
-        handOffTimeout: FiniteDuration,
-        shardStartTimeout: FiniteDuration,
-        shardFailureBackoff: FiniteDuration,
-        entityRestartBackoff: FiniteDuration,
-        rebalanceInterval: FiniteDuration,
-        snapshotAfter: Int,
-        leastShardAllocationRebalanceThreshold: Int,
-        leastShardAllocationMaxSimultaneousRebalance: Int,
-        waitingForStateTimeout: FiniteDuration,
-        updatingStateTimeout: FiniteDuration) = {
+    def this
+      (
+          coordinatorFailureBackoff: FiniteDuration,
+          retryInterval: FiniteDuration,
+          bufferSize: Int,
+          handOffTimeout: FiniteDuration,
+          shardStartTimeout: FiniteDuration,
+          shardFailureBackoff: FiniteDuration,
+          entityRestartBackoff: FiniteDuration,
+          rebalanceInterval: FiniteDuration,
+          snapshotAfter: Int,
+          leastShardAllocationRebalanceThreshold: Int,
+          leastShardAllocationMaxSimultaneousRebalance: Int,
+          waitingForStateTimeout: FiniteDuration,
+          updatingStateTimeout: FiniteDuration) = {
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -1113,35 +1152,37 @@ object ClusterShardingSettings {
  * @param tuningParameters additional tuning parameters, see descriptions in reference.conf
  * @param shardRegionQueryTimeout the timeout for querying a shard region, see descriptions in reference.conf
  */
-final class ClusterShardingSettings(
-    val role: Option[String],
-    val rememberEntities: Boolean,
-    val journalPluginId: String,
-    val snapshotPluginId: String,
-    val stateStoreMode: String,
-    val rememberEntitiesStore: String,
-    val passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings,
-    val shardRegionQueryTimeout: FiniteDuration,
-    val tuningParameters: ClusterShardingSettings.TuningParameters,
-    val coordinatorSingletonOverrideRole: Boolean,
-    val coordinatorSingletonSettings: ClusterSingletonManagerSettings,
-    val leaseSettings: Option[LeaseUsageSettings])
+final class ClusterShardingSettings
+  (
+      val role: Option[String],
+      val rememberEntities: Boolean,
+      val journalPluginId: String,
+      val snapshotPluginId: String,
+      val stateStoreMode: String,
+      val rememberEntitiesStore: String,
+      val passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings,
+      val shardRegionQueryTimeout: FiniteDuration,
+      val tuningParameters: ClusterShardingSettings.TuningParameters,
+      val coordinatorSingletonOverrideRole: Boolean,
+      val coordinatorSingletonSettings: ClusterSingletonManagerSettings,
+      val leaseSettings: Option[LeaseUsageSettings])
     extends NoSerializationVerificationNeeded {
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including coordinatorSingletonOverrideRole instead",
     "2.6.20")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      rememberEntitiesStore: String,
-      passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings,
-      shardRegionQueryTimeout: FiniteDuration,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings,
-      leaseSettings: Option[LeaseUsageSettings]) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        rememberEntitiesStore: String,
+        passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings,
+        shardRegionQueryTimeout: FiniteDuration,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings,
+        leaseSettings: Option[LeaseUsageSettings]) =
     this(
       role,
       rememberEntities,
@@ -1159,18 +1200,19 @@ final class ClusterShardingSettings(
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including passivationStrategySettings instead",
     "2.6.18")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      rememberEntitiesStore: String,
-      passivateIdleEntityAfter: FiniteDuration,
-      shardRegionQueryTimeout: FiniteDuration,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings,
-      leaseSettings: Option[LeaseUsageSettings]) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        rememberEntitiesStore: String,
+        passivateIdleEntityAfter: FiniteDuration,
+        shardRegionQueryTimeout: FiniteDuration,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings,
+        leaseSettings: Option[LeaseUsageSettings]) =
     this(
       role,
       rememberEntities,
@@ -1188,17 +1230,18 @@ final class ClusterShardingSettings(
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including rememberedEntitiesStore instead",
     "2.6.7")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      passivateIdleEntityAfter: FiniteDuration,
-      shardRegionQueryTimeout: FiniteDuration,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings,
-      leaseSettings: Option[LeaseUsageSettings]) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        passivateIdleEntityAfter: FiniteDuration,
+        shardRegionQueryTimeout: FiniteDuration,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings,
+        leaseSettings: Option[LeaseUsageSettings]) =
     this(
       role,
       rememberEntities,
@@ -1216,16 +1259,17 @@ final class ClusterShardingSettings(
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
     since = "2.6.0")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      passivateIdleEntityAfter: FiniteDuration,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings,
-      leaseSettings: Option[LeaseUsageSettings]) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        passivateIdleEntityAfter: FiniteDuration,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings,
+        leaseSettings: Option[LeaseUsageSettings]) =
     this(
       role,
       rememberEntities,
@@ -1242,15 +1286,16 @@ final class ClusterShardingSettings(
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
     since = "2.5.21")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      passivateIdleEntityAfter: FiniteDuration,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        passivateIdleEntityAfter: FiniteDuration,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings) =
     this(
       role,
       rememberEntities,
@@ -1267,14 +1312,15 @@ final class ClusterShardingSettings(
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including passivateIdleEntityAfter instead",
     since = "2.5.18")
-  def this(
-      role: Option[String],
-      rememberEntities: Boolean,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      stateStoreMode: String,
-      tuningParameters: ClusterShardingSettings.TuningParameters,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings) =
+  def this
+    (
+        role: Option[String],
+        rememberEntities: Boolean,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        stateStoreMode: String,
+        tuningParameters: ClusterShardingSettings.TuningParameters,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings) =
     this(
       role,
       rememberEntities,
@@ -1353,22 +1399,26 @@ final class ClusterShardingSettings(
    * The `role` of the `ClusterSingletonManagerSettings` is not used. The `role` of the
    * coordinator singleton will be the same as the `role` of `ClusterShardingSettings`.
    */
-  def withCoordinatorSingletonSettings(
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings): ClusterShardingSettings =
+  def withCoordinatorSingletonSettings
+    (
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings)
+    : ClusterShardingSettings =
     copy(coordinatorSingletonSettings = coordinatorSingletonSettings)
 
-  private def copy(
-      role: Option[String] = role,
-      rememberEntities: Boolean = rememberEntities,
-      journalPluginId: String = journalPluginId,
-      snapshotPluginId: String = snapshotPluginId,
-      stateStoreMode: String = stateStoreMode,
-      passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings = passivationStrategySettings,
-      shardRegionQueryTimeout: FiniteDuration = shardRegionQueryTimeout,
-      tuningParameters: ClusterShardingSettings.TuningParameters = tuningParameters,
-      coordinatorSingletonOverrideRole: Boolean = coordinatorSingletonOverrideRole,
-      coordinatorSingletonSettings: ClusterSingletonManagerSettings = coordinatorSingletonSettings,
-      leaseSettings: Option[LeaseUsageSettings] = leaseSettings): ClusterShardingSettings =
+  private def copy
+    (
+        role: Option[String] = role,
+        rememberEntities: Boolean = rememberEntities,
+        journalPluginId: String = journalPluginId,
+        snapshotPluginId: String = snapshotPluginId,
+        stateStoreMode: String = stateStoreMode,
+        passivationStrategySettings: ClusterShardingSettings.PassivationStrategySettings = passivationStrategySettings,
+        shardRegionQueryTimeout: FiniteDuration = shardRegionQueryTimeout,
+        tuningParameters: ClusterShardingSettings.TuningParameters = tuningParameters,
+        coordinatorSingletonOverrideRole: Boolean = coordinatorSingletonOverrideRole,
+        coordinatorSingletonSettings: ClusterSingletonManagerSettings = coordinatorSingletonSettings,
+        leaseSettings: Option[LeaseUsageSettings] = leaseSettings)
+    : ClusterShardingSettings =
     new ClusterShardingSettings(
       role,
       rememberEntities,

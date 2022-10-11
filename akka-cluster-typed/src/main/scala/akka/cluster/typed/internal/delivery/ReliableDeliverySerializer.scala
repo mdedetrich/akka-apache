@@ -157,10 +157,12 @@ import akka.remote.ByteStringUtils
     durableQueueConfirmedToProto(m.confirmationQualifier, m.seqNr, m.timestampMillis).toByteArray()
   }
 
-  private def durableQueueConfirmedToProto(
-      qualifier: String,
-      seqNr: DurableProducerQueue.SeqNr,
-      timestampMillis: DurableProducerQueue.TimestampMillis): Confirmed = {
+  private def durableQueueConfirmedToProto
+    (
+        qualifier: String,
+        seqNr: DurableProducerQueue.SeqNr,
+        timestampMillis: DurableProducerQueue.TimestampMillis)
+    : Confirmed = {
     val b = ReliableDelivery.Confirmed.newBuilder()
     b.setSeqNr(seqNr)
     b.setQualifier(qualifier)
@@ -253,8 +255,10 @@ import akka.remote.ByteStringUtils
     durableQueueMessageSentFromProto(sent)
   }
 
-  private def durableQueueMessageSentFromProto(
-      sent: ReliableDelivery.MessageSent): DurableProducerQueue.MessageSent[Any] = {
+  private def durableQueueMessageSentFromProto
+    (
+        sent: ReliableDelivery.MessageSent)
+    : DurableProducerQueue.MessageSent[Any] = {
     val wrappedMsg =
       if (sent.hasFirstChunk) {
         val manifest =

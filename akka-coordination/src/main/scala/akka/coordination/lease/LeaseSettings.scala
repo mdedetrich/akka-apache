@@ -12,11 +12,12 @@ object LeaseSettings {
   }
 }
 
-final class LeaseSettings(
-    val leaseName: String,
-    val ownerName: String,
-    val timeoutSettings: TimeoutSettings,
-    val leaseConfig: Config) {
+final class LeaseSettings
+  (
+      val leaseName: String,
+      val ownerName: String,
+      val timeoutSettings: TimeoutSettings,
+      val leaseConfig: Config) {
 
   def withTimeoutSettings(timeoutSettings: TimeoutSettings): LeaseSettings =
     new LeaseSettings(leaseName, ownerName, timeoutSettings, leaseConfig)

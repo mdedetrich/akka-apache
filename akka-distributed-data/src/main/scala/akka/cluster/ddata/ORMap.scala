@@ -68,10 +68,11 @@ object ORMap {
 
   // PutDeltaOp contains ORSet delta and full value
   /** INTERNAL API */
-  @InternalApi private[akka] final case class PutDeltaOp[A, B <: ReplicatedData](
-      underlying: ORSet.DeltaOp,
-      value: (A, B),
-      zeroTag: ZeroTag)
+  @InternalApi private[akka] final case class PutDeltaOp[A, B <: ReplicatedData]
+    (
+        underlying: ORSet.DeltaOp,
+        value: (A, B),
+        zeroTag: ZeroTag)
       extends AtomicDeltaOp[A, B] {
     override def merge(that: DeltaOp): DeltaOp = that match {
       case put: PutDeltaOp[_, _] if this.value._1 == put.value._1 =>
@@ -95,10 +96,11 @@ object ORMap {
 
   // UpdateDeltaOp contains ORSet delta and either delta of value (in case where underlying type supports deltas) or full value
   /** INTERNAL API */
-  @InternalApi private[akka] final case class UpdateDeltaOp[A, B <: ReplicatedData](
-      underlying: ORSet.DeltaOp,
-      values: Map[A, B],
-      zeroTag: ZeroTag)
+  @InternalApi private[akka] final case class UpdateDeltaOp[A, B <: ReplicatedData]
+    (
+        underlying: ORSet.DeltaOp,
+        values: Map[A, B],
+        zeroTag: ZeroTag)
       extends AtomicDeltaOp[A, B] {
     override def merge(that: DeltaOp): DeltaOp = that match {
       case update: UpdateDeltaOp[_, _] =>
@@ -123,17 +125,19 @@ object ORMap {
 
   // RemoveDeltaOp does not contain any value at all - the propagated 'value' map would be empty
   /** INTERNAL API */
-  @InternalApi private[akka] final case class RemoveDeltaOp[A, B <: ReplicatedData](
-      underlying: ORSet.DeltaOp,
-      zeroTag: ZeroTag)
+  @InternalApi private[akka] final case class RemoveDeltaOp[A, B <: ReplicatedData]
+    (
+        underlying: ORSet.DeltaOp,
+        zeroTag: ZeroTag)
       extends AtomicDeltaOp[A, B]
 
   // RemoveKeyDeltaOp contains a single value - to provide the recipient with the removed key for value map
   /** INTERNAL API */
-  @InternalApi private[akka] final case class RemoveKeyDeltaOp[A, B <: ReplicatedData](
-      underlying: ORSet.DeltaOp,
-      removedKey: A,
-      zeroTag: ZeroTag)
+  @InternalApi private[akka] final case class RemoveKeyDeltaOp[A, B <: ReplicatedData]
+    (
+        underlying: ORSet.DeltaOp,
+        removedKey: A,
+        zeroTag: ZeroTag)
       extends AtomicDeltaOp[A, B]
 
   // DeltaGroup is effectively a causally ordered list of individual deltas
@@ -177,11 +181,12 @@ object ORMap {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class ORMap[A, B <: ReplicatedData] private[akka] (
-    private[akka] val keys: ORSet[A],
-    private[akka] val values: Map[A, B],
-    private[akka] val zeroTag: ZeroTag,
-    override val delta: Option[ORMap.DeltaOp] = None)
+final class ORMap[A, B <: ReplicatedData] private[akka]
+  (
+      private[akka] val keys: ORSet[A],
+      private[akka] val values: Map[A, B],
+      private[akka] val zeroTag: ZeroTag,
+      override val delta: Option[ORMap.DeltaOp] = None)
     extends DeltaReplicatedData
     with ReplicatedDataSerialization
     with RemovedNodePruning {
@@ -309,8 +314,11 @@ final class ORMap[A, B <: ReplicatedData] private[akka] (
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] def updated(node: UniqueAddress, key: A, initial: B, valueDeltas: Boolean = false)(
-      modify: B => B): ORMap[A, B] = {
+  @InternalApi private[akka] def updated
+    (node: UniqueAddress, key: A, initial: B, valueDeltas: Boolean = false)
+    (
+        modify: B => B)
+    : ORMap[A, B] = {
     val (oldValue, hasOldValue) = values.get(key) match {
       case Some(old) => (old, true)
       case _         => (initial, false)

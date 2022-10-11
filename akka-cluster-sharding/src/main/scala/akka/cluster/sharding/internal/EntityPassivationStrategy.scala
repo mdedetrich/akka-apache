@@ -235,10 +235,11 @@ private[akka] final class LeastRecentlyUsedEntityPassivationStrategy(initialLimi
  * @param idleCheck optionally passivate idle entities after the given timeout, checking every interval
  */
 @InternalApi
-private[akka] final class SegmentedLeastRecentlyUsedEntityPassivationStrategy(
-    initialLimit: Int,
-    proportions: immutable.Seq[Double],
-    idleCheck: Option[IdleCheck])
+private[akka] final class SegmentedLeastRecentlyUsedEntityPassivationStrategy
+  (
+      initialLimit: Int,
+      proportions: immutable.Seq[Double],
+      idleCheck: Option[IdleCheck])
     extends LimitBasedEntityPassivationStrategy(initialLimit) {
 
   import EntityPassivationStrategy.PassivateEntities
@@ -299,10 +300,11 @@ private[akka] final class MostRecentlyUsedEntityPassivationStrategy(initialLimit
  * @param idleCheck optionally passivate idle entities after the given timeout, checking every interval
  */
 @InternalApi
-private[akka] final class LeastFrequentlyUsedEntityPassivationStrategy(
-    initialLimit: Int,
-    dynamicAging: Boolean,
-    idleCheck: Option[IdleCheck])
+private[akka] final class LeastFrequentlyUsedEntityPassivationStrategy
+  (
+      initialLimit: Int,
+      dynamicAging: Boolean,
+      idleCheck: Option[IdleCheck])
     extends LimitBasedEntityPassivationStrategy(initialLimit) {
 
   import EntityPassivationStrategy.PassivateEntities
@@ -469,10 +471,11 @@ private[akka] final class LeastRecentlyUsedReplacementPolicy(initialLimit: Int) 
  * @param idleEnabled whether idle entity passivation is enabled
  */
 @InternalApi
-private[akka] final class SegmentedLeastRecentlyUsedReplacementPolicy(
-    initialLimit: Int,
-    proportions: immutable.Seq[Double],
-    idleEnabled: Boolean)
+private[akka] final class SegmentedLeastRecentlyUsedReplacementPolicy
+  (
+      initialLimit: Int,
+      proportions: immutable.Seq[Double],
+      idleEnabled: Boolean)
     extends ActiveEntities {
 
   import EntityPassivationStrategy.PassivateEntities
@@ -565,10 +568,11 @@ private[akka] final class MostRecentlyUsedReplacementPolicy(initialLimit: Int) e
  * @param idleEnabled whether idle entity passivation is enabled
  */
 @InternalApi
-private[akka] final class LeastFrequentlyUsedReplacementPolicy(
-    initialLimit: Int,
-    dynamicAging: Boolean,
-    idleEnabled: Boolean)
+private[akka] final class LeastFrequentlyUsedReplacementPolicy
+  (
+      initialLimit: Int,
+      dynamicAging: Boolean,
+      idleEnabled: Boolean)
     extends ActiveEntities {
 
   import EntityPassivationStrategy.PassivateEntities
@@ -636,16 +640,17 @@ private[akka] final class LeastFrequentlyUsedReplacementPolicy(
  * @param idleCheck optionally passivate idle entities after the given timeout, checking every interval
  */
 @InternalApi
-private[akka] final class CompositeEntityPassivationStrategy(
-    initialLimit: Int,
-    window: ActiveEntities,
-    initialWindowProportion: Double,
-    minimumWindowProportion: Double,
-    maximumWindowProportion: Double,
-    windowOptimizer: AdmissionOptimizer,
-    admissionFilter: AdmissionFilter,
-    main: ActiveEntities,
-    idleCheck: Option[IdleCheck])
+private[akka] final class CompositeEntityPassivationStrategy
+  (
+      initialLimit: Int,
+      window: ActiveEntities,
+      initialWindowProportion: Double,
+      minimumWindowProportion: Double,
+      maximumWindowProportion: Double,
+      windowOptimizer: AdmissionOptimizer,
+      admissionFilter: AdmissionFilter,
+      main: ActiveEntities,
+      idleCheck: Option[IdleCheck])
     extends LimitBasedEntityPassivationStrategy(initialLimit) {
 
   import EntityPassivationStrategy.PassivateEntities
@@ -739,9 +744,11 @@ private[akka] final class CompositeEntityPassivationStrategy(
  */
 @InternalApi
 private[akka] object AdmissionOptimizer {
-  def apply(
-      initialLimit: Int,
-      optimizer: ClusterShardingSettings.CompositePassivationStrategy.AdmissionOptimizer): AdmissionOptimizer =
+  def apply
+    (
+        initialLimit: Int,
+        optimizer: ClusterShardingSettings.CompositePassivationStrategy.AdmissionOptimizer)
+    : AdmissionOptimizer =
     optimizer match {
       case ClusterShardingSettings.CompositePassivationStrategy.HillClimbingAdmissionOptimizer(
             adjustMultiplier,
@@ -805,12 +812,13 @@ private[akka] object NoAdmissionOptimizer extends AdmissionOptimizer {
  * Optimizer for the admission window using a simple hill-climbing algorithm.
  */
 @InternalApi
-private[akka] final class HillClimbingAdmissionOptimizer(
-    initialLimit: Int,
-    adjustMultiplier: Double,
-    initialStep: Double,
-    restartThreshold: Double,
-    stepDecay: Double)
+private[akka] final class HillClimbingAdmissionOptimizer
+  (
+      initialLimit: Int,
+      adjustMultiplier: Double,
+      initialStep: Double,
+      restartThreshold: Double,
+      stepDecay: Double)
     extends AdmissionOptimizer {
   private var adjustSize = adjustMultiplier * initialLimit
   private var accesses = 0
@@ -849,9 +857,11 @@ private[akka] final class HillClimbingAdmissionOptimizer(
  */
 @InternalApi
 private[akka] object AdmissionFilter {
-  def apply(
-      initialCapacity: Int,
-      filter: ClusterShardingSettings.CompositePassivationStrategy.AdmissionFilter): AdmissionFilter = filter match {
+  def apply
+    (
+        initialCapacity: Int,
+        filter: ClusterShardingSettings.CompositePassivationStrategy.AdmissionFilter)
+    : AdmissionFilter = filter match {
     case ClusterShardingSettings.CompositePassivationStrategy
           .FrequencySketchAdmissionFilter(widthMultiplier, resetMultiplier, depth, counterBits) =>
       FrequencySketchAdmissionFilter(initialCapacity, widthMultiplier, resetMultiplier, depth, counterBits)
@@ -910,12 +920,14 @@ private[akka] object AlwaysAdmissionFilter extends AdmissionFilter {
  */
 @InternalApi
 private[akka] object FrequencySketchAdmissionFilter {
-  def apply(
-      initialCapacity: Int,
-      widthMultiplier: Int,
-      resetMultiplier: Double,
-      depth: Int,
-      counterBits: Int): AdmissionFilter = {
+  def apply
+    (
+        initialCapacity: Int,
+        widthMultiplier: Int,
+        resetMultiplier: Double,
+        depth: Int,
+        counterBits: Int)
+    : AdmissionFilter = {
     if (depth == 4 && counterBits == 4)
       new FastFrequencySketchAdmissionFilter(initialCapacity, widthMultiplier, resetMultiplier)
     else
@@ -929,12 +941,13 @@ private[akka] object FrequencySketchAdmissionFilter {
  * Admission filter based on a frequency sketch.
  */
 @InternalApi
-private[akka] final class FrequencySketchAdmissionFilter(
-    initialCapacity: Int,
-    widthMultiplier: Int,
-    resetMultiplier: Double,
-    depth: Int,
-    counterBits: Int)
+private[akka] final class FrequencySketchAdmissionFilter
+  (
+      initialCapacity: Int,
+      widthMultiplier: Int,
+      resetMultiplier: Double,
+      depth: Int,
+      counterBits: Int)
     extends AdmissionFilter {
 
   private def createSketch(capacity: Int): FrequencySketch[EntityId] =
@@ -956,10 +969,11 @@ private[akka] final class FrequencySketchAdmissionFilter(
  * Admission filter based on a frequency sketch (fast version with depth of 4 and 4-bit counters).
  */
 @InternalApi
-private[akka] final class FastFrequencySketchAdmissionFilter(
-    initialCapacity: Int,
-    widthMultiplier: Int,
-    resetMultiplier: Double)
+private[akka] final class FastFrequencySketchAdmissionFilter
+  (
+      initialCapacity: Int,
+      widthMultiplier: Int,
+      resetMultiplier: Double)
     extends AdmissionFilter {
 
   private def createSketch(capacity: Int): FastFrequencySketch[EntityId] =

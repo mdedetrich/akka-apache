@@ -17,10 +17,11 @@ import akka.event.Logging
  * Only intended for testing, not an extension point.
  */
 @InternalApi
-private[akka] final class CustomStateStoreModeProvider(
-    typeName: String,
-    system: ActorSystem,
-    settings: ClusterShardingSettings)
+private[akka] final class CustomStateStoreModeProvider
+  (
+      typeName: String,
+      system: ActorSystem,
+      settings: ClusterShardingSettings)
     extends RememberEntitiesProvider {
 
   private val log = Logging(system, classOf[CustomStateStoreModeProvider])

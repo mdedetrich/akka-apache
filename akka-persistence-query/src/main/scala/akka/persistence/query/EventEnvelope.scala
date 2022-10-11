@@ -16,13 +16,15 @@ object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventE
   def apply(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any, timestamp: Long): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, None)
 
-  def apply(
-      offset: Offset,
-      persistenceId: String,
-      sequenceNr: Long,
-      event: Any,
-      timestamp: Long,
-      meta: Option[Any]): EventEnvelope =
+  def apply
+    (
+        offset: Offset,
+        persistenceId: String,
+        sequenceNr: Long,
+        event: Any,
+        timestamp: Long,
+        meta: Option[Any])
+    : EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, meta)
 
   @deprecated("for binary compatibility", "2.6.2")
@@ -41,13 +43,14 @@ object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventE
  * The `timestamp` is the time the event was stored, in milliseconds since midnight, January 1, 1970 UTC
  * (same as `System.currentTimeMillis`).
  */
-final class EventEnvelope(
-    val offset: Offset,
-    val persistenceId: String,
-    val sequenceNr: Long,
-    val event: Any,
-    val timestamp: Long,
-    val eventMetadata: Option[Any])
+final class EventEnvelope
+  (
+      val offset: Offset,
+      val persistenceId: String,
+      val sequenceNr: Long,
+      val event: Any,
+      val timestamp: Long,
+      val eventMetadata: Option[Any])
     extends Product4[Offset, String, Long, Any]
     with Serializable {
 
@@ -87,11 +90,13 @@ final class EventEnvelope(
     s"EventEnvelope($offset,$persistenceId,$sequenceNr,$event,$timestamp,$eventMetadata)"
 
   // for binary compatibility (used to be a case class)
-  def copy(
-      offset: Offset = this.offset,
-      persistenceId: String = this.persistenceId,
-      sequenceNr: Long = this.sequenceNr,
-      event: Any = this.event): EventEnvelope =
+  def copy
+    (
+        offset: Offset = this.offset,
+        persistenceId: String = this.persistenceId,
+        sequenceNr: Long = this.sequenceNr,
+        event: Any = this.event)
+    : EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, this.eventMetadata)
 
   @InternalApi

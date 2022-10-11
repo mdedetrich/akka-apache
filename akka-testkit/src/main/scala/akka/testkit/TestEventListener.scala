@@ -180,12 +180,14 @@ object EventFilter {
    * `null` does NOT work (passing `null` disables the
    * source filter).''
    */
-  def apply[A <: Throwable: ClassTag](
-      message: String = null,
-      source: String = null,
-      start: String = "",
-      pattern: String = null,
-      occurrences: Int = Int.MaxValue): EventFilter =
+  def apply[A <: Throwable: ClassTag]
+    (
+        message: String = null,
+        source: String = null,
+        start: String = "",
+        pattern: String = null,
+        occurrences: Int = Int.MaxValue)
+    : EventFilter =
     ErrorFilter(
       implicitly[ClassTag[A]].runtimeClass,
       Option(source),
@@ -195,12 +197,14 @@ object EventFilter {
   /**
    * Create a filter for Error events. See apply() for more details.
    */
-  def error(
-      message: String = null,
-      source: String = null,
-      start: String = "",
-      pattern: String = null,
-      occurrences: Int = Int.MaxValue): EventFilter =
+  def error
+    (
+        message: String = null,
+        source: String = null,
+        start: String = "",
+        pattern: String = null,
+        occurrences: Int = Int.MaxValue)
+    : EventFilter =
     ErrorFilter(
       Logging.Error.NoCause.getClass,
       Option(source),
@@ -221,12 +225,14 @@ object EventFilter {
    * `null` does NOT work (passing `null` disables the
    * source filter).''
    */
-  def warning(
-      message: String = null,
-      source: String = null,
-      start: String = "",
-      pattern: String = null,
-      occurrences: Int = Int.MaxValue): EventFilter =
+  def warning
+    (
+        message: String = null,
+        source: String = null,
+        start: String = "",
+        pattern: String = null,
+        occurrences: Int = Int.MaxValue)
+    : EventFilter =
     WarningFilter(
       Option(source),
       if (message ne null) Left(message) else Option(pattern).map(new Regex(_)).toRight(start),
@@ -246,12 +252,14 @@ object EventFilter {
    * `null` does NOT work (passing `null` disables the
    * source filter).''
    */
-  def info(
-      message: String = null,
-      source: String = null,
-      start: String = "",
-      pattern: String = null,
-      occurrences: Int = Int.MaxValue): EventFilter =
+  def info
+    (
+        message: String = null,
+        source: String = null,
+        start: String = "",
+        pattern: String = null,
+        occurrences: Int = Int.MaxValue)
+    : EventFilter =
     InfoFilter(
       Option(source),
       if (message ne null) Left(message) else Option(pattern).map(new Regex(_)).toRight(start),
@@ -271,12 +279,14 @@ object EventFilter {
    * `null` does NOT work (passing `null` disables the
    * source filter).''
    */
-  def debug(
-      message: String = null,
-      source: String = null,
-      start: String = "",
-      pattern: String = null,
-      occurrences: Int = Int.MaxValue): EventFilter =
+  def debug
+    (
+        message: String = null,
+        source: String = null,
+        start: String = "",
+        pattern: String = null,
+        occurrences: Int = Int.MaxValue)
+    : EventFilter =
     DebugFilter(
       Option(source),
       if (message ne null) Left(message) else Option(pattern).map(new Regex(_)).toRight(start),
@@ -311,11 +321,13 @@ object EventFilter {
  * </ul>
  * If you want to match all Error events, the most efficient is to use <code>Left("")</code>.
  */
-final case class ErrorFilter(
-    throwable: Class[_],
-    override val source: Option[String],
-    override val message: Either[String, Regex],
-    override val complete: Boolean)(occurrences: Int)
+final case class ErrorFilter
+  (
+      throwable: Class[_],
+      override val source: Option[String],
+      override val message: Either[String, Regex],
+      override val complete: Boolean)
+  (occurrences: Int)
     extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {
@@ -342,13 +354,14 @@ final case class ErrorFilter(
    * @param complete
    *   whether the event’s message must match the given message string or pattern completely
    */
-  def this(
-      throwable: Class[_],
-      source: String,
-      message: String,
-      pattern: Boolean,
-      complete: Boolean,
-      occurrences: Int) =
+  def this
+    (
+        throwable: Class[_],
+        source: String,
+        message: String,
+        pattern: Boolean,
+        complete: Boolean,
+        occurrences: Int) =
     this(
       throwable,
       Option(source),
@@ -372,10 +385,12 @@ final case class ErrorFilter(
  * </ul>
  * If you want to match all Warning events, the most efficient is to use <code>Left("")</code>.
  */
-final case class WarningFilter(
-    override val source: Option[String],
-    override val message: Either[String, Regex],
-    override val complete: Boolean)(occurrences: Int)
+final case class WarningFilter
+  (
+      override val source: Option[String],
+      override val message: Either[String, Regex],
+      override val complete: Boolean)
+  (occurrences: Int)
     extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {
@@ -417,10 +432,12 @@ final case class WarningFilter(
  * </ul>
  * If you want to match all Info events, the most efficient is to use <code>Left("")</code>.
  */
-final case class InfoFilter(
-    override val source: Option[String],
-    override val message: Either[String, Regex],
-    override val complete: Boolean)(occurrences: Int)
+final case class InfoFilter
+  (
+      override val source: Option[String],
+      override val message: Either[String, Regex],
+      override val complete: Boolean)
+  (occurrences: Int)
     extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {
@@ -462,10 +479,12 @@ final case class InfoFilter(
  * </ul>
  * If you want to match all Debug events, the most efficient is to use <code>Left("")</code>.
  */
-final case class DebugFilter(
-    override val source: Option[String],
-    override val message: Either[String, Regex],
-    override val complete: Boolean)(occurrences: Int)
+final case class DebugFilter
+  (
+      override val source: Option[String],
+      override val message: Either[String, Regex],
+      override val complete: Boolean)
+  (occurrences: Int)
     extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {

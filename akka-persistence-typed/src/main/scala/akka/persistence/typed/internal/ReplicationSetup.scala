@@ -16,9 +16,10 @@ import akka.util.ccompat.JavaConverters._
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class ReplicationContextImpl(
-    val replicationId: ReplicationId,
-    val replicasAndQueryPlugins: Map[ReplicaId, String])
+private[akka] final class ReplicationContextImpl
+  (
+      val replicationId: ReplicationId,
+      val replicasAndQueryPlugins: Map[ReplicaId, String])
     extends akka.persistence.typed.scaladsl.ReplicationContext
     with akka.persistence.typed.javadsl.ReplicationContext {
   val allReplicas: Set[ReplicaId] = replicasAndQueryPlugins.keySet
@@ -80,10 +81,11 @@ private[akka] final class ReplicationContextImpl(
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class ReplicationSetup(
-    replicaId: ReplicaId,
-    allReplicasAndQueryPlugins: Map[ReplicaId, String],
-    replicationContext: ReplicationContextImpl) {
+private[akka] final case class ReplicationSetup
+  (
+      replicaId: ReplicaId,
+      allReplicasAndQueryPlugins: Map[ReplicaId, String],
+      replicationContext: ReplicationContextImpl) {
 
   val allReplicas: Set[ReplicaId] = allReplicasAndQueryPlugins.keySet
 

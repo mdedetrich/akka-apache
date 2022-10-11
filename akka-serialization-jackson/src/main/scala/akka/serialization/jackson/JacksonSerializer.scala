@@ -167,10 +167,11 @@ import akka.util.OptionVal
  * It will compress the payload if the compression `algorithm` is enabled and the the
  * payload is larger than the configured `compress-larger-than` value.
  */
-@InternalApi private[akka] abstract class JacksonSerializer(
-    val system: ExtendedActorSystem,
-    val bindingName: String,
-    val objectMapper: ObjectMapper)
+@InternalApi private[akka] abstract class JacksonSerializer
+  (
+      val system: ExtendedActorSystem,
+      val bindingName: String,
+      val objectMapper: ObjectMapper)
     extends SerializerWithStringManifest {
   import JacksonSerializer._
 
@@ -381,11 +382,12 @@ import akka.util.OptionVal
     }
   }
 
-  private def logFromBinaryDuration(
-      bytes: Array[Byte],
-      decompressBytes: Array[Byte],
-      startTime: Long,
-      clazz: Class[_ <: AnyRef]) = {
+  private def logFromBinaryDuration
+    (
+        bytes: Array[Byte],
+        decompressBytes: Array[Byte],
+        startTime: Long,
+        clazz: Class[_ <: AnyRef]) = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == decompressBytes.length)

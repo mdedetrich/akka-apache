@@ -37,14 +37,15 @@ private[akka] object EventsByTagStage {
 /**
  * INTERNAL API
  */
-final private[leveldb] class EventsByTagStage(
-    tag: String,
-    fromOffset: Long,
-    maxBufSize: Int,
-    initialTooOffset: Long,
-    writeJournalPluginId: String,
-    refreshInterval: Option[FiniteDuration],
-    mat: Materializer)
+final private[leveldb] class EventsByTagStage
+  (
+      tag: String,
+      fromOffset: Long,
+      maxBufSize: Int,
+      initialTooOffset: Long,
+      writeJournalPluginId: String,
+      refreshInterval: Option[FiniteDuration],
+      mat: Materializer)
     extends GraphStage[SourceShape[EventEnvelope]] {
 
   val out: Outlet[EventEnvelope] = Outlet("EventsByTagSource")

@@ -24,7 +24,7 @@ import akka.annotation.InternalApi
  * information with an address, then this must be done externally.
  */
 @SerialVersionUID(1L)
-final case class Address private[akka] (protocol: String, system: String, host: Option[String], port: Option[Int]) {
+final case class Address private[akka](protocol: String, system: String, host: Option[String], port: Option[Int]) {
   // Please note that local/non-local distinction must be preserved:
   // host.isDefined == hasGlobalScope
   // host.isEmpty == hasLocalScope
@@ -33,11 +33,12 @@ final case class Address private[akka] (protocol: String, system: String, host: 
   def this(protocol: String, system: String) = this(protocol, system, None, None)
   def this(protocol: String, system: String, host: String, port: Int) = this(protocol, system, Option(host), Some(port))
 
-  def copy(
-      protocol: String = protocol,
-      system: String = system,
-      host: Option[String] = host,
-      port: Option[Int] = port) = {
+  def copy
+    (
+        protocol: String = protocol,
+        system: String = system,
+        host: Option[String] = host,
+        port: Option[Int] = port) = {
     Address(protocol, system, host, port)
   }
 

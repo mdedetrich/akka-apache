@@ -105,8 +105,9 @@ class DDataClusterShardingRememberEntitiesNewExtractorMultiJvmNode2
 class DDataClusterShardingRememberEntitiesNewExtractorMultiJvmNode3
     extends DDataClusterShardingRememberEntitiesNewExtractorSpec
 
-abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
-    multiNodeConfig: ClusterShardingRememberEntitiesNewExtractorSpecConfig)
+abstract class ClusterShardingRememberEntitiesNewExtractorSpec
+  (
+      multiNodeConfig: ClusterShardingRememberEntitiesNewExtractorSpecConfig)
     extends MultiNodeClusterShardingSpec(multiNodeConfig)
     with ImplicitSender {
   import ClusterShardingRememberEntitiesNewExtractorSpec._

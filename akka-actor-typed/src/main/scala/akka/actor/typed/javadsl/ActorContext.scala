@@ -301,12 +301,14 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * @tparam Req The request protocol, what the other actor accepts
    * @tparam Res The response protocol, what the other actor sends back
    */
-  def ask[Req, Res](
-      resClass: Class[Res],
-      target: RecipientRef[Req],
-      responseTimeout: Duration,
-      createRequest: akka.japi.function.Function[ActorRef[Res], Req],
-      applyToResponse: akka.japi.function.Function2[Res, Throwable, T]): Unit
+  def ask[Req, Res]
+    (
+        resClass: Class[Res],
+        target: RecipientRef[Req],
+        responseTimeout: Duration,
+        createRequest: akka.japi.function.Function[ActorRef[Res], Req],
+        applyToResponse: akka.japi.function.Function2[Res, Throwable, T])
+    : Unit
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
@@ -314,12 +316,14 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * If the status response is a [[akka.pattern.StatusReply#error]] the returned future will be failed with the
    * exception in the error (normally a [[akka.pattern.StatusReply.ErrorMessage]]).
    */
-  def askWithStatus[Req, Res](
-      resClass: Class[Res],
-      target: RecipientRef[Req],
-      responseTimeout: Duration,
-      createRequest: akka.japi.function.Function[ActorRef[StatusReply[Res]], Req],
-      applyToResponse: akka.japi.function.Function2[Res, Throwable, T]): Unit
+  def askWithStatus[Req, Res]
+    (
+        resClass: Class[Res],
+        target: RecipientRef[Req],
+        responseTimeout: Duration,
+        createRequest: akka.japi.function.Function[ActorRef[StatusReply[Res]], Req],
+        applyToResponse: akka.japi.function.Function2[Res, Throwable, T])
+    : Unit
 
   /**
    * Sends the result of the given `CompletionStage` to this Actor (“`self`”), after adapted it with
@@ -328,8 +332,10 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
    * This method is thread-safe and can be called from other threads than the ordinary
    * actor message processing thread, such as [[java.util.concurrent.CompletionStage]] callbacks.
    */
-  def pipeToSelf[Value](
-      future: CompletionStage[Value],
-      applyToResult: akka.japi.function.Function2[Value, Throwable, T]): Unit
+  def pipeToSelf[Value]
+    (
+        future: CompletionStage[Value],
+        applyToResult: akka.japi.function.Function2[Value, Throwable, T])
+    : Unit
 
 }

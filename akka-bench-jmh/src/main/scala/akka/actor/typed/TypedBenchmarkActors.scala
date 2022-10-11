@@ -23,11 +23,13 @@ object TypedBenchmarkActors {
     Behaviors.same
   }
 
-  private def echoSender(
-      messagesPerPair: Int,
-      onDone: ActorRef[Done],
-      batchSize: Int,
-      childProps: Props): Behavior[Message.type] =
+  private def echoSender
+    (
+        messagesPerPair: Int,
+        onDone: ActorRef[Done],
+        batchSize: Int,
+        childProps: Props)
+    : Behavior[Message.type] =
     Behaviors.setup { ctx =>
       val echo = ctx.spawn(echoBehavior(ctx.self), "echo", childProps)
       var left = messagesPerPair / 2
@@ -61,11 +63,13 @@ object TypedBenchmarkActors {
   case class Start(respondTo: ActorRef[Completed])
   case class Completed(startNanoTime: Long)
 
-  def echoActorsSupervisor(
-      numMessagesPerActorPair: Int,
-      numActors: Int,
-      dispatcher: String,
-      batchSize: Int): Behavior[Start] =
+  def echoActorsSupervisor
+    (
+        numMessagesPerActorPair: Int,
+        numActors: Int,
+        dispatcher: String,
+        batchSize: Int)
+    : Behavior[Start] =
     Behaviors.receive { (ctx, msg) =>
       msg match {
         case Start(respondTo) =>
@@ -77,12 +81,14 @@ object TypedBenchmarkActors {
       }
     }
 
-  private def startEchoBenchSession(
-      messagesPerPair: Int,
-      numActors: Int,
-      dispatcher: String,
-      batchSize: Int,
-      respondTo: ActorRef[Completed]): Behavior[Unit] = {
+  private def startEchoBenchSession
+    (
+        messagesPerPair: Int,
+        numActors: Int,
+        dispatcher: String,
+        batchSize: Int,
+        respondTo: ActorRef[Completed])
+    : Behavior[Unit] = {
 
     val numPairs = numActors / 2
 
@@ -113,13 +119,14 @@ object TypedBenchmarkActors {
   }
 
   sealed trait PingPongCommand
-  case class StartPingPong(
-      messagesPerPair: Int,
-      numActors: Int,
-      dispatcher: String,
-      throughPut: Int,
-      shutdownTimeout: Duration,
-      replyTo: ActorRef[PingPongStarted])
+  case class StartPingPong
+    (
+        messagesPerPair: Int,
+        numActors: Int,
+        dispatcher: String,
+        throughPut: Int,
+        shutdownTimeout: Duration,
+        replyTo: ActorRef[PingPongStarted])
       extends PingPongCommand
   case class PingPongStarted(completedLatch: CountDownLatch, startNanoTime: Long, totalNumMessages: Int)
   case object Stop extends PingPongCommand
@@ -150,11 +157,13 @@ object TypedBenchmarkActors {
     } ping ! message
   }
 
-  private def startPingPongActorPairs(
-      ctx: ActorContext[_],
-      messagesPerPair: Int,
-      numPairs: Int,
-      dispatcher: String): (Vector[(ActorRef[Message], ActorRef[Message])], CountDownLatch) = {
+  private def startPingPongActorPairs
+    (
+        ctx: ActorContext[_],
+        messagesPerPair: Int,
+        numPairs: Int,
+        dispatcher: String)
+    : (Vector[(ActorRef[Message], ActorRef[Message])], CountDownLatch) = {
     val fullPathToDispatcher = "akka.actor." + dispatcher
     val latch = new CountDownLatch(numPairs * 2)
     val pingPongBehavior = newPingPongBehavior(messagesPerPair, latch)

@@ -13,10 +13,11 @@ import akka.event.LoggingAdapter
  *
  * This class is not thread-safe. It is supposed to be used from an actor.
  */
-@InternalApi private[akka] class PayloadSizeAggregator(
-    log: LoggingAdapter,
-    logSizeExceeding: Int,
-    val maxFrameSize: Int) {
+@InternalApi private[akka] class PayloadSizeAggregator
+  (
+      log: LoggingAdapter,
+      logSizeExceeding: Int,
+      val maxFrameSize: Int) {
   private val warnSizeExceeding = maxFrameSize * 3 / 4
   private var maxPayloadBytes: Map[String, Int] = Map.empty
 

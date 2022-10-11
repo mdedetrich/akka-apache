@@ -71,13 +71,14 @@ import akka.persistence.Persistence
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class DurableStateSettings(
-    stashCapacity: Int,
-    stashOverflowStrategy: StashOverflowStrategy,
-    logOnStashing: Boolean,
-    recoveryTimeout: FiniteDuration,
-    durableStateStorePluginId: String,
-    useContextLoggerForInternalLogging: Boolean) {
+private[akka] final case class DurableStateSettings
+  (
+      stashCapacity: Int,
+      stashOverflowStrategy: StashOverflowStrategy,
+      logOnStashing: Boolean,
+      recoveryTimeout: FiniteDuration,
+      durableStateStorePluginId: String,
+      useContextLoggerForInternalLogging: Boolean) {
 
   require(
     durableStateStorePluginId != null,

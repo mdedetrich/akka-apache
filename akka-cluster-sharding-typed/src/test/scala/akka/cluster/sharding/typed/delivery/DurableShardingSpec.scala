@@ -61,9 +61,11 @@ class DurableShardingSpec
   private val journalOperations = createTestProbe[InmemJournal.Operation]()
   system.eventStream ! EventStream.Subscribe(journalOperations.ref)
 
-  private def consumerBehavior(
-      c: ActorRef[ConsumerController.Start[TestConsumer.Job]],
-      consumerProbe: ActorRef[TestConsumer.JobDelivery]): Behavior[TestConsumer.Command] =
+  private def consumerBehavior
+    (
+        c: ActorRef[ConsumerController.Start[TestConsumer.Job]],
+        consumerProbe: ActorRef[TestConsumer.JobDelivery])
+    : Behavior[TestConsumer.Command] =
     Behaviors.setup[TestConsumer.Command] { context =>
       val deliveryAdapter = context.messageAdapter[ConsumerController.Delivery[TestConsumer.Job]] { d =>
         TestConsumer.JobDelivery(d.message, d.confirmTo, d.producerId, d.seqNr)

@@ -19,10 +19,11 @@ import scala.reflect.ClassTag
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class EffectfulActorContext[T](
-    system: ActorSystemStub,
-    path: ActorPath,
-    currentBehaviorProvider: () => Behavior[T])
+@InternalApi private[akka] final class EffectfulActorContext[T]
+  (
+      system: ActorSystemStub,
+      path: ActorPath,
+      currentBehaviorProvider: () => Behavior[T])
     extends StubbedActorContext[T](system, path, currentBehaviorProvider) {
 
   private[akka] val effectQueue = new ConcurrentLinkedQueue[Effect]

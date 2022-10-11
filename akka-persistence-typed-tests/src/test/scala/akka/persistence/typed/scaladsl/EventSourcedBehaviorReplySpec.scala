@@ -33,9 +33,11 @@ object EventSourcedBehaviorReplySpec {
   def counter(persistenceId: PersistenceId): Behavior[Command[_]] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
-  def counter(
-      ctx: ActorContext[Command[_]],
-      persistenceId: PersistenceId): EventSourcedBehavior[Command[_], Event, State] = {
+  def counter
+    (
+        ctx: ActorContext[Command[_]],
+        persistenceId: PersistenceId)
+    : EventSourcedBehavior[Command[_], Event, State] = {
     EventSourcedBehavior.withEnforcedReplies[Command[_], Event, State](
       persistenceId,
       emptyState = State(0, Vector.empty),

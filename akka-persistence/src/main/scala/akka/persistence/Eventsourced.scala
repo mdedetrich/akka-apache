@@ -538,10 +538,12 @@ private[persistence] trait Eventsourced
    * Or delete all by using `Long.MaxValue` as the `toSequenceNr`
    * {{{ m.copy(sequenceNr = Long.MaxValue) }}}
    */
-  @InternalApi private[akka] def internalDeleteMessagesBeforeSnapshot(
-      e: SaveSnapshotSuccess,
-      keepNrOfBatches: Int,
-      snapshotAfter: Int): Unit = {
+  @InternalApi private[akka] def internalDeleteMessagesBeforeSnapshot
+    (
+        e: SaveSnapshotSuccess,
+        keepNrOfBatches: Int,
+        snapshotAfter: Int)
+    : Unit = {
     /* Delete old events but keep the latest around
       1. It's not safe to delete all events immediately because snapshots are typically stored with
          a weaker consistency level. A replay might "see" the deleted events before it sees the stored

@@ -51,10 +51,11 @@ import akka.util.Timeout
  * @tparam A Message type of the requesting actor.
  * @tparam B Type of the [[ReplicatedData]].
  */
-class ReplicatorMessageAdapter[A, B <: ReplicatedData](
-    context: ActorContext[A],
-    replicator: ActorRef[Replicator.Command],
-    unexpectedAskTimeout: Duration) {
+class ReplicatorMessageAdapter[A, B <: ReplicatedData]
+  (
+      context: ActorContext[A],
+      replicator: ActorRef[Replicator.Command],
+      unexpectedAskTimeout: Duration) {
 
   private implicit val askTimeout: Timeout = Timeout(unexpectedAskTimeout.asScala)
 
@@ -94,9 +95,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `ActorRef[UpdateResponse]` that the the replicator will send the response message back through.
    * Use that `ActorRef[UpdateResponse]` as the `replyTo` parameter in the `Update` message.
    */
-  def askUpdate(
-      createRequest: JFunction[ActorRef[Replicator.UpdateResponse[B]], Replicator.Update[B]],
-      responseAdapter: JFunction[Replicator.UpdateResponse[B], A]): Unit = {
+  def askUpdate
+    (
+        createRequest: JFunction[ActorRef[Replicator.UpdateResponse[B]], Replicator.Update[B]],
+        responseAdapter: JFunction[Replicator.UpdateResponse[B], A])
+    : Unit = {
     context.asScala
       .ask[Replicator.Update[B], Replicator.UpdateResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -114,9 +117,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Use that `ActorRef[GetResponse]` as the `replyTo` parameter in the `Get` message.
    */
   @nowarn
-  def askGet(
-      createRequest: JFunction[ActorRef[Replicator.GetResponse[B]], Replicator.Get[B]],
-      responseAdapter: JFunction[Replicator.GetResponse[B], A]): Unit = {
+  def askGet
+    (
+        createRequest: JFunction[ActorRef[Replicator.GetResponse[B]], Replicator.Get[B]],
+        responseAdapter: JFunction[Replicator.GetResponse[B], A])
+    : Unit = {
     context.asScala
       .ask[Replicator.Get[B], Replicator.GetResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -133,9 +138,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `ActorRef[DeleteResponse]` that the the replicator will send the response message back through.
    * Use that `ActorRef[DeleteResponse]` as the `replyTo` parameter in the `Delete` message.
    */
-  def askDelete(
-      createRequest: JFunction[ActorRef[Replicator.DeleteResponse[B]], Replicator.Delete[B]],
-      responseAdapter: JFunction[Replicator.DeleteResponse[B], A]): Unit = {
+  def askDelete
+    (
+        createRequest: JFunction[ActorRef[Replicator.DeleteResponse[B]], Replicator.Delete[B]],
+        responseAdapter: JFunction[Replicator.DeleteResponse[B], A])
+    : Unit = {
     context.asScala
       .ask[Replicator.Delete[B], Replicator.DeleteResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
@@ -152,9 +159,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * `ActorRef[ReplicaCount]` that the the replicator will send the response message back through.
    * Use that `ActorRef[ReplicaCount]` as the `replyTo` parameter in the `GetReplicaCount` message.
    */
-  def askReplicaCount(
-      createRequest: JFunction[ActorRef[Replicator.ReplicaCount], Replicator.GetReplicaCount],
-      responseAdapter: JFunction[Replicator.ReplicaCount, A]): Unit = {
+  def askReplicaCount
+    (
+        createRequest: JFunction[ActorRef[Replicator.ReplicaCount], Replicator.GetReplicaCount],
+        responseAdapter: JFunction[Replicator.ReplicaCount, A])
+    : Unit = {
     context.asScala
       .ask[Replicator.GetReplicaCount, Replicator.ReplicaCount](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)

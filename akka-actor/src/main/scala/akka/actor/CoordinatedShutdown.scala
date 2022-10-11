@@ -226,10 +226,12 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
     }
   }
 
-  private def initPhaseActorSystemTerminate(
-      system: ExtendedActorSystem,
-      conf: Config,
-      coord: CoordinatedShutdown): Unit = {
+  private def initPhaseActorSystemTerminate
+    (
+        system: ExtendedActorSystem,
+        conf: Config,
+        coord: CoordinatedShutdown)
+    : Unit = {
     coord.addTask(PhaseActorSystemTerminate, "terminate-system") { () =>
       val confForReason = confWithOverrides(conf, coord.shutdownReason())
       val terminateActorSystem = confForReason.getBoolean("terminate-actor-system")
@@ -289,11 +291,12 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
   /**
    * INTERNAL API
    */
-  private[akka] final case class Phase(
-      dependsOn: Set[String],
-      timeout: FiniteDuration,
-      recover: Boolean,
-      enabled: Boolean)
+  private[akka] final case class Phase
+    (
+        dependsOn: Set[String],
+        timeout: FiniteDuration,
+        recover: Boolean,
+        enabled: Boolean)
 
   /**
    * INTERNAL API
@@ -373,10 +376,11 @@ private[akka] object JVMShutdownHooks extends JVMShutdownHooks {
   override def removeHook(t: Thread): Boolean = Runtime.getRuntime.removeShutdownHook(t)
 }
 
-final class CoordinatedShutdown private[akka] (
-    system: ExtendedActorSystem,
-    phases: Map[String, CoordinatedShutdown.Phase],
-    jvmShutdownHooks: JVMShutdownHooks = JVMShutdownHooks)
+final class CoordinatedShutdown private[akka]
+  (
+      system: ExtendedActorSystem,
+      phases: Map[String, CoordinatedShutdown.Phase],
+      jvmShutdownHooks: JVMShutdownHooks = JVMShutdownHooks)
     extends Extension {
   import CoordinatedShutdown.{ Reason, UnknownReason }
 

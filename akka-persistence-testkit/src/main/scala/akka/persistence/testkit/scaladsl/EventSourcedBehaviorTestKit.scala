@@ -59,12 +59,13 @@ object EventSourcedBehaviorTestKit {
    * Customization of which serialization checks that are performed.
    * `equals` must be implemented (or using `case class`) when `verifyEquality` is enabled.
    */
-  final class SerializationSettings private[akka] (
-      val enabled: Boolean,
-      val verifyEquality: Boolean,
-      val verifyCommands: Boolean,
-      val verifyEvents: Boolean,
-      val verifyState: Boolean) {
+  final class SerializationSettings private[akka]
+    (
+        val enabled: Boolean,
+        val verifyEquality: Boolean,
+        val verifyCommands: Boolean,
+        val verifyEvents: Boolean,
+        val verifyState: Boolean) {
 
     def withEnabled(value: Boolean): SerializationSettings =
       copy(enabled = value)
@@ -81,12 +82,14 @@ object EventSourcedBehaviorTestKit {
     def withVerifyState(value: Boolean): SerializationSettings =
       copy(verifyState = value)
 
-    private def copy(
-        enabled: Boolean = this.enabled,
-        verifyEquality: Boolean = this.verifyEquality,
-        verifyCommands: Boolean = this.verifyCommands,
-        verifyEvents: Boolean = this.verifyEvents,
-        verifyState: Boolean = this.verifyState): SerializationSettings = {
+    private def copy
+      (
+          enabled: Boolean = this.enabled,
+          verifyEquality: Boolean = this.verifyEquality,
+          verifyCommands: Boolean = this.verifyCommands,
+          verifyEvents: Boolean = this.verifyEvents,
+          verifyState: Boolean = this.verifyState)
+      : SerializationSettings = {
       new SerializationSettings(enabled, verifyEquality, verifyCommands, verifyEvents, verifyState)
     }
   }
@@ -94,9 +97,11 @@ object EventSourcedBehaviorTestKit {
   /**
    * Factory method to create a new EventSourcedBehaviorTestKit.
    */
-  def apply[Command, Event, State](
-      system: ActorSystem[_],
-      behavior: Behavior[Command]): EventSourcedBehaviorTestKit[Command, Event, State] =
+  def apply[Command, Event, State]
+    (
+        system: ActorSystem[_],
+        behavior: Behavior[Command])
+    : EventSourcedBehaviorTestKit[Command, Event, State] =
     apply(system, behavior, SerializationSettings.enabled)
 
   /**
@@ -105,10 +110,12 @@ object EventSourcedBehaviorTestKit {
    * Note that `equals` must be implemented (or using `case class`) in the commands, events and state if
    * `verifyEquality` is enabled.
    */
-  def apply[Command, Event, State](
-      system: ActorSystem[_],
-      behavior: Behavior[Command],
-      serializationSettings: SerializationSettings): EventSourcedBehaviorTestKit[Command, Event, State] =
+  def apply[Command, Event, State]
+    (
+        system: ActorSystem[_],
+        behavior: Behavior[Command],
+        serializationSettings: SerializationSettings)
+    : EventSourcedBehaviorTestKit[Command, Event, State] =
     new EventSourcedBehaviorTestKitImpl(ActorTestKit(system), behavior, serializationSettings)
 
   /**

@@ -36,8 +36,9 @@ import akka.persistence.typed.{ javadsl, scaladsl, SnapshotSelectionCriteria }
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] case class RecoveryWithSnapshotSelectionCriteria(
-    snapshotSelectionCriteria: SnapshotSelectionCriteria)
+@InternalApi private[akka] case class RecoveryWithSnapshotSelectionCriteria
+  (
+      snapshotSelectionCriteria: SnapshotSelectionCriteria)
     extends javadsl.Recovery
     with scaladsl.Recovery {
   override def asScala: scaladsl.Recovery = this

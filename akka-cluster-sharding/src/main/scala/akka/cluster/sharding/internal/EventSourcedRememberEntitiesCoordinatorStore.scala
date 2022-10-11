@@ -32,9 +32,10 @@ private[akka] object EventSourcedRememberEntitiesCoordinatorStore {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class EventSourcedRememberEntitiesCoordinatorStore(
-    typeName: String,
-    settings: ClusterShardingSettings)
+private[akka] final class EventSourcedRememberEntitiesCoordinatorStore
+  (
+      typeName: String,
+      settings: ClusterShardingSettings)
     extends PersistentActor
     with ActorLogging {
 

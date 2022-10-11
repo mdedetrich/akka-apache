@@ -14,16 +14,17 @@ import akka.serialization.{ Serialization, SerializationExtension, Serializers }
 
 @InternalApi
 private[testkit] object SerializedEventStorageImpl {
-  case class Serialized(
-      persistenceId: String,
-      sequenceNr: Long,
-      payloadSerId: Int,
-      payloadSerManifest: String,
-      eventAdapterManifest: String,
-      writerUuid: String,
-      payload: Array[Byte],
-      tags: Set[String],
-      metadata: Option[Any])
+  case class Serialized
+    (
+        persistenceId: String,
+        sequenceNr: Long,
+        payloadSerId: Int,
+        payloadSerManifest: String,
+        eventAdapterManifest: String,
+        writerUuid: String,
+        payload: Array[Byte],
+        tags: Set[String],
+        metadata: Option[Any])
 }
 
 /**

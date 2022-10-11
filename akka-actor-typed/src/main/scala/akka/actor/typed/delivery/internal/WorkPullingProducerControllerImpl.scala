@@ -65,34 +65,37 @@ import akka.util.Timeout
       extends InternalCommand
   private case object DurableQueueTerminated extends InternalCommand
 
-  private final case class OutState[A](
-      producerController: ActorRef[ProducerController.Command[A]],
-      consumerController: ActorRef[ConsumerController.Command[A]],
-      seqNr: OutSeqNr,
-      unconfirmed: Vector[Unconfirmed[A]],
-      askNextTo: Option[ActorRef[ProducerController.MessageWithConfirmation[A]]]) {
+  private final case class OutState[A]
+    (
+        producerController: ActorRef[ProducerController.Command[A]],
+        consumerController: ActorRef[ConsumerController.Command[A]],
+        seqNr: OutSeqNr,
+        unconfirmed: Vector[Unconfirmed[A]],
+        askNextTo: Option[ActorRef[ProducerController.MessageWithConfirmation[A]]]) {
     def confirmationQualifier: ConfirmationQualifier = producerController.path.name
   }
 
-  private final case class Unconfirmed[A](
-      totalSeqNr: TotalSeqNr,
-      outSeqNr: OutSeqNr,
-      msg: A,
-      replyTo: Option[ActorRef[Done]])
+  private final case class Unconfirmed[A]
+    (
+        totalSeqNr: TotalSeqNr,
+        outSeqNr: OutSeqNr,
+        msg: A,
+        replyTo: Option[ActorRef[Done]])
 
-  private final case class State[A](
-      currentSeqNr: TotalSeqNr, // only updated when durableQueue is enabled
-      workers: Set[ActorRef[ConsumerController.Command[A]]],
-      out: Map[OutKey, OutState[A]],
-      // when durableQueue is enabled the worker must be selecting before storage
-      // to know the confirmationQualifier up-front
-      preselectedWorkers: Map[TotalSeqNr, PreselectedWorker],
-      // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
-      replyAfterStore: Map[TotalSeqNr, ActorRef[Done]],
-      // when the worker is deregistered but there are still unconfirmed
-      handOver: Map[TotalSeqNr, HandOver],
-      producer: ActorRef[WorkPullingProducerController.RequestNext[A]],
-      requested: Boolean)
+  private final case class State[A]
+    (
+        currentSeqNr: TotalSeqNr, // only updated when durableQueue is enabled
+        workers: Set[ActorRef[ConsumerController.Command[A]]],
+        out: Map[OutKey, OutState[A]],
+        // when durableQueue is enabled the worker must be selecting before storage
+        // to know the confirmationQualifier up-front
+        preselectedWorkers: Map[TotalSeqNr, PreselectedWorker],
+        // replyAfterStore is used when durableQueue is enabled, otherwise they are tracked in OutState
+        replyAfterStore: Map[TotalSeqNr, ActorRef[Done]],
+        // when the worker is deregistered but there are still unconfirmed
+        handOver: Map[TotalSeqNr, HandOver],
+        producer: ActorRef[WorkPullingProducerController.RequestNext[A]],
+        requested: Boolean)
 
   private case class PreselectedWorker(outKey: OutKey, confirmationQualifier: ConfirmationQualifier)
 
@@ -104,17 +107,20 @@ import akka.util.Timeout
 
   private final case class Msg[A](msg: A, wasStashed: Boolean, replyTo: Option[ActorRef[Done]]) extends InternalCommand
 
-  private final case class ResendDurableMsg[A](
-      msg: A,
-      oldConfirmationQualifier: ConfirmationQualifier,
-      oldSeqNr: TotalSeqNr)
+  private final case class ResendDurableMsg[A]
+    (
+        msg: A,
+        oldConfirmationQualifier: ConfirmationQualifier,
+        oldSeqNr: TotalSeqNr)
       extends InternalCommand
 
-  def apply[A: ClassTag](
-      producerId: String,
-      workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        workerServiceKey: ServiceKey[ConsumerController.Command[A]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: WorkPullingProducerController.Settings)
+    : Behavior[Command[A]] = {
     Behaviors
       .withStash[InternalCommand](settings.bufferSize) { stashBuffer =>
         Behaviors.setup[InternalCommand] { context =>
@@ -144,14 +150,16 @@ import akka.util.Timeout
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
   }
 
-  private def waitingForStart[A: ClassTag](
-      producerId: String,
-      context: ActorContext[InternalCommand],
-      stashBuffer: StashBuffer[InternalCommand],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings,
-      producer: Option[ActorRef[RequestNext[A]]],
-      initialState: Option[DurableProducerQueue.State[A]]): Behavior[InternalCommand] = {
+  private def waitingForStart[A: ClassTag]
+    (
+        producerId: String,
+        context: ActorContext[InternalCommand],
+        stashBuffer: StashBuffer[InternalCommand],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: WorkPullingProducerController.Settings,
+        producer: Option[ActorRef[RequestNext[A]]],
+        initialState: Option[DurableProducerQueue.State[A]])
+    : Behavior[InternalCommand] = {
 
     def becomeActive(p: ActorRef[RequestNext[A]], s: DurableProducerQueue.State[A]): Behavior[InternalCommand] = {
       // resend unconfirmed to self, order doesn't matter for work pulling
@@ -226,10 +234,12 @@ import akka.util.Timeout
       throw new IllegalArgumentException(s"Buffer is full, size [${stashBuffer.size}].")
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: WorkPullingProducerController.Settings)
+    : Option[ActorRef[DurableProducerQueue.Command[A]]] = {
 
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
@@ -239,11 +249,13 @@ import akka.util.Timeout
     }
   }
 
-  private def askLoadState[A](
-      context: ActorContext[InternalCommand],
-      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-      settings: WorkPullingProducerController.Settings,
-      attempt: Int): Unit = {
+  private def askLoadState[A]
+    (
+        context: ActorContext[InternalCommand],
+        durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+        settings: WorkPullingProducerController.Settings,
+        attempt: Int)
+    : Unit = {
     implicit val loadTimeout: Timeout = settings.producerControllerSettings.durableQueueRequestTimeout
     durableQueue.foreach { ref =>
       context.ask[DurableProducerQueue.LoadState[A], DurableProducerQueue.State[A]](
@@ -255,20 +267,23 @@ import akka.util.Timeout
     }
   }
 
-  private def createInitialState[A](
-      currentSeqNr: SeqNr,
-      producer: ActorRef[WorkPullingProducerController.RequestNext[A]]): State[A] =
+  private def createInitialState[A]
+    (
+        currentSeqNr: SeqNr,
+        producer: ActorRef[WorkPullingProducerController.RequestNext[A]])
+    : State[A] =
     State(currentSeqNr, Set.empty, Map.empty, Map.empty, Map.empty, Map.empty, producer, requested = false)
 
 }
 
-private class WorkPullingProducerControllerImpl[A: ClassTag](
-    context: ActorContext[WorkPullingProducerControllerImpl.InternalCommand],
-    stashBuffer: StashBuffer[WorkPullingProducerControllerImpl.InternalCommand],
-    producerId: String,
-    requestNext: WorkPullingProducerController.RequestNext[A],
-    durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
-    settings: WorkPullingProducerController.Settings) {
+private class WorkPullingProducerControllerImpl[A: ClassTag]
+  (
+      context: ActorContext[WorkPullingProducerControllerImpl.InternalCommand],
+      stashBuffer: StashBuffer[WorkPullingProducerControllerImpl.InternalCommand],
+      producerId: String,
+      requestNext: WorkPullingProducerController.RequestNext[A],
+      durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
+      settings: WorkPullingProducerController.Settings) {
   import DurableProducerQueue.MessageSent
   import DurableProducerQueue.StoreMessageConfirmed
   import DurableProducerQueue.StoreMessageSent

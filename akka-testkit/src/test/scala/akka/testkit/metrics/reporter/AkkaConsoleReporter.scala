@@ -25,12 +25,14 @@ class AkkaConsoleReporter(registry: AkkaMetricRegistry, verbose: Boolean, output
 
   private final val ConsoleWidth = 80
 
-  override def report(
-      gauges: util.SortedMap[String, Gauge[_]],
-      counters: util.SortedMap[String, Counter],
-      histograms: util.SortedMap[String, Histogram],
-      meters: util.SortedMap[String, Meter],
-      timers: util.SortedMap[String, Timer]): Unit = {
+  override def report
+    (
+        gauges: util.SortedMap[String, Gauge[_]],
+        counters: util.SortedMap[String, Counter],
+        histograms: util.SortedMap[String, Histogram],
+        meters: util.SortedMap[String, Meter],
+        timers: util.SortedMap[String, Timer])
+    : Unit = {
     import akka.util.ccompat.JavaConverters._
 
     // default Metrics types

@@ -61,14 +61,16 @@ final class RestartSettings private (
     s"maxRestarts=$maxRestarts," +
     s"maxRestartsWithin=$maxRestartsWithin)"
 
-  private def copy(
-      minBackoff: FiniteDuration = minBackoff,
-      maxBackoff: FiniteDuration = maxBackoff,
-      randomFactor: Double = randomFactor,
-      maxRestarts: Int = maxRestarts,
-      maxRestartsWithin: FiniteDuration = maxRestartsWithin,
-      logSettings: RestartSettings.LogSettings = logSettings,
-      restartOn: Throwable => Boolean = restartOn): RestartSettings =
+  private def copy
+    (
+        minBackoff: FiniteDuration = minBackoff,
+        maxBackoff: FiniteDuration = maxBackoff,
+        randomFactor: Double = randomFactor,
+        maxRestarts: Int = maxRestarts,
+        maxRestartsWithin: FiniteDuration = maxRestartsWithin,
+        logSettings: RestartSettings.LogSettings = logSettings,
+        restartOn: Throwable => Boolean = restartOn)
+    : RestartSettings =
     new RestartSettings(minBackoff, maxBackoff, randomFactor, maxRestarts, maxRestartsWithin, logSettings, restartOn)
 
 }
@@ -125,10 +127,12 @@ object RestartSettings {
     def withCriticalLogLevel(criticalLevel: LogLevel, afterErrors: Int): LogSettings =
       copy(criticalLogLevel = criticalLevel, criticalLogLevelAfter = afterErrors)
 
-    private def copy(
-        logLevel: LogLevel = logLevel,
-        criticalLogLevel: LogLevel = criticalLogLevel,
-        criticalLogLevelAfter: Int = criticalLogLevelAfter): LogSettings =
+    private def copy
+      (
+          logLevel: LogLevel = logLevel,
+          criticalLogLevel: LogLevel = criticalLogLevel,
+          criticalLogLevelAfter: Int = criticalLogLevelAfter)
+      : LogSettings =
       new LogSettings(
         logLevel = logLevel,
         criticalLogLevel = criticalLogLevel,

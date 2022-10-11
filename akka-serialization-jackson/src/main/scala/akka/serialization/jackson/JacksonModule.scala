@@ -35,10 +35,12 @@ import akka.annotation.InternalApi
 
   class SerializerResolverByClass(clazz: Class[_], deserializer: () => JsonSerializer[_]) extends Serializers.Base {
 
-    override def findSerializer(
-        config: SerializationConfig,
-        javaType: JavaType,
-        beanDesc: BeanDescription): JsonSerializer[_] = {
+    override def findSerializer
+      (
+          config: SerializationConfig,
+          javaType: JavaType,
+          beanDesc: BeanDescription)
+      : JsonSerializer[_] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         deserializer()
       else
@@ -49,10 +51,12 @@ import akka.annotation.InternalApi
 
   class DeserializerResolverByClass(clazz: Class[_], serializer: () => JsonDeserializer[_]) extends Deserializers.Base {
 
-    override def findBeanDeserializer(
-        javaType: JavaType,
-        config: DeserializationConfig,
-        beanDesc: BeanDescription): JsonDeserializer[_] = {
+    override def findBeanDeserializer
+      (
+          javaType: JavaType,
+          config: DeserializationConfig,
+          beanDesc: BeanDescription)
+      : JsonDeserializer[_] = {
       if (clazz.isAssignableFrom(javaType.getRawClass))
         serializer()
       else
@@ -83,10 +87,12 @@ import akka.annotation.InternalApi
     initializers.result().foreach(_.apply(context))
   }
 
-  def addSerializer(
-      clazz: Class[_],
-      serializer: () => JsonSerializer[_],
-      deserializer: () => JsonDeserializer[_]): this.type = {
+  def addSerializer
+    (
+        clazz: Class[_],
+        serializer: () => JsonSerializer[_],
+        deserializer: () => JsonDeserializer[_])
+    : this.type = {
     this += { ctx =>
       ctx.addSerializers(new SerializerResolverByClass(clazz, serializer))
       ctx.addDeserializers(new DeserializerResolverByClass(clazz, deserializer))

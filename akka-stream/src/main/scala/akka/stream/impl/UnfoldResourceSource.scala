@@ -16,10 +16,11 @@ import akka.stream.stage._
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class UnfoldResourceSource[T, S](
-    create: () => S,
-    readData: (S) => Option[T],
-    close: (S) => Unit)
+@InternalApi private[akka] final class UnfoldResourceSource[T, S]
+  (
+      create: () => S,
+      readData: (S) => Option[T],
+      close: (S) => Unit)
     extends GraphStage[SourceShape[T]] {
   val out = Outlet[T]("UnfoldResourceSource.out")
   override val shape = SourceShape(out)

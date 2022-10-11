@@ -66,14 +66,15 @@ object SupervisorHierarchySpec {
   case object PongOfDeath
   final case class Event(msg: Any, identity: Long) { val time: Long = System.nanoTime }
   final case class ErrorLog(msg: String, log: Vector[Event])
-  final case class Failure(
-      directive: Directive,
-      stop: Boolean,
-      depth: Int,
-      var failPre: Int,
-      var failPost: Int,
-      val failConstr: Int,
-      stopKids: Int)
+  final case class Failure
+    (
+        directive: Directive,
+        stop: Boolean,
+        depth: Int,
+        var failPre: Int,
+        var failPost: Int,
+        val failConstr: Int,
+        stopKids: Int)
       extends RuntimeException("Failure")
       with NoStackTrace {
     override def toString = productPrefix + productIterator.mkString("(", ",", ")")

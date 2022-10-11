@@ -24,12 +24,13 @@ final case class CapturedLogEvent(level: Level, message: String, cause: Option[T
   /**
    * Constructor for Java API
    */
-  def this(
-      level: Level,
-      message: String,
-      errorCause: Optional[Throwable],
-      marker: Optional[Marker],
-      mdc: java.util.Map[String, Any]) =
+  def this
+    (
+        level: Level,
+        message: String,
+        errorCause: Optional[Throwable],
+        marker: Optional[Marker],
+        mdc: java.util.Map[String, Any]) =
     this(level, message, errorCause.asScala, marker.asScala)
 
   /**
@@ -80,11 +81,13 @@ object CapturedLogEvent {
    * INTERNAL API
    */
   @InternalApi
-  private[akka] def apply(
-      level: Level,
-      message: String,
-      errorCause: OptionVal[Throwable],
-      logMarker: OptionVal[Marker]): CapturedLogEvent = {
+  private[akka] def apply
+    (
+        level: Level,
+        message: String,
+        errorCause: OptionVal[Throwable],
+        logMarker: OptionVal[Marker])
+    : CapturedLogEvent = {
     new CapturedLogEvent(level, message, toOption(errorCause), toOption(logMarker))
   }
 }

@@ -77,20 +77,22 @@ object ClusterSingletonProxySettings {
  *   when new messages are sent viea the proxy. Use 0 to disable buffering, i.e. messages will be dropped
  *   immediately if the location of the singleton is unknown.
  */
-final class ClusterSingletonProxySettings(
-    val singletonName: String,
-    val role: Option[String],
-    val dataCenter: Option[DataCenter],
-    val singletonIdentificationInterval: FiniteDuration,
-    val bufferSize: Int)
+final class ClusterSingletonProxySettings
+  (
+      val singletonName: String,
+      val role: Option[String],
+      val dataCenter: Option[DataCenter],
+      val singletonIdentificationInterval: FiniteDuration,
+      val bufferSize: Int)
     extends NoSerializationVerificationNeeded {
 
   // for backwards compatibility
-  def this(
-      singletonName: String,
-      role: Option[String],
-      singletonIdentificationInterval: FiniteDuration,
-      bufferSize: Int) =
+  def this
+    (
+        singletonName: String,
+        role: Option[String],
+        singletonIdentificationInterval: FiniteDuration,
+        bufferSize: Int) =
     this(singletonName, role, None, singletonIdentificationInterval, bufferSize)
 
   require(bufferSize >= 0 && bufferSize <= 10000, "bufferSize must be >= 0 and <= 10000")
@@ -106,19 +108,23 @@ final class ClusterSingletonProxySettings(
 
   def withDataCenter(dataCenter: Option[DataCenter]): ClusterSingletonProxySettings = copy(dataCenter = dataCenter)
 
-  def withSingletonIdentificationInterval(
-      singletonIdentificationInterval: FiniteDuration): ClusterSingletonProxySettings =
+  def withSingletonIdentificationInterval
+    (
+        singletonIdentificationInterval: FiniteDuration)
+    : ClusterSingletonProxySettings =
     copy(singletonIdentificationInterval = singletonIdentificationInterval)
 
   def withBufferSize(bufferSize: Int): ClusterSingletonProxySettings =
     copy(bufferSize = bufferSize)
 
-  private def copy(
-      singletonName: String = singletonName,
-      role: Option[String] = role,
-      dataCenter: Option[DataCenter] = dataCenter,
-      singletonIdentificationInterval: FiniteDuration = singletonIdentificationInterval,
-      bufferSize: Int = bufferSize): ClusterSingletonProxySettings =
+  private def copy
+    (
+        singletonName: String = singletonName,
+        role: Option[String] = role,
+        dataCenter: Option[DataCenter] = dataCenter,
+        singletonIdentificationInterval: FiniteDuration = singletonIdentificationInterval,
+        bufferSize: Int = bufferSize)
+    : ClusterSingletonProxySettings =
     new ClusterSingletonProxySettings(singletonName, role, dataCenter, singletonIdentificationInterval, bufferSize)
 }
 

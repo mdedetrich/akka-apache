@@ -27,11 +27,13 @@ trait CurrentEventsBySliceQuery extends ReadJournal {
    * query is started, or it may include events that are persisted while the query is still streaming results. For
    * eventually consistent stores, it may only include all events up to some point before the query is started.
    */
-  def currentEventsBySlices[Event](
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[EventEnvelope[Event], NotUsed]
+  def currentEventsBySlices[Event]
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[EventEnvelope[Event], NotUsed]
 
   def sliceForPersistenceId(persistenceId: String): Int
 

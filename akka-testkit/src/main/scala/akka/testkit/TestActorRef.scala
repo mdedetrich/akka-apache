@@ -78,12 +78,14 @@ class TestActorRef[T <: Actor](_system: ActorSystem, _props: Props, _supervisor:
 
   import TestActorRef.InternalGetActor
 
-  protected override def newActorCell(
-      system: ActorSystemImpl,
-      ref: InternalActorRef,
-      props: Props,
-      dispatcher: MessageDispatcher,
-      supervisor: InternalActorRef): ActorCell =
+  protected override def newActorCell
+    (
+        system: ActorSystemImpl,
+        ref: InternalActorRef,
+        props: Props,
+        dispatcher: MessageDispatcher,
+        supervisor: InternalActorRef)
+    : ActorCell =
     new ActorCell(system, ref, props, dispatcher, supervisor) {
       override def autoReceiveMessage(msg: Envelope): Unit = {
         msg.message match {
@@ -176,8 +178,11 @@ object TestActorRef {
     new TestActorRef(sysImpl, props, supervisor.asInstanceOf[InternalActorRef], randomName)
   }
 
-  def apply[T <: Actor](props: Props, supervisor: ActorRef, name: String)(
-      implicit system: ActorSystem): TestActorRef[T] = {
+  def apply[T <: Actor]
+    (props: Props, supervisor: ActorRef, name: String)
+    (
+        implicit system: ActorSystem)
+    : TestActorRef[T] = {
     val sysImpl = system.asInstanceOf[ActorSystemImpl]
     new TestActorRef(sysImpl, props, supervisor.asInstanceOf[InternalActorRef], name)
   }
@@ -219,9 +224,12 @@ object TestActorRef {
       },
       supervisor)
 
-  def apply[T <: Actor](supervisor: ActorRef, name: String)(
-      implicit t: ClassTag[T],
-      system: ActorSystem): TestActorRef[T] =
+  def apply[T <: Actor]
+    (supervisor: ActorRef, name: String)
+    (
+        implicit t: ClassTag[T],
+        system: ActorSystem)
+    : TestActorRef[T] =
     apply[T](
       Props {
         system

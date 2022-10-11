@@ -17,10 +17,12 @@ import akka.actor.typed.scaladsl.Behaviors
 
 object TestDurableProducerQueue {
   import DurableProducerQueue._
-  def apply[A](
-      delay: FiniteDuration,
-      stateHolder: AtomicReference[State[A]],
-      failWhen: Command[A] => Boolean): Behavior[Command[A]] = {
+  def apply[A]
+    (
+        delay: FiniteDuration,
+        stateHolder: AtomicReference[State[A]],
+        failWhen: Command[A] => Boolean)
+    : Behavior[Command[A]] = {
     if (stateHolder.get() eq null)
       stateHolder.set(State(1L, 0L, Map.empty, Vector.empty))
 
@@ -45,11 +47,12 @@ object TestDurableProducerQueue {
 
 }
 
-class TestDurableProducerQueue[A](
-    context: ActorContext[DurableProducerQueue.Command[A]],
-    delay: FiniteDuration,
-    stateHolder: AtomicReference[DurableProducerQueue.State[A]],
-    failWhen: DurableProducerQueue.Command[A] => Boolean) {
+class TestDurableProducerQueue[A]
+  (
+      context: ActorContext[DurableProducerQueue.Command[A]],
+      delay: FiniteDuration,
+      stateHolder: AtomicReference[DurableProducerQueue.State[A]],
+      failWhen: DurableProducerQueue.Command[A] => Boolean) {
   import DurableProducerQueue._
   import TestDurableProducerQueue.TestTimestamp
 

@@ -16,13 +16,14 @@ import java.util
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class ActorRefBackpressureSinkStage[In](
-    ref: ActorRef,
-    messageAdapter: ActorRef => In => Any,
-    onInitMessage: ActorRef => Any,
-    ackMessage: Option[Any],
-    onCompleteMessage: Any,
-    onFailureMessage: Throwable => Any)
+@InternalApi private[akka] class ActorRefBackpressureSinkStage[In]
+  (
+      ref: ActorRef,
+      messageAdapter: ActorRef => In => Any,
+      onInitMessage: ActorRef => Any,
+      ackMessage: Option[Any],
+      onCompleteMessage: Any,
+      onFailureMessage: Throwable => Any)
     extends GraphStage[SinkShape[In]] {
   val in: Inlet[In] = Inlet[In]("ActorRefBackpressureSink.in")
   override def initialAttributes: Attributes = DefaultAttributes.actorRefWithBackpressureSink

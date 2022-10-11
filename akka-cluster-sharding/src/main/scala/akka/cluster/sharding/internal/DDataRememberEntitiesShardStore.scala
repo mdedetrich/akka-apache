@@ -40,12 +40,14 @@ import scala.concurrent.ExecutionContext
 @InternalApi
 private[akka] object DDataRememberEntitiesShardStore {
 
-  def props(
-      shardId: ShardId,
-      typeName: String,
-      settings: ClusterShardingSettings,
-      replicator: ActorRef,
-      majorityMinCap: Int): Props =
+  def props
+    (
+        shardId: ShardId,
+        typeName: String,
+        settings: ClusterShardingSettings,
+        replicator: ActorRef,
+        majorityMinCap: Int)
+    : Props =
     Props(new DDataRememberEntitiesShardStore(shardId, typeName, settings, replicator, majorityMinCap))
 
   // The default maximum-frame-size is 256 KiB with Artery.
@@ -71,12 +73,13 @@ private[akka] object DDataRememberEntitiesShardStore {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class DDataRememberEntitiesShardStore(
-    shardId: ShardId,
-    typeName: String,
-    settings: ClusterShardingSettings,
-    replicator: ActorRef,
-    majorityMinCap: Int)
+private[akka] final class DDataRememberEntitiesShardStore
+  (
+      shardId: ShardId,
+      typeName: String,
+      settings: ClusterShardingSettings,
+      replicator: ActorRef,
+      majorityMinCap: Int)
     extends Actor
     with Stash
     with ActorLogging {
@@ -203,10 +206,12 @@ private[akka] final class DDataRememberEntitiesShardStore(
     context.become(waitingForUpdates(sender(), update, ddataUpdates))
   }
 
-  private def waitingForUpdates(
-      requestor: ActorRef,
-      update: RememberEntitiesShardStore.Update,
-      allUpdates: Map[Set[Evt], (Update[ORSet[EntityId]], Int)]): Receive = {
+  private def waitingForUpdates
+    (
+        requestor: ActorRef,
+        update: RememberEntitiesShardStore.Update,
+        allUpdates: Map[Set[Evt], (Update[ORSet[EntityId]], Int)])
+    : Receive = {
 
     // updatesLeft used both to keep track of what work remains and for retrying on timeout up to a limit
     def next(updatesLeft: Map[Set[Evt], (Update[ORSet[EntityId]], Int)]): Receive = {

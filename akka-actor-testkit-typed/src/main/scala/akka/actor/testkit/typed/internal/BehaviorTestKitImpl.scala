@@ -25,10 +25,11 @@ import akka.util.ccompat.JavaConverters._
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class BehaviorTestKitImpl[T](
-    system: ActorSystemStub,
-    _path: ActorPath,
-    _initialBehavior: Behavior[T])
+private[akka] final class BehaviorTestKitImpl[T]
+  (
+      system: ActorSystemStub,
+      _path: ActorPath,
+      _initialBehavior: Behavior[T])
     extends akka.actor.testkit.typed.javadsl.BehaviorTestKit[T]
     with akka.actor.testkit.typed.scaladsl.BehaviorTestKit[T] {
 
@@ -178,10 +179,12 @@ private[akka] object BehaviorTestKitImpl {
   object Interceptor extends BehaviorInterceptor[Any, Any]() {
 
     // Intercept a internal message adaptors related messages, forward the rest
-    override def aroundReceive(
-        ctx: TypedActorContext[Any],
-        msg: Any,
-        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] = {
+    override def aroundReceive
+      (
+          ctx: TypedActorContext[Any],
+          msg: Any,
+          target: BehaviorInterceptor.ReceiveTarget[Any])
+      : Behavior[Any] = {
       msg match {
         case AdaptWithRegisteredMessageAdapter(msgToAdapt) =>
           val fn = ctx

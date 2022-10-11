@@ -48,16 +48,20 @@ private[akka] object NoMaterializer extends Materializer {
   def schedulePeriodically(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable =
     throw new UnsupportedOperationException("NoMaterializer cannot schedule a repeated event")
 
-  override def scheduleWithFixedDelay(
-      initialDelay: FiniteDuration,
-      delay: FiniteDuration,
-      task: Runnable): Cancellable =
+  override def scheduleWithFixedDelay
+    (
+        initialDelay: FiniteDuration,
+        delay: FiniteDuration,
+        task: Runnable)
+    : Cancellable =
     throw new UnsupportedOperationException("NoMaterializer cannot scheduleWithFixedDelay")
 
-  override def scheduleAtFixedRate(
-      initialDelay: FiniteDuration,
-      interval: FiniteDuration,
-      task: Runnable): Cancellable =
+  override def scheduleAtFixedRate
+    (
+        initialDelay: FiniteDuration,
+        interval: FiniteDuration,
+        task: Runnable)
+    : Cancellable =
     throw new UnsupportedOperationException("NoMaterializer cannot scheduleAtFixedRate")
 
   override def shutdown(): Unit = throw new UnsupportedOperationException("NoMaterializer cannot shutdown")
@@ -92,12 +96,14 @@ object GraphInterpreterSpecKit {
    * @param attributes Optional set of attributes to pass to the stages when creating the logics
    * @return Created logics and the maps of all inlets respective outlets to those logics
    */
-  private[stream] def createLogics(
-      stages: Array[GraphStageWithMaterializedValue[_ <: Shape, _]],
-      upstreams: Array[UpstreamBoundaryStageLogic[_]],
-      downstreams: Array[DownstreamBoundaryStageLogic[_]],
-      attributes: Array[Attributes] = Array.empty)(implicit
-  system: ActorSystem): (Array[GraphStageLogic], SMap[Inlet[_], GraphStageLogic], SMap[Outlet[_], GraphStageLogic]) = {
+  private[stream] def createLogics
+    (
+        stages: Array[GraphStageWithMaterializedValue[_ <: Shape, _]],
+        upstreams: Array[UpstreamBoundaryStageLogic[_]],
+        downstreams: Array[DownstreamBoundaryStageLogic[_]],
+        attributes: Array[Attributes] = Array.empty)
+    (implicit system: ActorSystem)
+    : (Array[GraphStageLogic], SMap[Inlet[_], GraphStageLogic], SMap[Outlet[_], GraphStageLogic]) = {
     if (attributes.nonEmpty && attributes.length != stages.length)
       throw new IllegalArgumentException("Attributes must be either empty or one per stage")
 
@@ -202,10 +208,12 @@ object GraphInterpreterSpecKit {
   /**
    * Create interpreter connections for all the given `connectedPorts`.
    */
-  private[stream] def createConnections(
-      connectedPorts: Seq[(Outlet[_], Inlet[_])],
-      inOwners: SMap[Inlet[_], GraphStageLogic],
-      outOwners: SMap[Outlet[_], GraphStageLogic]): Array[Connection] = {
+  private[stream] def createConnections
+    (
+        connectedPorts: Seq[(Outlet[_], Inlet[_])],
+        inOwners: SMap[Inlet[_], GraphStageLogic],
+        outOwners: SMap[Outlet[_], GraphStageLogic])
+    : Array[Connection] = {
 
     val connections = new Array[Connection](connectedPorts.size)
     connectedPorts.zipWithIndex.foreach {

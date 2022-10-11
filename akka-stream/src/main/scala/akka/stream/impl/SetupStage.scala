@@ -109,11 +109,12 @@ private object SetupStage {
       subOutlet.fail(ex)
   }
 
-  def delegateToOutlet[T](
-      push: T => Unit,
-      complete: () => Unit,
-      fail: Throwable => Unit,
-      subInlet: GraphStageLogic#SubSinkInlet[T]) = new InHandler {
+  def delegateToOutlet[T]
+    (
+        push: T => Unit,
+        complete: () => Unit,
+        fail: Throwable => Unit,
+        subInlet: GraphStageLogic#SubSinkInlet[T]) = new InHandler {
     override def onPush(): Unit =
       push(subInlet.grab())
     override def onUpstreamFinish(): Unit =

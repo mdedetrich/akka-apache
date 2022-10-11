@@ -34,10 +34,12 @@ private[ssl] object PemManagersProvider {
    * INTERNAL API
    */
   @InternalApi
-  private[ssl] def buildKeyManagers(
-      privateKey: PrivateKey,
-      cert: X509Certificate,
-      cacert: Certificate): Array[KeyManager] = {
+  private[ssl] def buildKeyManagers
+    (
+        privateKey: PrivateKey,
+        cert: X509Certificate,
+        cacert: Certificate)
+    : Array[KeyManager] = {
     val keyStore = KeyStore.getInstance("JKS")
     keyStore.load(null)
 

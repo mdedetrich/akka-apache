@@ -170,9 +170,11 @@ import akka.util.ccompat.JavaConverters._
    * The reply message will be sent also if `withEnforcedReplies` isn't used, but then the compiler will not help
    * finding mistakes.
    */
-  def thenReply[ReplyMessage](
-      replyTo: ActorRef[ReplyMessage],
-      replyWithMessage: function.Function[State, ReplyMessage]): ReplyEffect[Event, State] =
+  def thenReply[ReplyMessage]
+    (
+        replyTo: ActorRef[ReplyMessage],
+        replyWithMessage: function.Function[State, ReplyMessage])
+    : ReplyEffect[Event, State] =
     CompositeEffect(this, SideEffect[State](newState => replyTo ! replyWithMessage(newState)))
 
   /**

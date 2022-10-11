@@ -662,17 +662,20 @@ class RestartSpec
   "A restart with backoff flow" should {
 
     // helps reuse all the setupFlow code for both methods: withBackoff, and onlyOnFailuresWithBackoff
-    def RestartFlowFactory[In, Out](
-        onlyOnFailures: Boolean,
-        settings: RestartSettings): (() => Flow[In, Out, _]) => Flow[In, Out, NotUsed] =
+    def RestartFlowFactory[In, Out]
+      (
+          onlyOnFailures: Boolean,
+          settings: RestartSettings)
+      : (() => Flow[In, Out, _]) => Flow[In, Out, NotUsed] =
       if (onlyOnFailures) RestartFlow.onFailuresWithBackoff(settings)
       else RestartFlow.withBackoff(settings)
 
-    def setupFlow(
-        minBackoff: FiniteDuration,
-        maxBackoff: FiniteDuration,
-        maxRestarts: Int = -1,
-        onlyOnFailures: Boolean = false) = {
+    def setupFlow
+      (
+          minBackoff: FiniteDuration,
+          maxBackoff: FiniteDuration,
+          maxRestarts: Int = -1,
+          onlyOnFailures: Boolean = false) = {
       val created = new AtomicInteger()
 
       val flowInProbe = TestProbe("in-probe")

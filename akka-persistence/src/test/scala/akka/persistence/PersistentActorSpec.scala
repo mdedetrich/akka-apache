@@ -133,9 +133,10 @@ object PersistentActorSpec {
         }
     }
   }
-  class ChangeBehaviorInLastEventHandlerPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class ChangeBehaviorInLastEventHandlerPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends ChangeBehaviorInLastEventHandlerPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -157,9 +158,10 @@ object PersistentActorSpec {
         }
     }
   }
-  class ChangeBehaviorInFirstEventHandlerPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class ChangeBehaviorInFirstEventHandlerPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends ChangeBehaviorInFirstEventHandlerPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -177,9 +179,10 @@ object PersistentActorSpec {
         persist(Evt(s"${data}-0"))(updateState)
     }
   }
-  class ChangeBehaviorInCommandHandlerFirstPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class ChangeBehaviorInCommandHandlerFirstPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends ChangeBehaviorInCommandHandlerFirstPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -197,9 +200,10 @@ object PersistentActorSpec {
         context.become(newBehavior)
     }
   }
-  class ChangeBehaviorInCommandHandlerLastPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class ChangeBehaviorInCommandHandlerLastPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends ChangeBehaviorInCommandHandlerLastPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -220,10 +224,11 @@ object PersistentActorSpec {
       case "snap"                 => saveSnapshot(events)
     }
   }
-  class SnapshottingPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class SnapshottingPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends SnapshottingPersistentActor(name, probe)
       with InmemRuntimePluginConfig
 
@@ -244,10 +249,11 @@ object PersistentActorSpec {
       case "It's changing me" => probe ! "I am becoming"
     }
   }
-  class SnapshottingBecomingPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class SnapshottingBecomingPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends SnapshottingBecomingPersistentActor(name, probe)
       with InmemRuntimePluginConfig
 
@@ -382,9 +388,10 @@ object PersistentActorSpec {
       counter
     }
   }
-  class AsyncPersistAndPersistMixedSyncAsyncSyncPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class AsyncPersistAndPersistMixedSyncAsyncSyncPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends AsyncPersistAndPersistMixedSyncAsyncSyncPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -410,9 +417,10 @@ object PersistentActorSpec {
       sendMsgCounter
     }
   }
-  class AsyncPersistAndPersistMixedSyncAsyncPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class AsyncPersistAndPersistMixedSyncAsyncPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends AsyncPersistAndPersistMixedSyncAsyncPersistentActor(name)
       with InmemRuntimePluginConfig
 
@@ -461,10 +469,11 @@ object PersistentActorSpec {
     }
 
   }
-  class HandleRecoveryFinishedEventPersistentActorWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class HandleRecoveryFinishedEventPersistentActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends HandleRecoveryFinishedEventPersistentActor(name, probe)
       with InmemRuntimePluginConfig
 
@@ -534,14 +543,16 @@ object PersistentActorSpec {
   class DeferringSyncMixedCallsPPADDPADPersistActor(name: String)
       extends DeferringMixedCallsPPADDPADPersistActor(name)
       with DeferSync
-  class DeferringAsyncMixedCallsPPADDPADPersistActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class DeferringAsyncMixedCallsPPADDPADPersistActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends DeferringAsyncMixedCallsPPADDPADPersistActor(name)
       with InmemRuntimePluginConfig
-  class DeferringSyncMixedCallsPPADDPADPersistActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class DeferringSyncMixedCallsPPADDPADPersistActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends DeferringSyncMixedCallsPPADDPADPersistActor(name)
       with InmemRuntimePluginConfig
 
@@ -561,14 +572,16 @@ object PersistentActorSpec {
   class DeferringSyncWithNoPersistCallsPersistActor(name: String)
       extends DeferringWithNoPersistCallsPersistActor(name)
       with DeferSync
-  class DeferringAsyncWithNoPersistCallsPersistActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class DeferringAsyncWithNoPersistCallsPersistActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends DeferringAsyncWithNoPersistCallsPersistActor(name)
       with InmemRuntimePluginConfig
-  class DeferringSyncWithNoPersistCallsPersistActorWithInmemRuntimePluginConfig(
-      name: String,
-      val providedConfig: Config)
+  class DeferringSyncWithNoPersistCallsPersistActorWithInmemRuntimePluginConfig
+    (
+        name: String,
+        val providedConfig: Config)
       extends DeferringSyncWithNoPersistCallsPersistActor(name)
       with InmemRuntimePluginConfig
 
@@ -674,10 +687,11 @@ object PersistentActorSpec {
         }
     }
   }
-  class MultipleAndNestedPersistAsyncsWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class MultipleAndNestedPersistAsyncsWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends MultipleAndNestedPersistAsyncs(name, probe)
       with InmemRuntimePluginConfig
 
@@ -702,11 +716,12 @@ object PersistentActorSpec {
         persistAsync(s + "-" + 1)(weMustGoDeeper)
     }
   }
-  class DeeplyNestedPersistAsyncsWithInmemRuntimePluginConfig(
-      name: String,
-      maxDepth: Int,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class DeeplyNestedPersistAsyncsWithInmemRuntimePluginConfig
+    (
+        name: String,
+        maxDepth: Int,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends DeeplyNestedPersistAsyncs(name, maxDepth, probe)
       with InmemRuntimePluginConfig
 
@@ -728,10 +743,11 @@ object PersistentActorSpec {
         }
     }
   }
-  class NestedPersistNormalAndAsyncsWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class NestedPersistNormalAndAsyncsWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends NestedPersistNormalAndAsyncs(name, probe)
       with InmemRuntimePluginConfig
 
@@ -753,10 +769,11 @@ object PersistentActorSpec {
         }
     }
   }
-  class NestedPersistAsyncsAndNormalWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class NestedPersistAsyncsAndNormalWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends NestedPersistAsyncsAndNormal(name, probe)
       with InmemRuntimePluginConfig
 
@@ -775,10 +792,11 @@ object PersistentActorSpec {
         }
     }
   }
-  class NestedPersistInAsyncEnforcesStashingWithInmemRuntimePluginConfig(
-      name: String,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class NestedPersistInAsyncEnforcesStashingWithInmemRuntimePluginConfig
+    (
+        name: String,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends NestedPersistInAsyncEnforcesStashing(name, probe)
       with InmemRuntimePluginConfig
 
@@ -803,11 +821,12 @@ object PersistentActorSpec {
         persist(s + "-" + 1)(weMustGoDeeper)
     }
   }
-  class DeeplyNestedPersistsWithInmemRuntimePluginConfig(
-      name: String,
-      maxDepth: Int,
-      probe: ActorRef,
-      val providedConfig: Config)
+  class DeeplyNestedPersistsWithInmemRuntimePluginConfig
+    (
+        name: String,
+        maxDepth: Int,
+        probe: ActorRef,
+        val providedConfig: Config)
       extends DeeplyNestedPersists(name, maxDepth, probe)
       with InmemRuntimePluginConfig
 

@@ -67,11 +67,13 @@ private[akka] object MessageSerializer {
     } finally Serialization.currentTransportInformation.value = oldInfo
   }
 
-  def serializeForArtery(
-      serialization: Serialization,
-      outboundEnvelope: OutboundEnvelope,
-      headerBuilder: HeaderBuilder,
-      envelope: EnvelopeBuffer): Unit = {
+  def serializeForArtery
+    (
+        serialization: Serialization,
+        outboundEnvelope: OutboundEnvelope,
+        headerBuilder: HeaderBuilder,
+        envelope: EnvelopeBuffer)
+    : Unit = {
     val message = outboundEnvelope.message
     val serializer = serialization.findSerializerFor(message)
     val oldInfo = Serialization.currentTransportInformation.value
@@ -91,13 +93,15 @@ private[akka] object MessageSerializer {
     } finally Serialization.currentTransportInformation.value = oldInfo
   }
 
-  def deserializeForArtery(
-      @unused system: ExtendedActorSystem,
-      @unused originUid: Long,
-      serialization: Serialization,
-      serializer: Int,
-      classManifest: String,
-      envelope: EnvelopeBuffer): AnyRef = {
+  def deserializeForArtery
+    (
+        @unused system: ExtendedActorSystem,
+        @unused originUid: Long,
+        serialization: Serialization,
+        serializer: Int,
+        classManifest: String,
+        envelope: EnvelopeBuffer)
+    : AnyRef = {
     serialization.deserializeByteBuffer(envelope.byteBuffer, serializer, classManifest)
   }
 }

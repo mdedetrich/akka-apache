@@ -17,10 +17,12 @@ import akka.annotation.InternalApi
 @InternalApi private[akka] object WithMdcBehaviorInterceptor {
   val noMdcPerMessage = (_: Any) => Map.empty[String, String]
 
-  def apply[T: ClassTag](
-      staticMdc: Map[String, String],
-      mdcForMessage: T => Map[String, String],
-      behavior: Behavior[T]): Behavior[T] = {
+  def apply[T: ClassTag]
+    (
+        staticMdc: Map[String, String],
+        mdcForMessage: T => Map[String, String],
+        behavior: Behavior[T])
+    : Behavior[T] = {
     BehaviorImpl.intercept(() => new WithMdcBehaviorInterceptor[T](staticMdc, mdcForMessage))(behavior)
   }
 

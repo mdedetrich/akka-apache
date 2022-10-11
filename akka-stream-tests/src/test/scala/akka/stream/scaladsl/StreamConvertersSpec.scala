@@ -173,11 +173,12 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
 
   "Java collector Sink" must {
 
-    class TestCollector(
-        _supplier: () => Supplier[Array[Int]],
-        _accumulator: () => BiConsumer[Array[Int], Int],
-        _combiner: () => BinaryOperator[Array[Int]],
-        _finisher: () => java.util.function.Function[Array[Int], Int])
+    class TestCollector
+      (
+          _supplier: () => Supplier[Array[Int]],
+          _accumulator: () => BiConsumer[Array[Int], Int],
+          _combiner: () => BinaryOperator[Array[Int]],
+          _finisher: () => java.util.function.Function[Array[Int], Int])
         extends Collector[Int, Array[Int], Int] {
       override def supplier(): Supplier[Array[Int]] = _supplier()
       override def combiner(): BinaryOperator[Array[Int]] = _combiner()

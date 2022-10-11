@@ -19,11 +19,12 @@ import akka.util.OptionVal
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] abstract class FanoutOutputs(
-    val maxBufferSize: Int,
-    val initialBufferSize: Int,
-    self: ActorRef,
-    val pump: Pump)
+@InternalApi private[akka] abstract class FanoutOutputs
+  (
+      val maxBufferSize: Int,
+      val initialBufferSize: Int,
+      self: ActorRef,
+      val pump: Pump)
     extends DefaultOutputTransferStates
     with SubscriberManagement[Any] {
 

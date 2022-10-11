@@ -56,11 +56,12 @@ object Ontology {
   final case class DataSink(datatype: DataType) extends DataResource
 
   sealed trait RegistrationCommand extends DataApi
-  final case class RegisterDataType(
-      key: DataKey,
-      schema: Schema,
-      replyTo: ActorRef[DataApi],
-      onBehalfOf: ActorRef[DataApi])
+  final case class RegisterDataType
+    (
+        key: DataKey,
+        schema: Schema,
+        replyTo: ActorRef[DataApi],
+        onBehalfOf: ActorRef[DataApi])
       extends RegistrationCommand
   sealed trait RegistrationStatus extends Status
   final case class DataTypeExists(key: DataKey) extends RegistrationStatus
@@ -159,7 +160,9 @@ object Ingestion {
     }
 
   /** Would normally be typed more specifically. */
-  private def active(key: DataKey, sink: Option[DataSink], mediator: akka.actor.ActorRef): Behavior[DataEvent] =
+  private def active
+    (key: DataKey, sink: Option[DataSink], mediator: akka.actor.ActorRef)
+    : Behavior[DataEvent] =
     // #publisher
     Behaviors.setup { context =>
       Behaviors.receiveMessagePartial[DataEvent] {

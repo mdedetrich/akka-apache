@@ -30,15 +30,16 @@ object LoggingEvent {
   /**
    * Java API
    */
-  def create(
-      level: Level,
-      loggerName: String,
-      threadName: String,
-      message: String,
-      timeStamp: Long,
-      marker: Optional[Marker],
-      throwable: Optional[Throwable],
-      mdc: java.util.Map[String, String]) =
+  def create
+    (
+        level: Level,
+        loggerName: String,
+        threadName: String,
+        message: String,
+        timeStamp: Long,
+        marker: Optional[Marker],
+        throwable: Optional[Throwable],
+        mdc: java.util.Map[String, String]) =
     apply(level, loggerName, threadName, message, timeStamp, marker.asScala, throwable.asScala, mdc.asScala.toMap)
 }
 
@@ -46,15 +47,16 @@ object LoggingEvent {
  * Representation of logging event when testing with [[akka.actor.testkit.typed.scaladsl.LoggingTestKit]]
  * or [[akka.actor.testkit.typed.javadsl.LoggingTestKit]].
  */
-final case class LoggingEvent(
-    level: Level,
-    loggerName: String,
-    threadName: String,
-    message: String,
-    timeStamp: Long,
-    marker: Option[Marker],
-    throwable: Option[Throwable],
-    mdc: Map[String, String]) {
+final case class LoggingEvent
+  (
+      level: Level,
+      loggerName: String,
+      threadName: String,
+      message: String,
+      timeStamp: Long,
+      marker: Option[Marker],
+      throwable: Option[Throwable],
+      mdc: Map[String, String]) {
 
   /**
    * Java API

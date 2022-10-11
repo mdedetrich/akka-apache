@@ -119,14 +119,15 @@ object ClusterClientSettings {
 @deprecated(
   "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
-final class ClusterClientSettings(
-    val initialContacts: Set[ActorPath],
-    val establishingGetContactsInterval: FiniteDuration,
-    val refreshContactsInterval: FiniteDuration,
-    val heartbeatInterval: FiniteDuration,
-    val acceptableHeartbeatPause: FiniteDuration,
-    val bufferSize: Int,
-    val reconnectTimeout: Option[FiniteDuration])
+final class ClusterClientSettings
+  (
+      val initialContacts: Set[ActorPath],
+      val establishingGetContactsInterval: FiniteDuration,
+      val refreshContactsInterval: FiniteDuration,
+      val heartbeatInterval: FiniteDuration,
+      val acceptableHeartbeatPause: FiniteDuration,
+      val bufferSize: Int,
+      val reconnectTimeout: Option[FiniteDuration])
     extends NoSerializationVerificationNeeded {
 
   require(bufferSize >= 0 && bufferSize <= 10000, "bufferSize must be >= 0 and <= 10000")
@@ -134,13 +135,14 @@ final class ClusterClientSettings(
   /**
    * For binary/source compatibility
    */
-  def this(
-      initialContacts: Set[ActorPath],
-      establishingGetContactsInterval: FiniteDuration,
-      refreshContactsInterval: FiniteDuration,
-      heartbeatInterval: FiniteDuration,
-      acceptableHeartbeatPause: FiniteDuration,
-      bufferSize: Int) =
+  def this
+    (
+        initialContacts: Set[ActorPath],
+        establishingGetContactsInterval: FiniteDuration,
+        refreshContactsInterval: FiniteDuration,
+        heartbeatInterval: FiniteDuration,
+        acceptableHeartbeatPause: FiniteDuration,
+        bufferSize: Int) =
     this(
       initialContacts,
       establishingGetContactsInterval,
@@ -172,9 +174,11 @@ final class ClusterClientSettings(
   def withRefreshContactsInterval(refreshContactsInterval: FiniteDuration): ClusterClientSettings =
     copy(refreshContactsInterval = refreshContactsInterval)
 
-  def withHeartbeat(
-      heartbeatInterval: FiniteDuration,
-      acceptableHeartbeatPause: FiniteDuration): ClusterClientSettings =
+  def withHeartbeat
+    (
+        heartbeatInterval: FiniteDuration,
+        acceptableHeartbeatPause: FiniteDuration)
+    : ClusterClientSettings =
     copy(heartbeatInterval = heartbeatInterval, acceptableHeartbeatPause = acceptableHeartbeatPause)
 
   def withBufferSize(bufferSize: Int): ClusterClientSettings =
@@ -183,14 +187,16 @@ final class ClusterClientSettings(
   def withReconnectTimeout(reconnectTimeout: Option[FiniteDuration]): ClusterClientSettings =
     copy(reconnectTimeout = reconnectTimeout)
 
-  private def copy(
-      initialContacts: Set[ActorPath] = initialContacts,
-      establishingGetContactsInterval: FiniteDuration = establishingGetContactsInterval,
-      refreshContactsInterval: FiniteDuration = refreshContactsInterval,
-      heartbeatInterval: FiniteDuration = heartbeatInterval,
-      acceptableHeartbeatPause: FiniteDuration = acceptableHeartbeatPause,
-      bufferSize: Int = bufferSize,
-      reconnectTimeout: Option[FiniteDuration] = reconnectTimeout): ClusterClientSettings =
+  private def copy
+    (
+        initialContacts: Set[ActorPath] = initialContacts,
+        establishingGetContactsInterval: FiniteDuration = establishingGetContactsInterval,
+        refreshContactsInterval: FiniteDuration = refreshContactsInterval,
+        heartbeatInterval: FiniteDuration = heartbeatInterval,
+        acceptableHeartbeatPause: FiniteDuration = acceptableHeartbeatPause,
+        bufferSize: Int = bufferSize,
+        reconnectTimeout: Option[FiniteDuration] = reconnectTimeout)
+    : ClusterClientSettings =
     new ClusterClientSettings(
       initialContacts,
       establishingGetContactsInterval,
@@ -705,10 +711,11 @@ object ClusterReceptionistSettings {
 @deprecated(
   "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
-final class ClusterReceptionistSettings(
-    val role: Option[String],
-    val numberOfContacts: Int,
-    val responseTunnelReceiveTimeout: FiniteDuration)
+final class ClusterReceptionistSettings
+  (
+      val role: Option[String],
+      val numberOfContacts: Int,
+      val responseTunnelReceiveTimeout: FiniteDuration)
     extends NoSerializationVerificationNeeded {
 
   def withRole(role: String): ClusterReceptionistSettings = copy(role = ClusterReceptionistSettings.roleOption(role))
@@ -721,10 +728,12 @@ final class ClusterReceptionistSettings(
   def withResponseTunnelReceiveTimeout(responseTunnelReceiveTimeout: FiniteDuration): ClusterReceptionistSettings =
     copy(responseTunnelReceiveTimeout = responseTunnelReceiveTimeout)
 
-  def withHeartbeat(
-      heartbeatInterval: FiniteDuration,
-      acceptableHeartbeatPause: FiniteDuration,
-      failureDetectionInterval: FiniteDuration): ClusterReceptionistSettings =
+  def withHeartbeat
+    (
+        heartbeatInterval: FiniteDuration,
+        acceptableHeartbeatPause: FiniteDuration,
+        failureDetectionInterval: FiniteDuration)
+    : ClusterReceptionistSettings =
     copy(
       heartbeatInterval = heartbeatInterval,
       acceptableHeartbeatPause = acceptableHeartbeatPause,
@@ -748,13 +757,14 @@ final class ClusterReceptionistSettings(
   private var _acceptableHeartbeatPause: FiniteDuration = 13.seconds
   private var _failureDetectionInterval: FiniteDuration = 2.second
 
-  def this(
-      role: Option[String],
-      numberOfContacts: Int,
-      responseTunnelReceiveTimeout: FiniteDuration,
-      heartbeatInterval: FiniteDuration,
-      acceptableHeartbeatPause: FiniteDuration,
-      failureDetectionInterval: FiniteDuration) = {
+  def this
+    (
+        role: Option[String],
+        numberOfContacts: Int,
+        responseTunnelReceiveTimeout: FiniteDuration,
+        heartbeatInterval: FiniteDuration,
+        acceptableHeartbeatPause: FiniteDuration,
+        failureDetectionInterval: FiniteDuration) = {
     this(role, numberOfContacts, responseTunnelReceiveTimeout)
     this._heartbeatInterval = heartbeatInterval
     this._acceptableHeartbeatPause = acceptableHeartbeatPause
@@ -763,13 +773,15 @@ final class ClusterReceptionistSettings(
 
   // END BINARY COMPATIBILITY
 
-  private def copy(
-      role: Option[String] = role,
-      numberOfContacts: Int = numberOfContacts,
-      responseTunnelReceiveTimeout: FiniteDuration = responseTunnelReceiveTimeout,
-      heartbeatInterval: FiniteDuration = heartbeatInterval,
-      acceptableHeartbeatPause: FiniteDuration = acceptableHeartbeatPause,
-      failureDetectionInterval: FiniteDuration = failureDetectionInterval): ClusterReceptionistSettings =
+  private def copy
+    (
+        role: Option[String] = role,
+        numberOfContacts: Int = numberOfContacts,
+        responseTunnelReceiveTimeout: FiniteDuration = responseTunnelReceiveTimeout,
+        heartbeatInterval: FiniteDuration = heartbeatInterval,
+        acceptableHeartbeatPause: FiniteDuration = acceptableHeartbeatPause,
+        failureDetectionInterval: FiniteDuration = failureDetectionInterval)
+    : ClusterReceptionistSettings =
     new ClusterReceptionistSettings(
       role,
       numberOfContacts,

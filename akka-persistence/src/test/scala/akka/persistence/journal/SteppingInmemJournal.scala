@@ -128,8 +128,11 @@ final class SteppingInmemJournal extends InmemJournal {
     future
   }
 
-  override def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      recoveryCallback: (PersistentRepr) => Unit): Future[Unit] = {
+  override def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        recoveryCallback: (PersistentRepr) => Unit)
+    : Future[Unit] = {
     val promise = Promise[Unit]()
     val future = promise.future
     doOrEnqueue { () =>

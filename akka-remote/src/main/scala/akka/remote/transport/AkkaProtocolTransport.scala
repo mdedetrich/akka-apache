@@ -66,10 +66,11 @@ private[remote] object AkkaProtocolTransport { // Couldn't these go into the Rem
   val AkkaOverhead: Int = 0 // Don't know yet
   val UniqueId = new java.util.concurrent.atomic.AtomicInteger(0)
 
-  final case class AssociateUnderlyingRefuseUid(
-      remoteAddress: Address,
-      statusPromise: Promise[AssociationHandle],
-      refuseUid: Option[Int])
+  final case class AssociateUnderlyingRefuseUid
+    (
+        remoteAddress: Address,
+        statusPromise: Promise[AssociationHandle],
+        refuseUid: Option[Int])
       extends NoSerializationVerificationNeeded
 }
 
@@ -104,11 +105,12 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  *   the codec that will be used to encode/decode Akka PDUs
  */
 @nowarn("msg=deprecated")
-private[remote] class AkkaProtocolTransport(
-    wrappedTransport: Transport,
-    private val system: ActorSystem,
-    private val settings: AkkaProtocolSettings,
-    private val codec: AkkaPduCodec)
+private[remote] class AkkaProtocolTransport
+  (
+      wrappedTransport: Transport,
+      private val system: ActorSystem,
+      private val settings: AkkaProtocolSettings,
+      private val codec: AkkaPduCodec)
     extends ActorTransportAdapter(wrappedTransport, system) {
 
   override val addedSchemeIdentifier: String = AkkaScheme
@@ -134,9 +136,10 @@ private[remote] class AkkaProtocolTransport(
 }
 
 @nowarn("msg=deprecated")
-private[transport] class AkkaProtocolManager(
-    private val wrappedTransport: Transport,
-    private val settings: AkkaProtocolSettings)
+private[transport] class AkkaProtocolManager
+  (
+      private val wrappedTransport: Transport,
+      private val settings: AkkaProtocolSettings)
     extends ActorTransportAdapterManager {
 
   // The AkkaProtocolTransport does not handle the recovery of associations, this task is implemented in the
@@ -177,10 +180,12 @@ private[transport] class AkkaProtocolManager(
 
   }
 
-  private def createOutboundStateActor(
-      remoteAddress: Address,
-      statusPromise: Promise[AssociationHandle],
-      refuseUid: Option[Int]): Unit = {
+  private def createOutboundStateActor
+    (
+        remoteAddress: Address,
+        statusPromise: Promise[AssociationHandle],
+        refuseUid: Option[Int])
+    : Unit = {
 
     val stateActorLocalAddress = localAddress
     val stateActorSettings = settings
@@ -211,14 +216,15 @@ private[transport] class AkkaProtocolManager(
 }
 
 @nowarn("msg=deprecated")
-private[remote] class AkkaProtocolHandle(
-    _localAddress: Address,
-    _remoteAddress: Address,
-    val readHandlerPromise: Promise[HandleEventListener],
-    _wrappedHandle: AssociationHandle,
-    val handshakeInfo: HandshakeInfo,
-    private val stateActor: ActorRef,
-    private val codec: AkkaPduCodec)
+private[remote] class AkkaProtocolHandle
+  (
+      _localAddress: Address,
+      _remoteAddress: Address,
+      val readHandlerPromise: Promise[HandleEventListener],
+      _wrappedHandle: AssociationHandle,
+      val handshakeInfo: HandshakeInfo,
+      private val stateActor: ActorRef,
+      private val codec: AkkaPduCodec)
     extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, AkkaScheme) {
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
@@ -265,16 +271,18 @@ private[remote] object ProtocolStateActor {
   trait InitialProtocolStateData extends ProtocolStateData
 
   // Neither the underlying, nor the provided transport is associated
-  final case class OutboundUnassociated(
-      remoteAddress: Address,
-      statusPromise: Promise[AssociationHandle],
-      transport: Transport)
+  final case class OutboundUnassociated
+    (
+        remoteAddress: Address,
+        statusPromise: Promise[AssociationHandle],
+        transport: Transport)
       extends InitialProtocolStateData
 
   // The underlying transport is associated, but the handshake of the akka protocol is not yet finished
-  final case class OutboundUnderlyingAssociated(
-      statusPromise: Promise[AssociationHandle],
-      wrappedHandle: AssociationHandle)
+  final case class OutboundUnderlyingAssociated
+    (
+        statusPromise: Promise[AssociationHandle],
+        wrappedHandle: AssociationHandle)
       extends ProtocolStateData
 
   // The underlying transport is associated, but the handshake of the akka protocol is not yet finished
@@ -282,10 +290,11 @@ private[remote] object ProtocolStateActor {
       extends InitialProtocolStateData
 
   // Both transports are associated, but the handler for the handle has not yet been provided
-  final case class AssociatedWaitHandler(
-      handleListener: Future[HandleEventListener],
-      wrappedHandle: AssociationHandle,
-      queue: immutable.Queue[ByteString])
+  final case class AssociatedWaitHandler
+    (
+        handleListener: Future[HandleEventListener],
+        wrappedHandle: AssociationHandle,
+        queue: immutable.Queue[ByteString])
       extends ProtocolStateData
 
   final case class ListenerReady(listener: HandleEventListener, wrappedHandle: AssociationHandle)
@@ -294,15 +303,17 @@ private[remote] object ProtocolStateActor {
   case class TimeoutReason(errorMessage: String)
   case object ForbiddenUidReason
 
-  private[remote] def outboundProps(
-      handshakeInfo: HandshakeInfo,
-      remoteAddress: Address,
-      statusPromise: Promise[AssociationHandle],
-      transport: Transport,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
-      failureDetector: FailureDetector,
-      refuseUid: Option[Int]): Props =
+  private[remote] def outboundProps
+    (
+        handshakeInfo: HandshakeInfo,
+        remoteAddress: Address,
+        statusPromise: Promise[AssociationHandle],
+        transport: Transport,
+        settings: AkkaProtocolSettings,
+        codec: AkkaPduCodec,
+        failureDetector: FailureDetector,
+        refuseUid: Option[Int])
+    : Props =
     Props(
       classOf[ProtocolStateActor],
       handshakeInfo,
@@ -314,13 +325,15 @@ private[remote] object ProtocolStateActor {
       failureDetector,
       refuseUid).withDeploy(Deploy.local)
 
-  private[remote] def inboundProps(
-      handshakeInfo: HandshakeInfo,
-      wrappedHandle: AssociationHandle,
-      associationListener: AssociationEventListener,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
-      failureDetector: FailureDetector): Props =
+  private[remote] def inboundProps
+    (
+        handshakeInfo: HandshakeInfo,
+        wrappedHandle: AssociationHandle,
+        associationListener: AssociationEventListener,
+        settings: AkkaProtocolSettings,
+        codec: AkkaPduCodec,
+        failureDetector: FailureDetector)
+    : Props =
     Props(
       classOf[ProtocolStateActor],
       handshakeInfo,
@@ -332,13 +345,14 @@ private[remote] object ProtocolStateActor {
 }
 
 @nowarn("msg=deprecated")
-private[remote] class ProtocolStateActor(
-    initialData: InitialProtocolStateData,
-    private val localHandshakeInfo: HandshakeInfo,
-    private val refuseUid: Option[Int],
-    private val settings: AkkaProtocolSettings,
-    private val codec: AkkaPduCodec,
-    private val failureDetector: FailureDetector)
+private[remote] class ProtocolStateActor
+  (
+      initialData: InitialProtocolStateData,
+      private val localHandshakeInfo: HandshakeInfo,
+      private val refuseUid: Option[Int],
+      private val settings: AkkaProtocolSettings,
+      private val codec: AkkaPduCodec,
+      private val failureDetector: FailureDetector)
     extends Actor
     with FSM[AssociationState, ProtocolStateData]
     with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
@@ -347,15 +361,16 @@ private[remote] class ProtocolStateActor(
   import context.dispatcher
 
   // Outbound case
-  def this(
-      handshakeInfo: HandshakeInfo,
-      remoteAddress: Address,
-      statusPromise: Promise[AssociationHandle],
-      transport: Transport,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
-      failureDetector: FailureDetector,
-      refuseUid: Option[Int]) = {
+  def this
+    (
+        handshakeInfo: HandshakeInfo,
+        remoteAddress: Address,
+        statusPromise: Promise[AssociationHandle],
+        transport: Transport,
+        settings: AkkaProtocolSettings,
+        codec: AkkaPduCodec,
+        failureDetector: FailureDetector,
+        refuseUid: Option[Int]) = {
     this(
       OutboundUnassociated(remoteAddress, statusPromise, transport),
       handshakeInfo,
@@ -366,13 +381,14 @@ private[remote] class ProtocolStateActor(
   }
 
   // Inbound case
-  def this(
-      handshakeInfo: HandshakeInfo,
-      wrappedHandle: AssociationHandle,
-      associationListener: AssociationEventListener,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
-      failureDetector: FailureDetector) = {
+  def this
+    (
+        handshakeInfo: HandshakeInfo,
+        wrappedHandle: AssociationHandle,
+        associationListener: AssociationEventListener,
+        settings: AkkaProtocolSettings,
+        codec: AkkaPduCodec,
+        failureDetector: FailureDetector) = {
     this(
       InboundUnassociated(associationListener, wrappedHandle),
       handshakeInfo,
@@ -687,10 +703,12 @@ private[remote] class ProtocolStateActor(
   private def listenForListenerRegistration(readHandlerPromise: Promise[HandleEventListener]): Unit =
     readHandlerPromise.future.map { HandleListenerRegistered(_) }.pipeTo(self)
 
-  private def notifyOutboundHandler(
-      wrappedHandle: AssociationHandle,
-      handshakeInfo: HandshakeInfo,
-      statusPromise: Promise[AssociationHandle]): Future[HandleEventListener] = {
+  private def notifyOutboundHandler
+    (
+        wrappedHandle: AssociationHandle,
+        handshakeInfo: HandshakeInfo,
+        statusPromise: Promise[AssociationHandle])
+    : Future[HandleEventListener] = {
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 
@@ -706,10 +724,12 @@ private[remote] class ProtocolStateActor(
     readHandlerPromise.future
   }
 
-  private def notifyInboundHandler(
-      wrappedHandle: AssociationHandle,
-      handshakeInfo: HandshakeInfo,
-      associationListener: AssociationEventListener): Future[HandleEventListener] = {
+  private def notifyInboundHandler
+    (
+        wrappedHandle: AssociationHandle,
+        handshakeInfo: HandshakeInfo,
+        associationListener: AssociationEventListener)
+    : Future[HandleEventListener] = {
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 

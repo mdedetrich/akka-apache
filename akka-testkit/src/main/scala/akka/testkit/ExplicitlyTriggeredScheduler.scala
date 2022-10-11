@@ -39,12 +39,18 @@ class ExplicitlyTriggeredScheduler(@unused config: Config, log: LoggingAdapter, 
   private val currentTime = new AtomicLong()
   private val scheduled = new ConcurrentHashMap[Item, Long]()
 
-  override def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def schedule
+    (initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     schedule(initialDelay, Some(interval), runnable)
 
-  override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def scheduleOnce
+    (delay: FiniteDuration, runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     schedule(delay, None, runnable)
 
   /**
@@ -96,10 +102,12 @@ class ExplicitlyTriggeredScheduler(@unused config: Config, log: LoggingAdapter, 
     }
   }
 
-  private def schedule(
-      initialDelay: FiniteDuration,
-      interval: Option[FiniteDuration],
-      runnable: Runnable): Cancellable = {
+  private def schedule
+    (
+        initialDelay: FiniteDuration,
+        interval: Option[FiniteDuration],
+        runnable: Runnable)
+    : Cancellable = {
     val firstTime = currentTime.get + initialDelay.toMillis
     val item = new Item(interval, runnable)
     log.debug("Scheduled item for {}: {}", firstTime, item)

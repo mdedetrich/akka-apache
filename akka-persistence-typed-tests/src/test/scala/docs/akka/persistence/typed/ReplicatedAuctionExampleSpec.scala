@@ -136,13 +136,15 @@ object ReplicatedAuctionExampleSpec {
     // #state
 
     // #setup
-    def apply(
-        replica: ReplicaId,
-        name: String,
-        initialBid: AuctionEntity.Bid, // the initial bid is basically the minimum price bidden at start time by the owner
-        closingAt: Instant,
-        responsibleForClosing: Boolean,
-        allReplicas: Set[ReplicaId]): Behavior[Command] = Behaviors.setup[Command] { ctx =>
+    def apply
+      (
+          replica: ReplicaId,
+          name: String,
+          initialBid: AuctionEntity.Bid, // the initial bid is basically the minimum price bidden at start time by the owner
+          closingAt: Instant,
+          responsibleForClosing: Boolean,
+          allReplicas: Set[ReplicaId])
+      : Behavior[Command] = Behaviors.setup[Command] { ctx =>
       Behaviors.withTimers { timers =>
         ReplicatedEventSourcing.commonJournalConfig(
           ReplicationId("auction", name, replica),
@@ -156,13 +158,14 @@ object ReplicatedAuctionExampleSpec {
 
   }
 
-  class AuctionEntity(
-      context: ActorContext[AuctionEntity.Command],
-      replicationContext: ReplicationContext,
-      timers: TimerScheduler[AuctionEntity.Command],
-      closingAt: Instant,
-      responsibleForClosing: Boolean,
-      allReplicas: Set[ReplicaId]) {
+  class AuctionEntity
+    (
+        context: ActorContext[AuctionEntity.Command],
+        replicationContext: ReplicationContext,
+        timers: TimerScheduler[AuctionEntity.Command],
+        closingAt: Instant,
+        responsibleForClosing: Boolean,
+        allReplicas: Set[ReplicaId]) {
     import AuctionEntity._
 
     private def behavior(initialBid: AuctionEntity.Bid): EventSourcedBehavior[Command, Event, AuctionState] =

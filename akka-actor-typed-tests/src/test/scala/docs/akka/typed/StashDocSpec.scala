@@ -43,11 +43,12 @@ object StashDocSpec {
     }
   }
 
-  class DataAccess(
-      context: ActorContext[DataAccess.Command],
-      buffer: StashBuffer[DataAccess.Command],
-      id: String,
-      db: DB) {
+  class DataAccess
+    (
+        context: ActorContext[DataAccess.Command],
+        buffer: StashBuffer[DataAccess.Command],
+        id: String,
+        db: DB) {
     import DataAccess._
 
     private def start(): Behavior[Command] = {

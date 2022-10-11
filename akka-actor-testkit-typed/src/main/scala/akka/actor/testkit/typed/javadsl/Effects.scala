@@ -93,13 +93,15 @@ object Effects {
   def scheduled[U](delay: Duration, target: ActorRef[U], message: U): Scheduled[U] =
     Scheduled(delay.asScala, target, message)
 
-  def timerScheduled[U](
-      key: Any,
-      msg: U,
-      delay: Duration,
-      mode: TimerScheduled.TimerMode,
-      overriding: Boolean,
-      send: akka.japi.function.Effect): TimerScheduled[U] =
+  def timerScheduled[U]
+    (
+        key: Any,
+        msg: U,
+        delay: Duration,
+        mode: TimerScheduled.TimerMode,
+        overriding: Boolean,
+        send: akka.japi.function.Effect)
+    : TimerScheduled[U] =
     TimerScheduled(key, msg, delay.asScala, mode, overriding)(send.apply _)
 
   /**

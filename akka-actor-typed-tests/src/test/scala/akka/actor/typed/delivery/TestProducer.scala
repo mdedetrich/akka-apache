@@ -21,9 +21,11 @@ object TestProducer {
 
   val defaultProducerDelay: FiniteDuration = 20.millis
 
-  def apply(
-      delay: FiniteDuration,
-      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+  def apply
+    (
+        delay: FiniteDuration,
+        producerController: ActorRef[ProducerController.Start[TestConsumer.Job]])
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       context.setLoggerName("TestProducer")
       val requestNextAdapter: ActorRef[ProducerController.RequestNext[TestConsumer.Job]] =

@@ -52,18 +52,22 @@ private[akka] object GuardianStartupBehavior {
  * explicitly.
  */
 @InternalApi private[akka] final class GuardianStopInterceptor extends BehaviorInterceptor[Any, Any] {
-  override def aroundReceive(
-      ctx: TypedActorContext[Any],
-      msg: Any,
-      target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] = {
+  override def aroundReceive
+    (
+        ctx: TypedActorContext[Any],
+        msg: Any,
+        target: BehaviorInterceptor.ReceiveTarget[Any])
+    : Behavior[Any] = {
     val next = target(ctx, msg)
     interceptStopped(ctx, next)
   }
 
-  override def aroundSignal(
-      ctx: TypedActorContext[Any],
-      signal: Signal,
-      target: BehaviorInterceptor.SignalTarget[Any]): Behavior[Any] = {
+  override def aroundSignal
+    (
+        ctx: TypedActorContext[Any],
+        signal: Signal,
+        target: BehaviorInterceptor.SignalTarget[Any])
+    : Behavior[Any] = {
     val next = target(ctx, signal)
     interceptStopped(ctx, next)
   }

@@ -40,15 +40,17 @@ object ShardRegion {
    * INTERNAL API
    * Factory method for the [[akka.actor.Props]] of the [[ShardRegion]] actor.
    */
-  private[akka] def props(
-      typeName: String,
-      entityProps: String => Props,
-      settings: ClusterShardingSettings,
-      coordinatorPath: String,
-      extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId,
-      handOffStopMessage: Any,
-      rememberEntitiesProvider: Option[RememberEntitiesProvider]): Props =
+  private[akka] def props
+    (
+        typeName: String,
+        entityProps: String => Props,
+        settings: ClusterShardingSettings,
+        coordinatorPath: String,
+        extractEntityId: ShardRegion.ExtractEntityId,
+        extractShardId: ShardRegion.ExtractShardId,
+        handOffStopMessage: Any,
+        rememberEntitiesProvider: Option[RememberEntitiesProvider])
+    : Props =
     Props(
       new ShardRegion(
         typeName,
@@ -66,13 +68,15 @@ object ShardRegion {
    * Factory method for the [[akka.actor.Props]] of the [[ShardRegion]] actor
    * when using it in proxy only mode.
    */
-  private[akka] def proxyProps(
-      typeName: String,
-      dataCenter: Option[DataCenter],
-      settings: ClusterShardingSettings,
-      coordinatorPath: String,
-      extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId): Props =
+  private[akka] def proxyProps
+    (
+        typeName: String,
+        dataCenter: Option[DataCenter],
+        settings: ClusterShardingSettings,
+        coordinatorPath: String,
+        extractEntityId: ShardRegion.ExtractEntityId,
+        extractShardId: ShardRegion.ExtractShardId)
+    : Props =
     Props(
       new ShardRegion(
         typeName,
@@ -509,13 +513,14 @@ object ShardRegion {
    * them have terminated it replies with `ShardStopped`.
    * If the entities don't terminate after `handoffTimeout` it will try stopping them forcefully.
    */
-  @InternalApi private[akka] class HandOffStopper(
-      typeName: String,
-      shard: String,
-      replyTo: ActorRef,
-      entities: Set[ActorRef],
-      stopMessage: Any,
-      handoffTimeout: FiniteDuration)
+  @InternalApi private[akka] class HandOffStopper
+    (
+        typeName: String,
+        shard: String,
+        replyTo: ActorRef,
+        entities: Set[ActorRef],
+        stopMessage: Any,
+        handoffTimeout: FiniteDuration)
       extends Actor
       with ActorLogging
       with Timers {
@@ -577,13 +582,15 @@ object ShardRegion {
 
     private val StopTimeoutWarningAfter: FiniteDuration = 5.seconds
 
-    def props(
-        typeName: String,
-        shard: String,
-        replyTo: ActorRef,
-        entities: Set[ActorRef],
-        stopMessage: Any,
-        handoffTimeout: FiniteDuration): Props =
+    def props
+      (
+          typeName: String,
+          shard: String,
+          replyTo: ActorRef,
+          entities: Set[ActorRef],
+          stopMessage: Any,
+          handoffTimeout: FiniteDuration)
+      : Props =
       Props(new HandOffStopper(typeName, shard, replyTo, entities, stopMessage, handoffTimeout))
         .withDeploy(Deploy.local)
   }
@@ -601,16 +608,17 @@ object ShardRegion {
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */
 @InternalStableApi
-private[akka] class ShardRegion(
-    typeName: String,
-    entityProps: Option[String => Props],
-    dataCenter: Option[DataCenter],
-    settings: ClusterShardingSettings,
-    coordinatorPath: String,
-    extractEntityId: ShardRegion.ExtractEntityId,
-    extractShardId: ShardRegion.ExtractShardId,
-    handOffStopMessage: Any,
-    rememberEntitiesProvider: Option[RememberEntitiesProvider])
+private[akka] class ShardRegion
+  (
+      typeName: String,
+      entityProps: Option[String => Props],
+      dataCenter: Option[DataCenter],
+      settings: ClusterShardingSettings,
+      coordinatorPath: String,
+      extractEntityId: ShardRegion.ExtractEntityId,
+      extractShardId: ShardRegion.ExtractShardId,
+      handOffStopMessage: Any,
+      rememberEntitiesProvider: Option[RememberEntitiesProvider])
     extends Actor
     with Timers {
 
@@ -1072,8 +1080,11 @@ private[akka] class ShardRegion(
     }
   }
 
-  private def askOne[T: ClassTag](shard: ActorRef, msg: Any, shardId: ShardId)(
-      implicit timeout: Timeout): Future[Either[ShardId, T]] =
+  private def askOne[T: ClassTag]
+    (shard: ActorRef, msg: Any, shardId: ShardId)
+    (
+        implicit timeout: Timeout)
+    : Future[Either[ShardId, T]] =
     (shard ? msg).mapTo[T].transform {
       case Success(t) => Success(Right(t))
       case Failure(_) => Success(Left(shardId))

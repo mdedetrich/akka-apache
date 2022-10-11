@@ -41,11 +41,13 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def withBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sourceFactory)
   }
@@ -72,11 +74,13 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sourceFactory)
   }
@@ -106,12 +110,14 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def withBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sourceFactory)
   }
@@ -141,12 +147,14 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sourceFactory)
   }
@@ -195,11 +203,13 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def onFailuresWithBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def onFailuresWithBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -225,11 +235,13 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def onFailuresWithBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def onFailuresWithBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -257,12 +269,14 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def onFailuresWithBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def onFailuresWithBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, sourceFactory)
   }
@@ -290,12 +304,14 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def onFailuresWithBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sourceFactory: Creator[Source[T, _]]): Source[T, NotUsed] = {
+  def onFailuresWithBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sourceFactory: Creator[Source[T, _]])
+    : Source[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings, sourceFactory)
   }

@@ -80,10 +80,12 @@ trait Conductor { this: TestConductorExt =>
    * @param participants gives the number of participants which shall connect
    * before any of their startClient() operations complete.
    */
-  def startController(
-      participants: Int,
-      name: RoleName,
-      controllerPort: InetSocketAddress): Future[InetSocketAddress] = {
+  def startController
+    (
+        participants: Int,
+        name: RoleName,
+        controllerPort: InetSocketAddress)
+    : Future[InetSocketAddress] = {
     if (_controller ne null) throw new RuntimeException("TestConductorServer was already started")
     _controller = system.systemActorOf(Props(classOf[Controller], participants, controllerPort), "controller")
     import Settings.BarrierTimeout

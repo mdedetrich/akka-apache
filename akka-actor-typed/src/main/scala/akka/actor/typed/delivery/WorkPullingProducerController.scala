@@ -196,53 +196,62 @@ object WorkPullingProducerController {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        bufferSize: Int = bufferSize,
-        internalAskTimeout: FiniteDuration = internalAskTimeout,
-        producerControllerSettings: ProducerController.Settings = producerControllerSettings) =
+    private def copy
+      (
+          bufferSize: Int = bufferSize,
+          internalAskTimeout: FiniteDuration = internalAskTimeout,
+          producerControllerSettings: ProducerController.Settings = producerControllerSettings) =
       new Settings(bufferSize, internalAskTimeout, producerControllerSettings)
 
     override def toString: String =
       s"Settings($bufferSize,$internalAskTimeout,$producerControllerSettings)"
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        workerServiceKey: ServiceKey[ConsumerController.Command[A]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     Behaviors.setup { context =>
       WorkPullingProducerControllerImpl(producerId, workerServiceKey, durableQueueBehavior, Settings(context.system))
     }
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        workerServiceKey: ServiceKey[ConsumerController.Command[A]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     WorkPullingProducerControllerImpl(producerId, workerServiceKey, durableQueueBehavior, settings)
   }
 
   /**
    * Java API
    */
-  def create[A](
-      messageClass: Class[A],
-      producerId: String,
-      workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def create[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        workerServiceKey: ServiceKey[ConsumerController.Command[A]],
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     apply(producerId, workerServiceKey, durableQueueBehavior.asScala)(ClassTag(messageClass))
   }
 
   /**
    * Java API
    */
-  def apply[A](
-      messageClass: Class[A],
-      producerId: String,
-      workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def apply[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        workerServiceKey: ServiceKey[ConsumerController.Command[A]],
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     apply(producerId, workerServiceKey, durableQueueBehavior.asScala, settings)(ClassTag(messageClass))
   }
 }

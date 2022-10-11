@@ -35,7 +35,7 @@ object Props {
  * Not for user extension.
  */
 @DoNotInherit
-abstract class Props private[akka] () extends Product with Serializable {
+abstract class Props private[akka]() extends Product with Serializable {
 
   /**
    * Reference to the tail of this Props list.

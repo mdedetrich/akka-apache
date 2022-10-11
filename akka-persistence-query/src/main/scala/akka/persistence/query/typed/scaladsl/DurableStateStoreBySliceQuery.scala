@@ -38,11 +38,13 @@ trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
    * The [[DurableStateChange]] elements can be [[akka.persistence.query.UpdatedDurableState]] or
    * [[akka.persistence.query.DeletedDurableState]].
    */
-  def currentChangesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed]
+  def currentChangesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed]
 
   /**
    * Get a source of the most recent changes made to objects of the given slice range since the passed in offset.
@@ -60,11 +62,13 @@ trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
    * The [[DurableStateChange]] elements can be [[akka.persistence.query.UpdatedDurableState]] or
    * [[akka.persistence.query.DeletedDurableState]].
    */
-  def changesBySlices(
-      entityType: String,
-      minSlice: Int,
-      maxSlice: Int,
-      offset: Offset): Source[DurableStateChange[A], NotUsed]
+  def changesBySlices
+    (
+        entityType: String,
+        minSlice: Int,
+        maxSlice: Int,
+        offset: Offset)
+    : Source[DurableStateChange[A], NotUsed]
 
   def sliceForPersistenceId(persistenceId: String): Int
 

@@ -81,9 +81,10 @@ import scala.util.{ Failure, Success, Try }
  *
  * INTERNAL API
  */
-@InternalApi private[akka] final class UnfoldAsyncJava[S, E](
-    s: S,
-    f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
+@InternalApi private[akka] final class UnfoldAsyncJava[S, E]
+  (
+      s: S,
+      f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
     extends GraphStage[SourceShape[E]] {
   val out: Outlet[E] = Outlet("UnfoldAsync.out")
   override val shape: SourceShape[E] = SourceShape(out)

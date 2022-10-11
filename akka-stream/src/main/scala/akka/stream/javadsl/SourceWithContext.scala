@@ -54,9 +54,10 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Flow.via]]
    */
-  def via[Out2, Ctx2, Mat2](
-      viaFlow: Graph[FlowShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
-      : SourceWithContext[Out2, Ctx2, Mat] =
+  def via[Out2, Ctx2, Mat2]
+    (
+        viaFlow: Graph[FlowShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance], Pair[Out2, Ctx2]], Mat2])
+    : SourceWithContext[Out2, Ctx2, Mat] =
     viaScala(_.via(akka.stream.scaladsl.Flow[(Out, Ctx)].map { case (o, c) => Pair(o, c) }.via(viaFlow).map(_.toScala)))
 
   /**
@@ -72,8 +73,10 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    * For more background on these requirements
    *  see https://doc.akka.io/docs/akka/current/stream/stream-context.html.
    */
-  @ApiMayChange def unsafeDataVia[Out2, Mat2](
-      viaFlow: Graph[FlowShape[Out @uncheckedVariance, Out2], Mat2]): SourceWithContext[Out2, Ctx, Mat] =
+  @ApiMayChange def unsafeDataVia[Out2, Mat2]
+    (
+        viaFlow: Graph[FlowShape[Out @uncheckedVariance, Out2], Mat2])
+    : SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.unsafeDataVia(viaFlow))
 
   /**
@@ -146,8 +149,10 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.grouped]]
    */
-  def grouped(
-      n: Int): SourceWithContext[java.util.List[Out @uncheckedVariance], java.util.List[Ctx @uncheckedVariance], Mat] =
+  def grouped
+    (
+        n: Int)
+    : SourceWithContext[java.util.List[Out @uncheckedVariance], java.util.List[Ctx @uncheckedVariance], Mat] =
     viaScala(_.grouped(n).map(_.asJava).mapContext(_.asJava))
 
   /**
@@ -158,9 +163,11 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def map[Out2](f: function.Function[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.map(f.apply))
 
-  def mapAsync[Out2](
-      parallelism: Int,
-      f: function.Function[Out, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+  def mapAsync[Out2]
+    (
+        parallelism: Int,
+        f: function.Function[Out, CompletionStage[Out2]])
+    : SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).toScala))
 
   /**
@@ -207,8 +214,9 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.sliding]]
    */
-  def sliding(n: Int, step: Int = 1)
-      : SourceWithContext[java.util.List[Out @uncheckedVariance], java.util.List[Ctx @uncheckedVariance], Mat] =
+  def sliding
+    (n: Int, step: Int = 1)
+    : SourceWithContext[java.util.List[Out @uncheckedVariance], java.util.List[Ctx @uncheckedVariance], Mat] =
     viaScala(_.sliding(n, step).map(_.asJava).mapContext(_.asJava))
 
   /**
@@ -248,11 +256,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.logWithMarker]]
    */
-  def logWithMarker(
-      name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
-      extract: function.Function[Out, Any],
-      log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+  def logWithMarker
+    (
+        name: String,
+        marker: function.Function2[Out, Ctx, LogMarker],
+        extract: function.Function[Out, Any],
+        log: MarkerLoggingAdapter)
+    : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.logWithMarker(name, (e, c) => marker.apply(e, c), e => extract.apply(e))(log))
 
   /**
@@ -260,10 +270,12 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Flow.logWithMarker]]
    */
-  def logWithMarker(
-      name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
-      extract: function.Function[Out, Any]): SourceWithContext[Out, Ctx, Mat] =
+  def logWithMarker
+    (
+        name: String,
+        marker: function.Function2[Out, Ctx, LogMarker],
+        extract: function.Function[Out, Any])
+    : SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, extract, null)
 
   /**
@@ -271,10 +283,12 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Flow.logWithMarker]]
    */
-  def logWithMarker(
-      name: String,
-      marker: function.Function2[Out, Ctx, LogMarker],
-      log: MarkerLoggingAdapter): SourceWithContext[Out, Ctx, Mat] =
+  def logWithMarker
+    (
+        name: String,
+        marker: function.Function2[Out, Ctx, LogMarker],
+        log: MarkerLoggingAdapter)
+    : SourceWithContext[Out, Ctx, Mat] =
     this.logWithMarker(name, marker, ConstantFun.javaIdentityFunction[Out], log)
 
   /**
@@ -298,11 +312,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.throttle]]
    */
-  def throttle(
-      elements: Int,
-      per: java.time.Duration,
-      maximumBurst: Int,
-      mode: ThrottleMode): SourceWithContext[Out, Ctx, Mat] =
+  def throttle
+    (
+        elements: Int,
+        per: java.time.Duration,
+        maximumBurst: Int,
+        mode: ThrottleMode)
+    : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.throttle(elements, per.asScala, maximumBurst, mode))
 
   /**
@@ -310,10 +326,12 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.throttle]]
    */
-  def throttle(
-      cost: Int,
-      per: java.time.Duration,
-      costCalculation: function.Function[Out, Integer]): SourceWithContext[Out, Ctx, Mat] =
+  def throttle
+    (
+        cost: Int,
+        per: java.time.Duration,
+        costCalculation: function.Function[Out, Integer])
+    : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.throttle(cost, per.asScala, costCalculation.apply))
 
   /**
@@ -321,38 +339,46 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[akka.stream.javadsl.Source.throttle]]
    */
-  def throttle(
-      cost: Int,
-      per: java.time.Duration,
-      maximumBurst: Int,
-      costCalculation: function.Function[Out, Integer],
-      mode: ThrottleMode): SourceWithContext[Out, Ctx, Mat] =
+  def throttle
+    (
+        cost: Int,
+        per: java.time.Duration,
+        maximumBurst: Int,
+        costCalculation: function.Function[Out, Integer],
+        mode: ThrottleMode)
+    : SourceWithContext[Out, Ctx, Mat] =
     viaScala(_.throttle(cost, per.asScala, maximumBurst, costCalculation.apply, mode))
 
   /**
    * Connect this [[akka.stream.javadsl.SourceWithContext]] to a [[akka.stream.javadsl.Sink]],
    * concatenating the processing steps of both.
    */
-  def to[Mat2](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2]): javadsl.RunnableGraph[Mat] =
+  def to[Mat2]
+    (
+        sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2])
+    : javadsl.RunnableGraph[Mat] =
     RunnableGraph.fromGraph(asScala.asSource.map { case (o, e) => Pair(o, e) }.to(sink))
 
   /**
    * Connect this [[akka.stream.javadsl.SourceWithContext]] to a [[akka.stream.javadsl.Sink]],
    * concatenating the processing steps of both.
    */
-  def toMat[Mat2, Mat3](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
-      combine: function.Function2[Mat, Mat2, Mat3]): javadsl.RunnableGraph[Mat3] =
+  def toMat[Mat2, Mat3]
+    (
+        sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], Mat2],
+        combine: function.Function2[Mat, Mat2, Mat3])
+    : javadsl.RunnableGraph[Mat3] =
     RunnableGraph.fromGraph(asScala.asSource.map { case (o, e) => Pair(o, e) }.toMat(sink)(combinerToScala(combine)))
 
   /**
    * Connect this [[akka.stream.javadsl.SourceWithContext]] to a [[akka.stream.javadsl.Sink]] and run it.
    * The returned value is the materialized value of the `Sink`.
    */
-  def runWith[M](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
-      systemProvider: ClassicActorSystemProvider): M =
+  def runWith[M]
+    (
+        sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
+        systemProvider: ClassicActorSystemProvider)
+    : M =
     toMat(sink, Keep.right[Mat, M]).run(systemProvider.classicSystem)
 
   /**
@@ -361,15 +387,18 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * Prefer the method taking an ActorSystem unless you have special requirements.
    */
-  def runWith[M](
-      sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
-      materializer: Materializer): M =
+  def runWith[M]
+    (
+        sink: Graph[SinkShape[Pair[Out @uncheckedVariance, Ctx @uncheckedVariance]], M],
+        materializer: Materializer)
+    : M =
     toMat(sink, Keep.right[Mat, M]).run(materializer)
 
   def asScala: scaladsl.SourceWithContext[Out, Ctx, Mat] = delegate
 
-  private[this] def viaScala[Out2, Ctx2, Mat2](
-      f: scaladsl.SourceWithContext[Out, Ctx, Mat] => scaladsl.SourceWithContext[Out2, Ctx2, Mat2])
-      : SourceWithContext[Out2, Ctx2, Mat2] =
+  private[this] def viaScala[Out2, Ctx2, Mat2]
+    (
+        f: scaladsl.SourceWithContext[Out, Ctx, Mat] => scaladsl.SourceWithContext[Out2, Ctx2, Mat2])
+    : SourceWithContext[Out2, Ctx2, Mat2] =
     new SourceWithContext(f(delegate))
 }

@@ -78,12 +78,13 @@ object Simulator {
       }
   }
 
-  final case class Simulation(
-      name: String,
-      numberOfShards: Int,
-      numberOfRegions: Int,
-      accessPattern: AccessPattern,
-      strategyCreator: StrategyCreator)
+  final case class Simulation
+    (
+        name: String,
+        numberOfShards: Int,
+        numberOfRegions: Int,
+        accessPattern: AccessPattern,
+        strategyCreator: StrategyCreator)
 
   object Simulation {
     def apply(runSettings: SimulatorSettings.RunSettings): Simulation =
@@ -356,9 +357,11 @@ object Simulator {
         case _ => NoActiveEntities
       }
 
-    private def admissionOptimizer(
-        capacity: Int,
-        optimizerSettings: SimulatorSettings.StrategySettings.AdmissionOptimizerSettings): AdmissionOptimizer =
+    private def admissionOptimizer
+      (
+          capacity: Int,
+          optimizerSettings: SimulatorSettings.StrategySettings.AdmissionOptimizerSettings)
+      : AdmissionOptimizer =
       optimizerSettings match {
         case SimulatorSettings.StrategySettings.AdmissionOptimizerSettings.NoOptimizer => NoAdmissionOptimizer
         case SimulatorSettings.StrategySettings.AdmissionOptimizerSettings
@@ -366,9 +369,11 @@ object Simulator {
           new HillClimbingAdmissionOptimizer(capacity, adjustMultiplier, initialStep, restartThreshold, stepDecay)
       }
 
-    private def admissionFilter(
-        capacity: Int,
-        filterSettings: SimulatorSettings.StrategySettings.AdmissionFilterSettings): AdmissionFilter =
+    private def admissionFilter
+      (
+          capacity: Int,
+          filterSettings: SimulatorSettings.StrategySettings.AdmissionFilterSettings)
+      : AdmissionFilter =
       filterSettings match {
         case SimulatorSettings.StrategySettings.AdmissionFilterSettings.NoFilter => AlwaysAdmissionFilter
         case SimulatorSettings.StrategySettings.AdmissionFilterSettings

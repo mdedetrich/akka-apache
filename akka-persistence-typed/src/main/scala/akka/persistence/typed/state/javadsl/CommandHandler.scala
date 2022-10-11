@@ -65,9 +65,11 @@ final class CommandHandlerBuilder[Command, State]() {
    *
    * @return A new, mutable, CommandHandlerBuilderByState
    */
-  def forState[S <: State](
-      stateClass: Class[S],
-      statePredicate: Predicate[S]): CommandHandlerBuilderByState[Command, S, State] = {
+  def forState[S <: State]
+    (
+        stateClass: Class[S],
+        statePredicate: Predicate[S])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     val builder = new CommandHandlerBuilderByState[Command, S, State](stateClass, statePredicate)
     builders = builder.asInstanceOf[CommandHandlerBuilderByState[Command, State, State]] :: builders
     builder
@@ -183,15 +185,17 @@ object CommandHandlerBuilderByState {
   /**
    * INTERNAL API
    */
-  @InternalApi private final case class CommandHandlerCase[Command, State](
-      commandPredicate: Command => Boolean,
-      statePredicate: State => Boolean,
-      handler: BiFunction[State, Command, Effect[State]])
+  @InternalApi private final case class CommandHandlerCase[Command, State]
+    (
+        commandPredicate: Command => Boolean,
+        statePredicate: State => Boolean,
+        handler: BiFunction[State, Command, Effect[State]])
 }
 
-final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalApi private[akka] (
-    private val stateClass: Class[S],
-    private val statePredicate: Predicate[S]) {
+final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalApi private[akka]
+  (
+      private val stateClass: Class[S],
+      private val statePredicate: Predicate[S]) {
 
   import CommandHandlerBuilderByState.CommandHandlerCase
 
@@ -214,9 +218,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand(
-      predicate: Predicate[Command],
-      handler: BiFunction[S, Command, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+  def onCommand
+    (
+        predicate: Predicate[Command],
+        handler: BiFunction[S, Command, Effect[State]])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     addCase(cmd => predicate.test(cmd), handler)
     this
   }
@@ -231,9 +237,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand(
-      predicate: Predicate[Command],
-      handler: JFunction[Command, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+  def onCommand
+    (
+        predicate: Predicate[Command],
+        handler: JFunction[Command, Effect[State]])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     addCase(
       cmd => predicate.test(cmd),
       new BiFunction[S, Command, Effect[State]] {
@@ -249,9 +257,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: BiFunction[S, C, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: BiFunction[S, C, Effect[State]])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     addCase(
       cmd => commandClass.isAssignableFrom(cmd.getClass),
       handler.asInstanceOf[BiFunction[S, Command, Effect[State]]])
@@ -268,9 +278,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: JFunction[C, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: JFunction[C, Effect[State]])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     onCommand[C](
       commandClass,
       new BiFunction[S, C, Effect[State]] {
@@ -287,9 +299,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * and no further lookup is done. Therefore you must make sure that their matching conditions don't overlap,
    * otherwise you risk to 'shadow' part of your command handlers.
    */
-  def onCommand[C <: Command](
-      commandClass: Class[C],
-      handler: Supplier[Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+  def onCommand[C <: Command]
+    (
+        commandClass: Class[C],
+        handler: Supplier[Effect[State]])
+    : CommandHandlerBuilderByState[Command, S, State] = {
     onCommand[C](
       commandClass,
       new BiFunction[S, C, Effect[State]] {
@@ -373,8 +387,10 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    * Compose this builder with another builder. The handlers in this builder will be tried first followed
    * by the handlers in `other`.
    */
-  def orElse[S2 <: State](
-      other: CommandHandlerBuilderByState[Command, S2, State]): CommandHandlerBuilderByState[Command, S2, State] = {
+  def orElse[S2 <: State]
+    (
+        other: CommandHandlerBuilderByState[Command, S2, State])
+    : CommandHandlerBuilderByState[Command, S2, State] = {
     val newBuilder = new CommandHandlerBuilderByState[Command, S2, State](other.stateClass, other.statePredicate)
     // problem with overloaded constructor with `cases` as parameter
     newBuilder.cases = other.cases ::: cases

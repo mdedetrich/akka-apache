@@ -15,11 +15,13 @@ import akka.util.ErrorMessages
 @InternalApi private[typed] object ActorRefFactoryAdapter {
 
   private val remoteDeploymentNotAllowed = "Remote deployment not allowed for typed actors"
-  def spawnAnonymous[T](
-      context: akka.actor.ActorRefFactory,
-      behavior: Behavior[T],
-      props: Props,
-      rethrowTypedFailure: Boolean): ActorRef[T] = {
+  def spawnAnonymous[T]
+    (
+        context: akka.actor.ActorRefFactory,
+        behavior: Behavior[T],
+        props: Props,
+        rethrowTypedFailure: Boolean)
+    : ActorRef[T] = {
     try {
       ActorRefAdapter(context.actorOf(internal.adapter.PropsAdapter(() => behavior, props, rethrowTypedFailure)))
     } catch {
@@ -28,12 +30,14 @@ import akka.util.ErrorMessages
     }
   }
 
-  def spawn[T](
-      actorRefFactory: akka.actor.ActorRefFactory,
-      behavior: Behavior[T],
-      name: String,
-      props: Props,
-      rethrowTypedFailure: Boolean): ActorRef[T] = {
+  def spawn[T]
+    (
+        actorRefFactory: akka.actor.ActorRefFactory,
+        behavior: Behavior[T],
+        name: String,
+        props: Props,
+        rethrowTypedFailure: Boolean)
+    : ActorRef[T] = {
     try {
       ActorRefAdapter(
         actorRefFactory.actorOf(

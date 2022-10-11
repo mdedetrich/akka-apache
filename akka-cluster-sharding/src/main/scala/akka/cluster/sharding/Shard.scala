@@ -86,15 +86,17 @@ private[akka] object Shard {
   case object LeaseRetry extends DeadLetterSuppression
   private val LeaseRetryTimer = "lease-retry"
 
-  def props(
-      typeName: String,
-      shardId: ShardRegion.ShardId,
-      entityProps: String => Props,
-      settings: ClusterShardingSettings,
-      extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId,
-      handOffStopMessage: Any,
-      rememberEntitiesProvider: Option[RememberEntitiesProvider]): Props =
+  def props
+    (
+        typeName: String,
+        shardId: ShardRegion.ShardId,
+        entityProps: String => Props,
+        settings: ClusterShardingSettings,
+        extractEntityId: ShardRegion.ExtractEntityId,
+        extractShardId: ShardRegion.ExtractShardId,
+        handOffStopMessage: Any,
+        rememberEntitiesProvider: Option[RememberEntitiesProvider])
+    : Props =
     Props(
       new Shard(
         typeName,
@@ -264,11 +266,12 @@ private[akka] object Shard {
     }
   }
 
-  final class Entities(
-      val log: LoggingAdapter,
-      val rememberingEntities: Boolean,
-      verboseDebug: Boolean,
-      val failOnIllegalTransition: Boolean) {
+  final class Entities
+    (
+        val log: LoggingAdapter,
+        val rememberingEntities: Boolean,
+        verboseDebug: Boolean,
+        val failOnIllegalTransition: Boolean) {
     private val entities: java.util.Map[EntityId, EntityState] = new util.HashMap[EntityId, EntityState]()
     // needed to look up entity by ref when a Passivating is received
     private val byRef = new util.HashMap[ActorRef, EntityId]()
@@ -407,15 +410,16 @@ private[akka] object Shard {
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */
 @InternalStableApi
-private[akka] class Shard(
-    typeName: String,
-    shardId: ShardRegion.ShardId,
-    entityProps: String => Props,
-    settings: ClusterShardingSettings,
-    extractEntityId: ShardRegion.ExtractEntityId,
-    @unused extractShardId: ShardRegion.ExtractShardId,
-    handOffStopMessage: Any,
-    rememberEntitiesProvider: Option[RememberEntitiesProvider])
+private[akka] class Shard
+  (
+      typeName: String,
+      shardId: ShardRegion.ShardId,
+      entityProps: String => Props,
+      settings: ClusterShardingSettings,
+      extractEntityId: ShardRegion.ExtractEntityId,
+      @unused extractShardId: ShardRegion.ExtractShardId,
+      handOffStopMessage: Any,
+      rememberEntitiesProvider: Option[RememberEntitiesProvider])
     extends Actor
     with ActorLogging
     with Stash
@@ -661,9 +665,11 @@ private[akka] class Shard(
     context.become(waitingForRememberEntitiesStore(update, startTimeNanos))
   }
 
-  private def waitingForRememberEntitiesStore(
-      update: RememberEntitiesShardStore.Update,
-      startTimeNanos: Long): Receive = {
+  private def waitingForRememberEntitiesStore
+    (
+        update: RememberEntitiesShardStore.Update,
+        startTimeNanos: Long)
+    : Receive = {
     // none of the current impls will send back a partial update, yet!
     case RememberEntitiesShardStore.UpdateDone(storedStarts, storedStops) =>
       val duration = System.nanoTime() - startTimeNanos

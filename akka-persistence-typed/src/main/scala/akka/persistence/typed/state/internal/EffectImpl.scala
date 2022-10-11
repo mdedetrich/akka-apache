@@ -24,8 +24,11 @@ private[akka] abstract class EffectImpl[State]
   override def thenRun(chainedEffect: State => Unit): EffectImpl[State] =
     CompositeEffect(this, new Callback[State](chainedEffect))
 
-  override def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: State => ReplyMessage): EffectImpl[State] =
+  override def thenReply[ReplyMessage]
+    (replyTo: ActorRef[ReplyMessage])
+    (
+        replyWithMessage: State => ReplyMessage)
+    : EffectImpl[State] =
     CompositeEffect(this, new ReplyEffectImpl[ReplyMessage, State](replyTo, replyWithMessage))
 
   override def thenUnstashAll(): EffectImpl[State] =
@@ -48,9 +51,10 @@ private[akka] object CompositeEffect {
 
 /** INTERNAL API */
 @InternalApi
-private[akka] final case class CompositeEffect[State](
-    persistingEffect: scaladsl.EffectBuilder[State],
-    _sideEffects: immutable.Seq[SideEffect[State]])
+private[akka] final case class CompositeEffect[State]
+  (
+      persistingEffect: scaladsl.EffectBuilder[State],
+      _sideEffects: immutable.Seq[SideEffect[State]])
     extends EffectImpl[State] {
 
   override val state: Option[State] = persistingEffect.state

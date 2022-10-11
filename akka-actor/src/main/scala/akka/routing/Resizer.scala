@@ -126,14 +126,15 @@ case object DefaultResizer {
  * Use 1 to resize before each message.
  */
 @SerialVersionUID(1L)
-case class DefaultResizer(
-    lowerBound: Int = 1,
-    upperBound: Int = 10,
-    pressureThreshold: Int = 1,
-    rampupRate: Double = 0.2,
-    backoffThreshold: Double = 0.3,
-    backoffRate: Double = 0.1,
-    messagesPerResize: Int = 10)
+case class DefaultResizer
+  (
+      lowerBound: Int = 1,
+      upperBound: Int = 10,
+      pressureThreshold: Int = 1,
+      rampupRate: Double = 0.2,
+      backoffThreshold: Double = 0.3,
+      backoffRate: Double = 0.1,
+      messagesPerResize: Int = 10)
     extends Resizer {
 
   /**
@@ -251,14 +252,15 @@ case class DefaultResizer(
 /**
  * INTERNAL API
  */
-private[akka] final class ResizablePoolCell(
-    _system: ActorSystemImpl,
-    _ref: InternalActorRef,
-    _routerProps: Props,
-    _routerDispatcher: MessageDispatcher,
-    _routeeProps: Props,
-    _supervisor: InternalActorRef,
-    val pool: Pool)
+private[akka] final class ResizablePoolCell
+  (
+      _system: ActorSystemImpl,
+      _ref: InternalActorRef,
+      _routerProps: Props,
+      _routerDispatcher: MessageDispatcher,
+      _routeeProps: Props,
+      _supervisor: InternalActorRef,
+      val pool: Pool)
     extends RoutedActorCell(_system, _ref, _routerProps, _routerDispatcher, _routeeProps, _supervisor) {
 
   require(pool.resizer.isDefined, "RouterConfig must be a Pool with defined resizer")

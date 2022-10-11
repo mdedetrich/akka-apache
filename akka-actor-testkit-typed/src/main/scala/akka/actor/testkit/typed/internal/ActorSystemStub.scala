@@ -33,9 +33,10 @@ import akka.annotation.InternalApi
  * INTERNAL API
  */
 @nowarn
-@InternalApi private[akka] final class ActorSystemStub(
-    val name: String,
-    config: Config = ActorSystemStub.config.defaultReference)
+@InternalApi private[akka] final class ActorSystemStub
+  (
+      val name: String,
+      config: Config = ActorSystemStub.config.defaultReference)
     extends ActorSystem[Nothing]
     with ActorRef[Nothing]
     with ActorRefImpl[Nothing]

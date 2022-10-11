@@ -254,8 +254,11 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
     }
   }
 
-  def withEmptyActorSystem[T](name: String, config: Option[Config] = None, setup: Option[ActorSystemSetup] = None)(
-      f: ActorSystem[_] => T): T = {
+  def withEmptyActorSystem[T]
+    (name: String, config: Option[Config] = None, setup: Option[ActorSystemSetup] = None)
+    (
+        f: ActorSystem[_] => T)
+    : T = {
 
     val bootstrap = config match {
       case Some(c) => BootstrapSetup(c)

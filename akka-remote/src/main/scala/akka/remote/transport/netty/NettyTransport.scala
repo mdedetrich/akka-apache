@@ -222,17 +222,22 @@ private[netty] trait CommonHandlers extends NettyHelpers {
 
   protected def createHandle(channel: Channel, localAddress: Address, remoteAddress: Address): AssociationHandle
 
-  protected def registerListener(
-      channel: Channel,
-      listener: HandleEventListener,
-      msg: ChannelBuffer,
-      remoteSocketAddress: InetSocketAddress): Unit
+  protected def registerListener
+    (
+        channel: Channel,
+        listener: HandleEventListener,
+        msg: ChannelBuffer,
+        remoteSocketAddress: InetSocketAddress)
+    : Unit
 
-  final protected def init(
-      channel: Channel,
-      remoteSocketAddress: SocketAddress,
-      remoteAddress: Address,
-      msg: ChannelBuffer)(op: AssociationHandle => Any): Unit = {
+  final protected def init
+    (
+        channel: Channel,
+        remoteSocketAddress: SocketAddress,
+        remoteAddress: Address,
+        msg: ChannelBuffer)
+    (op: AssociationHandle => Any)
+    : Unit = {
     import transport._
     NettyTransport.addressFromSocketAddress(
       channel.getLocalAddress,
@@ -257,9 +262,10 @@ private[netty] trait CommonHandlers extends NettyHelpers {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[netty] abstract class ServerHandler(
-    protected final val transport: NettyTransport,
-    private final val associationListenerFuture: Future[AssociationEventListener])
+private[netty] abstract class ServerHandler
+  (
+      protected final val transport: NettyTransport,
+      private final val associationListenerFuture: Future[AssociationEventListener])
     extends NettyServerHelpers
     with CommonHandlers {
 
@@ -317,23 +323,27 @@ private[transport] object NettyTransport {
 
   val uniqueIdCounter = new AtomicInteger(0)
 
-  def addressFromSocketAddress(
-      addr: SocketAddress,
-      schemeIdentifier: String,
-      systemName: String,
-      hostName: Option[String],
-      port: Option[Int]): Option[Address] = addr match {
+  def addressFromSocketAddress
+    (
+        addr: SocketAddress,
+        schemeIdentifier: String,
+        systemName: String,
+        hostName: Option[String],
+        port: Option[Int])
+    : Option[Address] = addr match {
     case sa: InetSocketAddress =>
       Some(Address(schemeIdentifier, systemName, hostName.getOrElse(sa.getHostString), port.getOrElse(sa.getPort)))
     case _ => None
   }
 
   // Need to do like this for binary compatibility reasons
-  def addressFromSocketAddress(
-      addr: SocketAddress,
-      schemeIdentifier: String,
-      systemName: String,
-      hostName: Option[String]): Option[Address] =
+  def addressFromSocketAddress
+    (
+        addr: SocketAddress,
+        schemeIdentifier: String,
+        systemName: String,
+        hostName: Option[String])
+    : Option[Address] =
     addressFromSocketAddress(addr, schemeIdentifier, systemName, hostName, port = None)
 }
 

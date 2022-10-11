@@ -93,8 +93,11 @@ object BenchmarkActors {
     def props(next: Option[ActorRef]) = Props(new Pipe(next))
   }
 
-  private def startPingPongActorPairs(messagesPerPair: Int, numPairs: Int, dispatcher: String)(
-      implicit system: ActorSystem): (Vector[(ActorRef, ActorRef)], CountDownLatch) = {
+  private def startPingPongActorPairs
+    (messagesPerPair: Int, numPairs: Int, dispatcher: String)
+    (
+        implicit system: ActorSystem)
+    : (Vector[(ActorRef, ActorRef)], CountDownLatch) = {
     val fullPathToDispatcher = "akka.actor." + dispatcher
     val latch = new CountDownLatch(numPairs * 2)
     val actors = List
@@ -116,8 +119,11 @@ object BenchmarkActors {
     }
   }
 
-  private def startEchoActorPairs(messagesPerPair: Int, numPairs: Int, dispatcher: String, batchSize: Int)(
-      implicit system: ActorSystem): (Vector[ActorRef], CountDownLatch) = {
+  private def startEchoActorPairs
+    (messagesPerPair: Int, numPairs: Int, dispatcher: String, batchSize: Int)
+    (
+        implicit system: ActorSystem)
+    : (Vector[ActorRef], CountDownLatch) = {
 
     val fullPathToDispatcher = "akka.actor." + dispatcher
     val latch = new CountDownLatch(numPairs)
@@ -143,12 +149,15 @@ object BenchmarkActors {
       Runtime.getRuntime.availableProcessors == numCores,
       s"Update the cores constant to ${Runtime.getRuntime.availableProcessors}")
 
-  def benchmarkPingPongActors(
-      numMessagesPerActorPair: Int,
-      numActors: Int,
-      dispatcher: String,
-      throughPut: Int,
-      shutdownTimeout: Duration)(implicit system: ActorSystem): Unit = {
+  def benchmarkPingPongActors
+    (
+        numMessagesPerActorPair: Int,
+        numActors: Int,
+        dispatcher: String,
+        throughPut: Int,
+        shutdownTimeout: Duration)
+    (implicit system: ActorSystem)
+    : Unit = {
     val numPairs = numActors / 2
     val totalNumMessages = numPairs * numMessagesPerActorPair
     val (actors, latch) = startPingPongActorPairs(numMessagesPerActorPair, numPairs, dispatcher)
@@ -158,12 +167,15 @@ object BenchmarkActors {
     printProgress(totalNumMessages, numActors, startNanoTime)
   }
 
-  def benchmarkEchoActors(
-      numMessagesPerActorPair: Int,
-      numActors: Int,
-      dispatcher: String,
-      batchSize: Int,
-      shutdownTimeout: Duration)(implicit system: ActorSystem): Unit = {
+  def benchmarkEchoActors
+    (
+        numMessagesPerActorPair: Int,
+        numActors: Int,
+        dispatcher: String,
+        batchSize: Int,
+        shutdownTimeout: Duration)
+    (implicit system: ActorSystem)
+    : Unit = {
     val numPairs = numActors / 2
     val totalNumMessages = numPairs * numMessagesPerActorPair
     val (actors, latch) = startEchoActorPairs(numMessagesPerActorPair, numPairs, dispatcher, batchSize)

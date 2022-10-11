@@ -18,10 +18,11 @@ trait SSLEngineConfigurator {
 }
 
 @deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.", "2.6.0")
-final class DefaultSSLEngineConfigurator(
-    config: SSLConfigSettings,
-    enabledProtocols: Array[String],
-    enabledCipherSuites: Array[String])
+final class DefaultSSLEngineConfigurator
+  (
+      config: SSLConfigSettings,
+      enabledProtocols: Array[String],
+      enabledCipherSuites: Array[String])
     extends SSLEngineConfigurator {
   config ne null // @unused unavailable
   def configure(engine: SSLEngine, sslContext: SSLContext): SSLEngine = {

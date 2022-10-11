@@ -24,8 +24,10 @@ import akka.util.OptionVal
 
   override protected def initialAttributes = DefaultAttributes.maybeSource
 
-  override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes): (GraphStageLogic, Promise[Option[AnyRef]]) = {
+  override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes)
+    : (GraphStageLogic, Promise[Option[AnyRef]]) = {
     import scala.util.{ Failure => ScalaFailure, Success => ScalaSuccess }
     val promise = Promise[Option[AnyRef]]()
     val logic = new GraphStageLogic(shape) with OutHandler {

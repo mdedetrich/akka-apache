@@ -35,11 +35,13 @@ object PersistenceInit {
    *
    * @return a `CompletionStage` that is completed when the initialization has completed
    */
-  def initializePlugins(
-      system: ClassicActorSystemProvider,
-      journalPluginId: String,
-      snapshotPluginId: String,
-      timeout: Duration): CompletionStage[Done] =
+  def initializePlugins
+    (
+        system: ClassicActorSystemProvider,
+        journalPluginId: String,
+        snapshotPluginId: String,
+        timeout: Duration)
+    : CompletionStage[Done] =
     scaladsl.PersistenceInit.initializePlugins(system, journalPluginId, snapshotPluginId, timeout.asScala).toJava
 
 }

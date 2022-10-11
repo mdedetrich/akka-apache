@@ -46,10 +46,12 @@ private[akka] object WrappedPayloadSupport {
    * If `input` is a `Throwable` and can't be serialized because Java serialization is disabled it
    * will fallback to `ThrowableNotSerializableException`.
    */
-  def payloadBuilder(
-      input: Any,
-      serialization: Serialization,
-      log: LoggingAdapter): ContainerFormats.Payload.Builder = {
+  def payloadBuilder
+    (
+        input: Any,
+        serialization: Serialization,
+        log: LoggingAdapter)
+    : ContainerFormats.Payload.Builder = {
     val payload = input.asInstanceOf[AnyRef]
     val builder = ContainerFormats.Payload.newBuilder()
     val serializer = serialization.findSerializerFor(payload)

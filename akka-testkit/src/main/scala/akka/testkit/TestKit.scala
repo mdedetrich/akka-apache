@@ -82,22 +82,26 @@ object TestActor {
       delegates -= child
     }
 
-    override def processFailure(
-        context: ActorContext,
-        restart: Boolean,
-        child: ActorRef,
-        cause: Throwable,
-        stats: ChildRestartStats,
-        children: Iterable[ChildRestartStats]): Unit = {
+    override def processFailure
+      (
+          context: ActorContext,
+          restart: Boolean,
+          child: ActorRef,
+          cause: Throwable,
+          stats: ChildRestartStats,
+          children: Iterable[ChildRestartStats])
+      : Unit = {
       delegate(child).processFailure(context, restart, child, cause, stats, children)
     }
 
-    override def handleFailure(
-        context: ActorContext,
-        child: ActorRef,
-        cause: Throwable,
-        stats: ChildRestartStats,
-        children: Iterable[ChildRestartStats]): Boolean = {
+    override def handleFailure
+      (
+          context: ActorContext,
+          child: ActorRef,
+          cause: Throwable,
+          stats: ChildRestartStats,
+          children: Iterable[ChildRestartStats])
+      : Boolean = {
       delegate(child).handleFailure(context, child, cause, stats, children)
     }
   }
@@ -289,11 +293,13 @@ trait TestKitBase {
    * Note that the timeout is scaled using Duration.dilated,
    * which uses the configuration entry "akka.test.timefactor".
    */
-  def awaitCond(
-      p: => Boolean,
-      max: Duration = Duration.Undefined,
-      interval: Duration = 100.millis,
-      message: String = ""): Unit = {
+  def awaitCond
+    (
+        p: => Boolean,
+        max: Duration = Duration.Undefined,
+        interval: Duration = 100.millis,
+        message: String = "")
+    : Unit = {
     val _max = remainingOrDilated(max)
     val stop = now + _max
 
@@ -527,8 +533,11 @@ trait TestKitBase {
    * @return result of applying partial function to the last received message,
    *         i.e. the first one for which the partial function is defined
    */
-  def fishForSpecificMessage[T](max: Duration = Duration.Undefined, hint: String = "")(
-      f: PartialFunction[Any, T]): T = {
+  def fishForSpecificMessage[T]
+    (max: Duration = Duration.Undefined, hint: String = "")
+    (
+        f: PartialFunction[Any, T])
+    : T = {
     val _max = remainingOrDilated(max)
     val end = now + _max
     @tailrec
@@ -640,11 +649,13 @@ trait TestKitBase {
    */
   def expectMsgAllOf[T](max: FiniteDuration, obj: T*): immutable.Seq[T] = expectMsgAllOf_internal(max.dilated, obj: _*)
 
-  private def checkMissingAndUnexpected(
-      missing: Seq[Any],
-      unexpected: Seq[Any],
-      missingMessage: String,
-      unexpectedMessage: String): Unit = {
+  private def checkMissingAndUnexpected
+    (
+        missing: Seq[Any],
+        unexpected: Seq[Any],
+        missingMessage: String,
+        unexpectedMessage: String)
+    : Unit = {
     assert(
       missing.isEmpty && unexpected.isEmpty,
       (if (missing.isEmpty) "" else missing.mkString(missingMessage + " [", ", ", "] ")) +
@@ -795,8 +806,11 @@ trait TestKitBase {
    * assert(series == (1 to 7).toList)
    * }}}
    */
-  def receiveWhile[T](max: Duration = Duration.Undefined, idle: Duration = Duration.Inf, messages: Int = Int.MaxValue)(
-      f: PartialFunction[AnyRef, T]): immutable.Seq[T] = {
+  def receiveWhile[T]
+    (max: Duration = Duration.Undefined, idle: Duration = Duration.Inf, messages: Int = Int.MaxValue)
+    (
+        f: PartialFunction[AnyRef, T])
+    : immutable.Seq[T] = {
     val stop = now + remainingOrDilated(max)
     var msg: Message = NullMessage
 
@@ -880,10 +894,12 @@ trait TestKitBase {
    *
    * If verifySystemShutdown is true, then an exception will be thrown on failure.
    */
-  def shutdown(
-      actorSystem: ActorSystem = system,
-      duration: Duration = Duration.Undefined,
-      verifySystemShutdown: Boolean = false): Unit = {
+  def shutdown
+    (
+        actorSystem: ActorSystem = system,
+        duration: Duration = Duration.Undefined,
+        verifySystemShutdown: Boolean = false)
+    : Unit = {
     TestKit.shutdownActorSystem(actorSystem, duration, verifySystemShutdown)
   }
 
@@ -1023,10 +1039,12 @@ object TestKit {
    *
    * If verifySystemShutdown is true, then an exception will be thrown on failure.
    */
-  def shutdownActorSystem(
-      actorSystem: ActorSystem,
-      duration: Duration = Duration.Undefined,
-      verifySystemShutdown: Boolean = false): Unit = {
+  def shutdownActorSystem
+    (
+        actorSystem: ActorSystem,
+        duration: Duration = Duration.Undefined,
+        verifySystemShutdown: Boolean = false)
+    : Unit = {
     val d = duration match {
       case f: FiniteDuration => f.dilated(actorSystem)
       case _                 => 10.seconds.dilated(actorSystem).min(10.seconds)

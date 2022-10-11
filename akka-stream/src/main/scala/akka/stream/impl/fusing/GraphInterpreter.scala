@@ -84,12 +84,13 @@ import akka.stream.stage._
    * @param outHandler The handler that contains the callback for output events.
    */
   @InternalStableApi
-  final class Connection(
-      var id: Int,
-      var inOwner: GraphStageLogic,
-      var outOwner: GraphStageLogic,
-      var inHandler: InHandler,
-      var outHandler: OutHandler) {
+  final class Connection
+    (
+        var id: Int,
+        var inOwner: GraphStageLogic,
+        var outOwner: GraphStageLogic,
+        var inHandler: InHandler,
+        var outHandler: OutHandler) {
 
     /** See [[GraphInterpreter]] about possible states */
     var portState: Int = InReady
@@ -203,14 +204,15 @@ import akka.stream.stage._
  * be modeled, or even dissolved (if preempted and a "stealing" external event is injected; for example the non-cycle
  * edge of a balance is pulled, dissolving the original cycle).
  */
-@InternalApi private[akka] final class GraphInterpreter(
-    val materializer: Materializer,
-    val log: LoggingAdapter,
-    val logics: Array[GraphStageLogic], // Array of stage logics
-    val connections: Array[GraphInterpreter.Connection],
-    val onAsyncInput: (GraphStageLogic, Any, Promise[Done], (Any) => Unit) => Unit,
-    val fuzzingMode: Boolean,
-    val context: ActorRef) {
+@InternalApi private[akka] final class GraphInterpreter
+  (
+      val materializer: Materializer,
+      val log: LoggingAdapter,
+      val logics: Array[GraphStageLogic], // Array of stage logics
+      val connections: Array[GraphInterpreter.Connection],
+      val onAsyncInput: (GraphStageLogic, Any, Promise[Done], (Any) => Unit) => Unit,
+      val fuzzingMode: Boolean,
+      val context: ActorRef) {
   import GraphInterpreter._
 
   private[this] val ChaseLimit = if (fuzzingMode) 0 else 16

@@ -456,7 +456,8 @@ class ActorDocSpec extends AkkaSpec("""
       class DependencyInjector(applicationContext: AnyRef, beanName: String) extends IndirectActorProducer {
 
         override def actorClass = classOf[Actor]
-        override def produce() =
+        override def produce
+          () =
           // #obtain-fresh-Actor-instance-from-DI-framework
           new Echo(beanName)
 

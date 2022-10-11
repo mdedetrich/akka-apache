@@ -62,10 +62,12 @@ abstract class HandshakeRestartReceiverSpec
     super.afterAll()
   }
 
-  def identifyWithUid(
-      rootPath: ActorPath,
-      actorName: String,
-      timeout: FiniteDuration = remainingOrDefault): (Long, ActorRef) = {
+  def identifyWithUid
+    (
+        rootPath: ActorPath,
+        actorName: String,
+        timeout: FiniteDuration = remainingOrDefault)
+    : (Long, ActorRef) = {
     within(timeout) {
       system.actorSelection(rootPath / "user" / actorName) ! "identify"
       expectMsgType[(Long, ActorRef)]

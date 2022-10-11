@@ -55,10 +55,12 @@ object ActorFlow {
    * @tparam Q Question message type that is spoken by the target actor
    * @tparam A Answer type that the Actor is expected to reply with, it will become the Output type of this Flow
    */
-  def ask[I, Q, A](
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[I, A, NotUsed] =
+  def ask[I, Q, A]
+    (
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[A], Q])
+    : Flow[I, A, NotUsed] =
     akka.stream.typed.scaladsl.ActorFlow
       .ask[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
         JavaDurationConverters.asFiniteDuration(timeout))
@@ -69,10 +71,12 @@ object ActorFlow {
    * arrives the future is completed with the wrapped value, if a [[akka.pattern.StatusReply#error]] arrives the future is instead
    * failed.
    */
-  def askWithStatus[I, Q, A](
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+  def askWithStatus[I, Q, A]
+    (
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q])
+    : Flow[I, A, NotUsed] =
     akka.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism = 2)(ref)((i, ref) => makeMessage(i, ref))(
         JavaDurationConverters.asFiniteDuration(timeout))
@@ -111,11 +115,13 @@ object ActorFlow {
    * @tparam Q Question message type that is spoken by the target actor
    * @tparam A Answer type that the Actor is expected to reply with, it will become the Output type of this Flow
    */
-  def ask[I, Q, A](
-      parallelism: Int,
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: (I, ActorRef[A]) => Q): Flow[I, A, NotUsed] =
+  def ask[I, Q, A]
+    (
+        parallelism: Int,
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: (I, ActorRef[A]) => Q)
+    : Flow[I, A, NotUsed] =
     akka.stream.typed.scaladsl.ActorFlow
       .ask[I, Q, A](parallelism)(ref)((i, ref) => makeMessage(i, ref))(timeout.toMillis.millis)
       .asJava
@@ -125,11 +131,13 @@ object ActorFlow {
    * arrives the future is completed with the wrapped value, if a [[akka.pattern.StatusReply#error]] arrives the future is instead
    * failed.
    */
-  def askWithStatus[I, Q, A](
-      parallelism: Int,
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[I, A, NotUsed] =
+  def askWithStatus[I, Q, A]
+    (
+        parallelism: Int,
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q])
+    : Flow[I, A, NotUsed] =
     akka.stream.typed.scaladsl.ActorFlow
       .askWithStatus[I, Q, A](parallelism)(ref)((i, ref) => makeMessage(i, ref))(timeout.toMillis.millis)
       .asJava
@@ -137,10 +145,12 @@ object ActorFlow {
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor without including the context.
    */
-  def askWithContext[I, Q, A, Ctx](
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+  def askWithContext[I, Q, A, Ctx]
+    (
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[A], Q])
+    : Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     akka.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
@@ -156,10 +166,12 @@ object ActorFlow {
    * arrives the future is completed with the wrapped value, if a [[akka.pattern.StatusReply#error]] arrives the future is instead
    * failed.
    */
-  def askWithStatusAndContext[I, Q, A, Ctx](
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
+  def askWithStatusAndContext[I, Q, A, Ctx]
+    (
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[StatusReply[A]], Q])
+    : Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     akka.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
@@ -173,11 +185,13 @@ object ActorFlow {
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor without including the context.
    */
-  def askWithContext[I, Q, A, Ctx](
-      parallelism: Int,
-      ref: ActorRef[Q],
-      timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
+  def askWithContext[I, Q, A, Ctx]
+    (
+        parallelism: Int,
+        ref: ActorRef[Q],
+        timeout: java.time.Duration,
+        makeMessage: BiFunction[I, ActorRef[A], Q])
+    : Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
     akka.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)

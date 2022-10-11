@@ -49,8 +49,10 @@ class KeepGoingStageSpec extends StreamSpec {
   class PingableSink(keepAlive: Boolean) extends GraphStageWithMaterializedValue[SinkShape[Int], Future[PingRef]] {
     val shape = SinkShape[Int](Inlet("ping.in"))
 
-    override def createLogicAndMaterializedValue(
-        inheritedAttributes: Attributes): (GraphStageLogic, Future[PingRef]) = {
+    override def createLogicAndMaterializedValue
+      (
+          inheritedAttributes: Attributes)
+      : (GraphStageLogic, Future[PingRef]) = {
       val promise = Promise[PingRef]()
 
       val logic = new GraphStageLogic(shape) {

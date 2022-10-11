@@ -122,10 +122,12 @@ private object ReplicatedDataSerializer {
       builder.setLongKey(key).setValue(value).build()
     override def setIntKey(builder: rd.ORMap.Entry.Builder, key: Int, value: dm.OtherMessage): rd.ORMap.Entry =
       builder.setIntKey(key).setValue(value).build()
-    override def setOtherKey(
-        builder: rd.ORMap.Entry.Builder,
-        key: dm.OtherMessage,
-        value: dm.OtherMessage): rd.ORMap.Entry = builder.setOtherKey(key).setValue(value).build()
+    override def setOtherKey
+      (
+          builder: rd.ORMap.Entry.Builder,
+          key: dm.OtherMessage,
+          value: dm.OtherMessage)
+      : rd.ORMap.Entry = builder.setOtherKey(key).setValue(value).build()
     override def hasStringKey(entry: rd.ORMap.Entry): Boolean = entry.hasStringKey
     override def getStringKey(entry: rd.ORMap.Entry): String = entry.getStringKey
     override def hasIntKey(entry: rd.ORMap.Entry): Boolean = entry.hasIntKey
@@ -146,10 +148,12 @@ private object ReplicatedDataSerializer {
       builder.setLongKey(key).setValue(value).build()
     override def setIntKey(builder: rd.LWWMap.Entry.Builder, key: Int, value: rd.LWWRegister): rd.LWWMap.Entry =
       builder.setIntKey(key).setValue(value).build()
-    override def setOtherKey(
-        builder: rd.LWWMap.Entry.Builder,
-        key: OtherMessage,
-        value: rd.LWWRegister): rd.LWWMap.Entry = builder.setOtherKey(key).setValue(value).build()
+    override def setOtherKey
+      (
+          builder: rd.LWWMap.Entry.Builder,
+          key: OtherMessage,
+          value: rd.LWWRegister)
+      : rd.LWWMap.Entry = builder.setOtherKey(key).setValue(value).build()
     override def hasStringKey(entry: rd.LWWMap.Entry): Boolean = entry.hasStringKey
     override def getStringKey(entry: rd.LWWMap.Entry): String = entry.getStringKey
     override def hasIntKey(entry: rd.LWWMap.Entry): Boolean = entry.hasIntKey
@@ -164,24 +168,32 @@ private object ReplicatedDataSerializer {
   implicit object PNCounterMapEntry
       extends ProtoMapEntryWriter[rd.PNCounterMap.Entry, rd.PNCounterMap.Entry.Builder, rd.PNCounter]
       with ProtoMapEntryReader[rd.PNCounterMap.Entry, rd.PNCounter] {
-    override def setStringKey(
-        builder: rd.PNCounterMap.Entry.Builder,
-        key: String,
-        value: rd.PNCounter): rd.PNCounterMap.Entry =
+    override def setStringKey
+      (
+          builder: rd.PNCounterMap.Entry.Builder,
+          key: String,
+          value: rd.PNCounter)
+      : rd.PNCounterMap.Entry =
       builder.setStringKey(key).setValue(value).build()
-    override def setLongKey(
-        builder: rd.PNCounterMap.Entry.Builder,
-        key: Long,
-        value: rd.PNCounter): rd.PNCounterMap.Entry =
+    override def setLongKey
+      (
+          builder: rd.PNCounterMap.Entry.Builder,
+          key: Long,
+          value: rd.PNCounter)
+      : rd.PNCounterMap.Entry =
       builder.setLongKey(key).setValue(value).build()
-    override def setIntKey(
-        builder: rd.PNCounterMap.Entry.Builder,
-        key: Int,
-        value: rd.PNCounter): rd.PNCounterMap.Entry = builder.setIntKey(key).setValue(value).build()
-    override def setOtherKey(
-        builder: rd.PNCounterMap.Entry.Builder,
-        key: OtherMessage,
-        value: rd.PNCounter): rd.PNCounterMap.Entry =
+    override def setIntKey
+      (
+          builder: rd.PNCounterMap.Entry.Builder,
+          key: Int,
+          value: rd.PNCounter)
+      : rd.PNCounterMap.Entry = builder.setIntKey(key).setValue(value).build()
+    override def setOtherKey
+      (
+          builder: rd.PNCounterMap.Entry.Builder,
+          key: OtherMessage,
+          value: rd.PNCounter)
+      : rd.PNCounterMap.Entry =
       builder.setOtherKey(key).setValue(value).build()
     override def hasStringKey(entry: rd.PNCounterMap.Entry): Boolean = entry.hasStringKey
     override def getStringKey(entry: rd.PNCounterMap.Entry): String = entry.getStringKey
@@ -203,10 +215,12 @@ private object ReplicatedDataSerializer {
       builder.setLongKey(key).setValue(value).build()
     override def setIntKey(builder: rd.ORMultiMap.Entry.Builder, key: Int, value: rd.ORSet): rd.ORMultiMap.Entry =
       builder.setIntKey(key).setValue(value).build()
-    override def setOtherKey(
-        builder: rd.ORMultiMap.Entry.Builder,
-        key: dm.OtherMessage,
-        value: rd.ORSet): rd.ORMultiMap.Entry = builder.setOtherKey(key).setValue(value).build()
+    override def setOtherKey
+      (
+          builder: rd.ORMultiMap.Entry.Builder,
+          key: dm.OtherMessage,
+          value: rd.ORSet)
+      : rd.ORMultiMap.Entry = builder.setOtherKey(key).setValue(value).build()
     override def hasStringKey(entry: rd.ORMultiMap.Entry): Boolean = entry.hasStringKey
     override def getStringKey(entry: rd.ORMultiMap.Entry): String = entry.getStringKey
     override def hasIntKey(entry: rd.ORMultiMap.Entry): Boolean = entry.hasIntKey
@@ -221,25 +235,33 @@ private object ReplicatedDataSerializer {
   implicit object ORMapDeltaGroupEntry
       extends ProtoMapEntryWriter[rd.ORMapDeltaGroup.MapEntry, rd.ORMapDeltaGroup.MapEntry.Builder, dm.OtherMessage]
       with ProtoMapEntryReader[rd.ORMapDeltaGroup.MapEntry, dm.OtherMessage] {
-    override def setStringKey(
-        builder: rd.ORMapDeltaGroup.MapEntry.Builder,
-        key: String,
-        value: dm.OtherMessage): rd.ORMapDeltaGroup.MapEntry =
+    override def setStringKey
+      (
+          builder: rd.ORMapDeltaGroup.MapEntry.Builder,
+          key: String,
+          value: dm.OtherMessage)
+      : rd.ORMapDeltaGroup.MapEntry =
       builder.setStringKey(key).setValue(value).build()
-    override def setLongKey(
-        builder: rd.ORMapDeltaGroup.MapEntry.Builder,
-        key: Long,
-        value: dm.OtherMessage): rd.ORMapDeltaGroup.MapEntry =
+    override def setLongKey
+      (
+          builder: rd.ORMapDeltaGroup.MapEntry.Builder,
+          key: Long,
+          value: dm.OtherMessage)
+      : rd.ORMapDeltaGroup.MapEntry =
       builder.setLongKey(key).setValue(value).build()
-    override def setIntKey(
-        builder: rd.ORMapDeltaGroup.MapEntry.Builder,
-        key: Int,
-        value: dm.OtherMessage): rd.ORMapDeltaGroup.MapEntry =
+    override def setIntKey
+      (
+          builder: rd.ORMapDeltaGroup.MapEntry.Builder,
+          key: Int,
+          value: dm.OtherMessage)
+      : rd.ORMapDeltaGroup.MapEntry =
       builder.setIntKey(key).setValue(value).build()
-    override def setOtherKey(
-        builder: rd.ORMapDeltaGroup.MapEntry.Builder,
-        key: dm.OtherMessage,
-        value: dm.OtherMessage): rd.ORMapDeltaGroup.MapEntry =
+    override def setOtherKey
+      (
+          builder: rd.ORMapDeltaGroup.MapEntry.Builder,
+          key: dm.OtherMessage,
+          value: dm.OtherMessage)
+      : rd.ORMapDeltaGroup.MapEntry =
       builder.setOtherKey(key).setValue(value).build()
     override def hasStringKey(entry: rd.ORMapDeltaGroup.MapEntry): Boolean = entry.hasStringKey
     override def getStringKey(entry: rd.ORMapDeltaGroup.MapEntry): String = entry.getStringKey
@@ -660,12 +682,15 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       IValue,
       EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder],
       PEntry <: GeneratedMessageV3,
-      PValue <: GeneratedMessageV3](
-      input: Map[IKey, IValue],
-      createBuilder: () => EntryBuilder,
-      valueConverter: IValue => PValue)(
-      implicit comparator: Comparator[PEntry],
-      eh: ProtoMapEntryWriter[PEntry, EntryBuilder, PValue]): java.lang.Iterable[PEntry] = {
+      PValue <: GeneratedMessageV3]
+    (
+        input: Map[IKey, IValue],
+        createBuilder: () => EntryBuilder,
+        valueConverter: IValue => PValue)
+    (
+        implicit comparator: Comparator[PEntry],
+        eh: ProtoMapEntryWriter[PEntry, EntryBuilder, PValue])
+    : java.lang.Iterable[PEntry] = {
     // The resulting Iterable needs to be ordered deterministically in order to create same signature upon serializing same data
     val protoEntries = new util.TreeSet[PEntry](comparator)
     input.foreach {
@@ -688,9 +713,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def ormapFromBinary(bytes: Array[Byte]): ORMap[Any, ReplicatedData] =
     ormapFromProto(rd.ORMap.parseFrom(decompress(bytes)))
 
-  def mapTypeFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData](
-      input: util.List[PEntry],
-      valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] = {
+  def mapTypeFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData]
+    (
+        input: util.List[PEntry],
+        valueCreator: A => B)
+    (implicit eh: ProtoMapEntryReader[PEntry, A])
+    : Map[Any, B] = {
     input.asScala.map { entry =>
       if (eh.hasStringKey(entry)) eh.getStringKey(entry) -> valueCreator(eh.getValue(entry))
       else if (eh.hasIntKey(entry)) eh.getIntKey(entry) -> valueCreator(eh.getValue(entry))
@@ -709,9 +737,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     new ORMap(keys = orsetFromProto(ormap.getKeys), entries, ORMap.VanillaORMapTag)
   }
 
-  def singleMapEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData](
-      input: util.List[PEntry],
-      valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] = {
+  def singleMapEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData]
+    (
+        input: util.List[PEntry],
+        valueCreator: A => B)
+    (implicit eh: ProtoMapEntryReader[PEntry, A])
+    : Map[Any, B] = {
     val map = mapTypeFromProto(input, valueCreator)
     if (map.size > 1)
       throw new IllegalArgumentException(
@@ -720,8 +751,11 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       map
   }
 
-  def singleKeyEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3](entryOption: Option[PEntry])(
-      implicit eh: ProtoMapEntryReader[PEntry, A]): Any =
+  def singleKeyEntryFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3]
+    (entryOption: Option[PEntry])
+    (
+        implicit eh: ProtoMapEntryReader[PEntry, A])
+    : Any =
     entryOption match {
       case Some(entry) =>
         if (eh.hasStringKey(entry)) eh.getStringKey(entry)

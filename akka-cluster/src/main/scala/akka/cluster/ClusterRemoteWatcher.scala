@@ -56,11 +56,12 @@ private[cluster] object ClusterRemoteWatcher {
  * over responsibility from `RemoteWatcher` if a watch is added before a node is member
  * of the cluster and then later becomes cluster member.
  */
-private[cluster] class ClusterRemoteWatcher(
-    failureDetector: FailureDetectorRegistry[Address],
-    heartbeatInterval: FiniteDuration,
-    unreachableReaperInterval: FiniteDuration,
-    heartbeatExpectedResponseAfter: FiniteDuration)
+private[cluster] class ClusterRemoteWatcher
+  (
+      failureDetector: FailureDetectorRegistry[Address],
+      heartbeatInterval: FiniteDuration,
+      unreachableReaperInterval: FiniteDuration,
+      heartbeatExpectedResponseAfter: FiniteDuration)
     extends RemoteWatcher(failureDetector, heartbeatInterval, unreachableReaperInterval, heartbeatExpectedResponseAfter)
     with Timers {
 

@@ -93,8 +93,10 @@ object SourceQueueWithComplete {
   /**
    * INTERNAL API: Converts the queue into a `javadsl.SourceQueueWithComplete`
    */
-  @InternalApi private[akka] def asJava[T](
-      queue: SourceQueueWithComplete[T]): akka.stream.javadsl.SourceQueueWithComplete[T] =
+  @InternalApi private[akka] def asJava[T]
+    (
+        queue: SourceQueueWithComplete[T])
+    : akka.stream.javadsl.SourceQueueWithComplete[T] =
     new akka.stream.javadsl.SourceQueueWithComplete[T] {
       def offer(elem: T): CompletionStage[QueueOfferResult] =
         queue.offer(elem).toJava

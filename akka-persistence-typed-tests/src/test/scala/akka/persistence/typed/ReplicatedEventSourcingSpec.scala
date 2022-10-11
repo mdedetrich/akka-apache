@@ -39,9 +39,11 @@ object ReplicatedEventSourcingSpec {
   def testBehavior(entityId: String, replicaId: String, probe: ActorRef[EventAndContext]): Behavior[Command] =
     testBehavior(entityId, replicaId, Some(probe))
 
-  def eventSourcedBehavior(
-      replicationContext: ReplicationContext,
-      probe: Option[ActorRef[EventAndContext]]): EventSourcedBehavior[Command, String, State] = {
+  def eventSourcedBehavior
+    (
+        replicationContext: ReplicationContext,
+        probe: Option[ActorRef[EventAndContext]])
+    : EventSourcedBehavior[Command, String, State] = {
     EventSourcedBehavior[Command, String, State](
       replicationContext.persistenceId,
       State(Nil),
@@ -75,10 +77,12 @@ object ReplicatedEventSourcingSpec {
       })
   }
 
-  def testBehavior(
-      entityId: String,
-      replicaId: String,
-      probe: Option[ActorRef[EventAndContext]] = None): Behavior[Command] =
+  def testBehavior
+    (
+        entityId: String,
+        replicaId: String,
+        probe: Option[ActorRef[EventAndContext]] = None)
+    : Behavior[Command] =
     ReplicatedEventSourcing.commonJournalConfig(
       ReplicationId("ReplicatedEventSourcingSpec", entityId, ReplicaId(replicaId)),
       AllReplicas,

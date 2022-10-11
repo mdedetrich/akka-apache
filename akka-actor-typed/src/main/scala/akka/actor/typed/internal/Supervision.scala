@@ -172,11 +172,13 @@ private object RestartSupervisor {
   /**
    * Calculates an exponential back off delay.
    */
-  def calculateDelay(
-      restartCount: Int,
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double): FiniteDuration = {
+  def calculateDelay
+    (
+        restartCount: Int,
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double)
+    : FiniteDuration = {
     val rnd = 1.0 + ThreadLocalRandom.current().nextDouble() * randomFactor
     val calculatedDuration = Try(maxBackoff.min(minBackoff * math.pow(2, restartCount)) * rnd).getOrElse(maxBackoff)
     calculatedDuration match {
@@ -281,9 +283,11 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
     }
   }
 
-  override protected def handleExceptionOnStart(
-      ctx: TypedActorContext[Any],
-      @unused target: PreStartTarget[T]): Catcher[Behavior[T]] = {
+  override protected def handleExceptionOnStart
+    (
+        ctx: TypedActorContext[Any],
+        @unused target: PreStartTarget[T])
+    : Catcher[Behavior[T]] = {
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
       ctx.asScala.cancelAllTimers()
       strategy match {
@@ -300,9 +304,11 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
       }
   }
 
-  override protected def handleSignalException(
-      ctx: TypedActorContext[Any],
-      target: SignalTarget[T]): Catcher[Behavior[T]] = {
+  override protected def handleSignalException
+    (
+        ctx: TypedActorContext[Any],
+        target: SignalTarget[T])
+    : Catcher[Behavior[T]] = {
     handleException(
       ctx,
       signalRestart = {
@@ -310,9 +316,11 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
         case _                                   => target(ctx, PreRestart)
       })
   }
-  override protected def handleReceiveException(
-      ctx: TypedActorContext[Any],
-      target: ReceiveTarget[T]): Catcher[Behavior[T]] = {
+  override protected def handleReceiveException
+    (
+        ctx: TypedActorContext[Any],
+        target: ReceiveTarget[T])
+    : Catcher[Behavior[T]] = {
     handleException(
       ctx,
       signalRestart = {

@@ -219,11 +219,14 @@ object Behaviors {
     new Supervise[T](wrapped)
 
   private final val ThrowableClassTag = ClassTag(classOf[Throwable])
-  final class Supervise[T] private[akka] (val wrapped: Behavior[T]) extends AnyVal {
+  final class Supervise[T] private[akka](val wrapped: Behavior[T]) extends AnyVal {
 
     /** Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws. */
-    def onFailure[Thr <: Throwable](strategy: SupervisorStrategy)(
-        implicit tag: ClassTag[Thr] = ThrowableClassTag): Behavior[T] = {
+    def onFailure[Thr <: Throwable]
+      (strategy: SupervisorStrategy)
+      (
+          implicit tag: ClassTag[Thr] = ThrowableClassTag)
+      : Behavior[T] = {
       val effectiveTag = if (tag == ClassTag.Nothing) ThrowableClassTag else tag
       Supervisor(Behavior.validateAsInitial(wrapped), strategy)(effectiveTag)
     }
@@ -287,8 +290,11 @@ object Behaviors {
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
    */
-  def withMdc[T: ClassTag](staticMdc: Map[String, String], mdcForMessage: T => Map[String, String])(
-      behavior: Behavior[T]): Behavior[T] =
+  def withMdc[T: ClassTag]
+    (staticMdc: Map[String, String], mdcForMessage: T => Map[String, String])
+    (
+        behavior: Behavior[T])
+    : Behavior[T] =
     WithMdcBehaviorInterceptor[T](staticMdc, mdcForMessage, behavior)
 
   /**

@@ -129,8 +129,11 @@ object StreamConverters {
    * Note that a flow can be materialized multiple times, so the function producing the ``Collector`` must be able
    * to handle multiple invocations.
    */
-  def javaCollectorParallelUnordered[T, R](parallelism: Int)(
-      collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] = {
+  def javaCollectorParallelUnordered[T, R]
+    (parallelism: Int)
+    (
+        collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R])
+    : Sink[T, Future[R]] = {
     if (parallelism == 1) javaCollector[T, R](collectorFactory)
     else {
       Sink
@@ -213,7 +216,9 @@ object StreamConverters {
    * You can use [[Source.async]] to create asynchronous boundaries between synchronous Java ``Stream``
    * and the rest of flow.
    */
-  def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]](
-      stream: () => java.util.stream.BaseStream[T, S]): Source[T, NotUsed] =
+  def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]]
+    (
+        stream: () => java.util.stream.BaseStream[T, S])
+    : Source[T, NotUsed] =
     Source.fromGraph(new JavaStreamSource[T, S](stream)).withAttributes(DefaultAttributes.fromJavaStream)
 }

@@ -23,11 +23,12 @@ import akka.util.{ unused, ByteString }
 /**
  * INTERNAL API
  */
-private[io] class UdpConnection(
-    udpConn: UdpConnectedExt,
-    channelRegistry: ChannelRegistry,
-    commander: ActorRef,
-    connect: Connect)
+private[io] class UdpConnection
+  (
+      udpConn: UdpConnectedExt,
+      channelRegistry: ChannelRegistry,
+      commander: ActorRef,
+      connect: Connect)
     extends Actor
     with ActorLogging
     with RequiresMessageQueue[UnboundedMessageQueueSemantics] {

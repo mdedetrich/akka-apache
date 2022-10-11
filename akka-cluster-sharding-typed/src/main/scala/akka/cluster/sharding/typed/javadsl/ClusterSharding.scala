@@ -227,9 +227,11 @@ object Entity {
    * @param createBehavior Create the behavior for an entity given a [[EntityContext]] (includes entityId)
    * @tparam M The type of message the entity accepts
    */
-  def of[M](
-      typeKey: EntityTypeKey[M],
-      createBehavior: JFunction[EntityContext[M], Behavior[M]]): Entity[M, ShardingEnvelope[M]] = {
+  def of[M]
+    (
+        typeKey: EntityTypeKey[M],
+        createBehavior: JFunction[EntityContext[M], Behavior[M]])
+    : Entity[M, ShardingEnvelope[M]] = {
     new Entity(
       createBehavior,
       typeKey,
@@ -319,15 +321,17 @@ final class Entity[M, E] private (
   def withAllocationStrategy(newAllocationStrategy: ShardAllocationStrategy): Entity[M, E] =
     copy(allocationStrategy = Optional.ofNullable(newAllocationStrategy))
 
-  private def copy(
-      createBehavior: JFunction[EntityContext[M], Behavior[M]] = createBehavior,
-      typeKey: EntityTypeKey[M] = typeKey,
-      stopMessage: Optional[M] = stopMessage,
-      entityProps: Props = entityProps,
-      settings: Optional[ClusterShardingSettings] = settings,
-      allocationStrategy: Optional[ShardAllocationStrategy] = allocationStrategy,
-      role: Optional[String] = role,
-      dataCenter: Optional[String] = dataCenter): Entity[M, E] = {
+  private def copy
+    (
+        createBehavior: JFunction[EntityContext[M], Behavior[M]] = createBehavior,
+        typeKey: EntityTypeKey[M] = typeKey,
+        stopMessage: Optional[M] = stopMessage,
+        entityProps: Props = entityProps,
+        settings: Optional[ClusterShardingSettings] = settings,
+        allocationStrategy: Optional[ShardAllocationStrategy] = allocationStrategy,
+        role: Optional[String] = role,
+        dataCenter: Optional[String] = dataCenter)
+    : Entity[M, E] = {
     new Entity(
       createBehavior,
       typeKey,
@@ -371,10 +375,11 @@ final class Entity[M, E] private (
  * @param entityTypeKey the key of the entity type
  * @param entityId the business domain identifier of the entity
  */
-final class EntityContext[M](
-    entityTypeKey: EntityTypeKey[M],
-    entityId: String,
-    shard: ActorRef[ClusterSharding.ShardCommand]) {
+final class EntityContext[M]
+  (
+      entityTypeKey: EntityTypeKey[M],
+      entityId: String,
+      shard: ActorRef[ClusterSharding.ShardCommand]) {
 
   def getEntityTypeKey: EntityTypeKey[M] = entityTypeKey
 

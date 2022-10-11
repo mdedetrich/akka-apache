@@ -53,13 +53,15 @@ object ActorSink {
    * @param onCompleteMessage the message to be sent to the actor when the stream completes
    * @param onFailureMessage a function that creates a message to be sent to the actor in case the stream fails from a `Throwable`
    */
-  def actorRefWithBackpressure[T, M, A](
-      ref: ActorRef[M],
-      messageAdapter: (ActorRef[A], T) => M,
-      onInitMessage: ActorRef[A] => M,
-      ackMessage: A,
-      onCompleteMessage: M,
-      onFailureMessage: Throwable => M): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T, M, A]
+    (
+        ref: ActorRef[M],
+        messageAdapter: (ActorRef[A], T) => M,
+        onInitMessage: ActorRef[A] => M,
+        ackMessage: A,
+        onCompleteMessage: M,
+        onFailureMessage: Throwable => M)
+    : Sink[T, NotUsed] =
     Sink.actorRefWithAck(
       ref.toClassic,
       messageAdapter.curried.compose(actorRefAdapter),
@@ -87,12 +89,14 @@ object ActorSink {
    * @param onCompleteMessage the message to be sent to the actor when the stream completes
    * @param onFailureMessage a function that creates a message to be sent to the actor in case the stream fails from a `Throwable`
    */
-  def actorRefWithBackpressure[T, M, A](
-      ref: ActorRef[M],
-      messageAdapter: (ActorRef[A], T) => M,
-      onInitMessage: ActorRef[A] => M,
-      onCompleteMessage: M,
-      onFailureMessage: Throwable => M): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T, M, A]
+    (
+        ref: ActorRef[M],
+        messageAdapter: (ActorRef[A], T) => M,
+        onInitMessage: ActorRef[A] => M,
+        onCompleteMessage: M,
+        onFailureMessage: Throwable => M)
+    : Sink[T, NotUsed] =
     Sink.actorRefWithAck(
       ref.toClassic,
       messageAdapter.curried.compose(actorRefAdapter),

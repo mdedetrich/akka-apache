@@ -170,10 +170,12 @@ object Persistence extends ExtensionId[Persistence] with ExtensionIdProvider {
    * INTERNAL API
    * @throws IllegalArgumentException if config path for the `pluginId` doesn't exist
    */
-  @InternalApi private[akka] def verifyPluginConfigExists(
-      config: Config,
-      pluginId: String,
-      pluginType: String): Unit = {
+  @InternalApi private[akka] def verifyPluginConfigExists
+    (
+        config: Config,
+        pluginId: String,
+        pluginType: String)
+    : Unit = {
     if (!isEmpty(pluginId) && !config.hasPath(pluginId))
       throw new IllegalArgumentException(s"$pluginType plugin [$pluginId] configuration doesn't exist.")
   }
@@ -324,9 +326,11 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * When empty, looks in `akka.persistence.journal.plugin` to find configuration entry path.
    * When configured, uses `journalPluginId` as absolute path to the journal configuration entry.
    */
-  private[akka] final def journalConfigFor(
-      journalPluginId: String,
-      journalPluginConfig: Config = ConfigFactory.empty): Config = {
+  private[akka] final def journalConfigFor
+    (
+        journalPluginId: String,
+        journalPluginConfig: Config = ConfigFactory.empty)
+    : Config = {
     val configPath = if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
     verifyJournalPluginConfigExists(journalPluginConfig, configPath)
     pluginHolderFor(configPath, JournalFallbackConfigPath, journalPluginConfig).config
@@ -352,9 +356,11 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */
   @InternalStableApi
-  private[akka] final def journalFor(
-      journalPluginId: String,
-      journalPluginConfig: Config = ConfigFactory.empty): ActorRef = {
+  private[akka] final def journalFor
+    (
+        journalPluginId: String,
+        journalPluginConfig: Config = ConfigFactory.empty)
+    : ActorRef = {
     val configPath = if (isEmpty(journalPluginId)) defaultJournalPluginId else journalPluginId
     verifyJournalPluginConfigExists(journalPluginConfig, configPath)
     pluginHolderFor(configPath, JournalFallbackConfigPath, journalPluginConfig).actor
@@ -369,18 +375,22 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */
   @InternalStableApi
-  private[akka] final def snapshotStoreFor(
-      snapshotPluginId: String,
-      snapshotPluginConfig: Config = ConfigFactory.empty): ActorRef = {
+  private[akka] final def snapshotStoreFor
+    (
+        snapshotPluginId: String,
+        snapshotPluginConfig: Config = ConfigFactory.empty)
+    : ActorRef = {
     val configPath = if (isEmpty(snapshotPluginId)) defaultSnapshotPluginId else snapshotPluginId
     verifySnapshotPluginConfigExists(snapshotPluginConfig, configPath)
     pluginHolderFor(configPath, SnapshotStoreFallbackConfigPath, snapshotPluginConfig).actor
   }
 
-  @tailrec private def pluginHolderFor(
-      configPath: String,
-      fallbackPath: String,
-      additionalConfig: Config): PluginHolder = {
+  @tailrec private def pluginHolderFor
+    (
+        configPath: String,
+        fallbackPath: String,
+        additionalConfig: Config)
+    : PluginHolder = {
     val extensionIdMap = pluginExtensionId.get
     extensionIdMap.get(configPath) match {
       case Some(extensionId) =>

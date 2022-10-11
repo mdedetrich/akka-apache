@@ -37,10 +37,12 @@ object ReplicatedEventSourcingTaggingSpec {
     case class GetStrings(replyTo: ActorRef[Set[String]]) extends Command
     case class State(strings: Set[String]) extends CborSerializable
 
-    def apply(
-        entityId: String,
-        replica: ReplicaId,
-        allReplicas: Set[ReplicaId]): EventSourcedBehavior[Command, String, State] = {
+    def apply
+      (
+          entityId: String,
+          replica: ReplicaId,
+          allReplicas: Set[ReplicaId])
+      : EventSourcedBehavior[Command, String, State] = {
       // #tagging
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("TaggingSpec", entityId, replica),

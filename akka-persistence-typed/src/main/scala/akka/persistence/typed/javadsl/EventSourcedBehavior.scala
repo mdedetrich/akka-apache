@@ -18,9 +18,10 @@ import akka.persistence.typed.EventAdapter
 import akka.persistence.typed.internal._
 import akka.util.unused
 
-abstract class EventSourcedBehavior[Command, Event, State] private[akka] (
-    val persistenceId: PersistenceId,
-    onPersistFailure: Optional[BackoffSupervisorStrategy])
+abstract class EventSourcedBehavior[Command, Event, State] private[akka]
+  (
+      val persistenceId: PersistenceId,
+      onPersistFailure: Optional[BackoffSupervisorStrategy])
     extends DeferredBehavior[Command] {
 
   /**
@@ -188,8 +189,9 @@ abstract class EventSourcedBehavior[Command, Event, State] private[akka] (
   /**
    * INTERNAL API
    */
-  @InternalApi private[akka] final def createEventSourcedBehavior()
-      : scaladsl.EventSourcedBehavior[Command, Event, State] = {
+  @InternalApi private[akka] final def createEventSourcedBehavior
+    ()
+    : scaladsl.EventSourcedBehavior[Command, Event, State] = {
     val snapshotWhen: (State, Event, Long) => Boolean = (state, event, seqNr) => shouldSnapshot(state, event, seqNr)
 
     val tagger: Event => Set[String] = { event =>
@@ -241,9 +243,10 @@ abstract class EventSourcedBehavior[Command, Event, State] private[akka] (
  * There will be compilation errors if the returned effect isn't a [[ReplyEffect]], which can be
  * created with `Effects().reply`, `Effects().noReply`, [[EffectBuilder.thenReply]], or [[EffectBuilder.thenNoReply]].
  */
-abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State](
-    persistenceId: PersistenceId,
-    backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
+abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State]
+  (
+      persistenceId: PersistenceId,
+      backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
     extends EventSourcedBehavior[Command, Event, State](persistenceId, backoffSupervisorStrategy) {
 
   def this(persistenceId: PersistenceId) = {

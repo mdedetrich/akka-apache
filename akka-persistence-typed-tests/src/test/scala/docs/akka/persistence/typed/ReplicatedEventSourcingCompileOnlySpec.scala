@@ -29,10 +29,12 @@ object ReplicatedEventSourcingCompileOnlySpec {
 
   object Shared {
     // #factory-shared
-    def apply(
-        system: ActorSystem[_],
-        entityId: String,
-        replicaId: ReplicaId): EventSourcedBehavior[Command, State, Event] = {
+    def apply
+      (
+          system: ActorSystem[_],
+          entityId: String,
+          replicaId: ReplicaId)
+      : EventSourcedBehavior[Command, State, Event] = {
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("MyReplicatedEntity", entityId, replicaId),
         AllReplicas,
@@ -45,10 +47,12 @@ object ReplicatedEventSourcingCompileOnlySpec {
 
   object PerReplica {
     // #factory
-    def apply(
-        system: ActorSystem[_],
-        entityId: String,
-        replicaId: ReplicaId): EventSourcedBehavior[Command, State, Event] = {
+    def apply
+      (
+          system: ActorSystem[_],
+          entityId: String,
+          replicaId: ReplicaId)
+      : EventSourcedBehavior[Command, State, Event] = {
       ReplicatedEventSourcing.perReplicaJournalConfig(
         ReplicationId("MyReplicatedEntity", entityId, replicaId),
         Map(DCA -> "journalForDCA", DCB -> "journalForDCB")) { replicationContext =>

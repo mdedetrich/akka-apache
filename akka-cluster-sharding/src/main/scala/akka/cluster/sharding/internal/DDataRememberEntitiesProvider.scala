@@ -14,11 +14,12 @@ import akka.cluster.sharding.ShardRegion.ShardId
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class DDataRememberEntitiesProvider(
-    typeName: String,
-    settings: ClusterShardingSettings,
-    majorityMinCap: Int,
-    replicator: ActorRef)
+private[akka] final class DDataRememberEntitiesProvider
+  (
+      typeName: String,
+      settings: ClusterShardingSettings,
+      majorityMinCap: Int,
+      replicator: ActorRef)
     extends RememberEntitiesProvider {
 
   override def coordinatorStoreProps(): Props =

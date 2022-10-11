@@ -31,11 +31,12 @@ private[akka] object DDataRememberEntitiesCoordinatorStore {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class DDataRememberEntitiesCoordinatorStore(
-    typeName: String,
-    settings: ClusterShardingSettings,
-    replicator: ActorRef,
-    majorityMinCap: Int)
+private[akka] final class DDataRememberEntitiesCoordinatorStore
+  (
+      typeName: String,
+      settings: ClusterShardingSettings,
+      replicator: ActorRef,
+      majorityMinCap: Int)
     extends Actor
     with ActorLogging {
 

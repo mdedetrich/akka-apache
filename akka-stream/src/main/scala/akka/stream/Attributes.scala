@@ -533,9 +533,11 @@ object Attributes {
    * but you might still be able observe a long delay at the ultimate source.
    */
   @ApiMayChange
-  def cancellationStrategyAfterDelay(
-      delay: FiniteDuration,
-      strategy: CancellationStrategy.Strategy): CancellationStrategy.Strategy =
+  def cancellationStrategyAfterDelay
+    (
+        delay: FiniteDuration,
+        strategy: CancellationStrategy.Strategy)
+    : CancellationStrategy.Strategy =
     CancellationStrategy.AfterDelay(delay, strategy)
 
   /**
@@ -551,8 +553,9 @@ object Attributes {
    * , otherwise these stages will immediately cancel without materializing the nested flow.
    */
   @ApiMayChange
-  class NestedMaterializationCancellationPolicy private[NestedMaterializationCancellationPolicy] (
-      val propagateToNestedMaterialization: Boolean)
+  class NestedMaterializationCancellationPolicy private[NestedMaterializationCancellationPolicy]
+    (
+        val propagateToNestedMaterialization: Boolean)
       extends MandatoryAttribute
 
   @ApiMayChange
@@ -679,10 +682,12 @@ object Attributes {
    * Configures `log()` operator log-levels to be used when logging.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
    */
-  def createLogLevels(
-      onElement: Logging.LogLevel,
-      onFinish: Logging.LogLevel,
-      onFailure: Logging.LogLevel): Attributes =
+  def createLogLevels
+    (
+        onElement: Logging.LogLevel,
+        onFinish: Logging.LogLevel,
+        onFailure: Logging.LogLevel)
+    : Attributes =
     logLevels(onElement, onFinish, onFailure)
 
   /**
@@ -700,10 +705,11 @@ object Attributes {
    *
    * See [[Attributes.createLogLevels]] for Java API
    */
-  def logLevels(
-      onElement: Logging.LogLevel = Logging.DebugLevel,
-      onFinish: Logging.LogLevel = Logging.DebugLevel,
-      onFailure: Logging.LogLevel = Logging.ErrorLevel) =
+  def logLevels
+    (
+        onElement: Logging.LogLevel = Logging.DebugLevel,
+        onFinish: Logging.LogLevel = Logging.DebugLevel,
+        onFailure: Logging.LogLevel = Logging.ErrorLevel) =
     Attributes(LogLevels(onElement, onFinish, onFailure))
 
   /**
@@ -766,10 +772,12 @@ object ActorAttributes {
    * Configures `log()` operator log-levels to be used when logging.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
    */
-  def createLogLevels(
-      onElement: Logging.LogLevel,
-      onFinish: Logging.LogLevel,
-      onFailure: Logging.LogLevel): Attributes =
+  def createLogLevels
+    (
+        onElement: Logging.LogLevel,
+        onFinish: Logging.LogLevel,
+        onFailure: Logging.LogLevel)
+    : Attributes =
     logLevels(onElement, onFinish, onFailure)
 
   /**
@@ -787,10 +795,11 @@ object ActorAttributes {
    *
    * See [[Attributes.createLogLevels]] for Java API
    */
-  def logLevels(
-      onElement: Logging.LogLevel = Logging.DebugLevel,
-      onFinish: Logging.LogLevel = Logging.DebugLevel,
-      onFailure: Logging.LogLevel = Logging.ErrorLevel) =
+  def logLevels
+    (
+        onElement: Logging.LogLevel = Logging.DebugLevel,
+        onFinish: Logging.LogLevel = Logging.DebugLevel,
+        onFailure: Logging.LogLevel = Logging.ErrorLevel) =
     Attributes(LogLevels(onElement, onFinish, onFailure))
 
   /**

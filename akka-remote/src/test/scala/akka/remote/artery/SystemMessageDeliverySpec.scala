@@ -65,10 +65,12 @@ abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiN
   system.eventStream.publish(TestEvent.Mute(EventFilter.warning(pattern = ".*negative acknowledgement.*")))
   systemB.eventStream.publish(TestEvent.Mute(EventFilter.warning(pattern = ".*negative acknowledgement.*")))
 
-  protected def send(
-      sendCount: Int,
-      resendInterval: FiniteDuration,
-      outboundContext: OutboundContext): Source[OutboundEnvelope, NotUsed] = {
+  protected def send
+    (
+        sendCount: Int,
+        resendInterval: FiniteDuration,
+        outboundContext: OutboundContext)
+    : Source[OutboundEnvelope, NotUsed] = {
     val deadLetters = TestProbe().ref
     Source(1 to sendCount)
       .map(n => outboundEnvelopePool.acquire().init(OptionVal.None, TestSysMsg("msg-" + n), OptionVal.None))

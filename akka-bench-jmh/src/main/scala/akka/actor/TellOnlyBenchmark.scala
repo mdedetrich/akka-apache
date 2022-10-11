@@ -123,13 +123,14 @@ object TellOnlyBenchmark {
       new DroppingMessageQueue
   }
 
-  class DroppingDispatcher(
-      _configurator: MessageDispatcherConfigurator,
-      _id: String,
-      _throughput: Int,
-      _throughputDeadlineTime: Duration,
-      _executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
-      _shutdownTimeout: FiniteDuration)
+  class DroppingDispatcher
+    (
+        _configurator: MessageDispatcherConfigurator,
+        _id: String,
+        _throughput: Int,
+        _throughputDeadlineTime: Duration,
+        _executorServiceFactoryProvider: ExecutorServiceFactoryProvider,
+        _shutdownTimeout: FiniteDuration)
       extends Dispatcher(
         _configurator,
         _id,

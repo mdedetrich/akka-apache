@@ -86,10 +86,11 @@ object Replicator {
    * Send this message to the local `Replicator` to retrieve a data value for the
    * given `key`. The `Replicator` will reply with one of the [[GetResponse]] messages.
    */
-  final case class Get[A <: ReplicatedData](
-      key: Key[A],
-      consistency: ReadConsistency,
-      replyTo: ActorRef[GetResponse[A]])
+  final case class Get[A <: ReplicatedData]
+    (
+        key: Key[A],
+        consistency: ReadConsistency,
+        replyTo: ActorRef[GetResponse[A]])
       extends Command
 
   /**
@@ -132,18 +133,24 @@ object Replicator {
      * If there is no current data value for the `key` the `initial` value will be
      * passed to the `modify` function.
      */
-    def apply[A <: ReplicatedData](
-        key: Key[A],
-        initial: A,
-        writeConsistency: WriteConsistency,
-        replyTo: ActorRef[UpdateResponse[A]])(modify: A => A): Update[A] =
+    def apply[A <: ReplicatedData]
+      (
+          key: Key[A],
+          initial: A,
+          writeConsistency: WriteConsistency,
+          replyTo: ActorRef[UpdateResponse[A]])
+      (modify: A => A)
+      : Update[A] =
       Update(key, writeConsistency, replyTo)(modifyWithInitial(initial, modify))
 
     /**
      * Convenience for `ask`.
      */
-    def apply[A <: ReplicatedData](key: Key[A], initial: A, writeConsistency: WriteConsistency)(
-        modify: A => A): ActorRef[UpdateResponse[A]] => Update[A] =
+    def apply[A <: ReplicatedData]
+      (key: Key[A], initial: A, writeConsistency: WriteConsistency)
+      (
+          modify: A => A)
+      : ActorRef[UpdateResponse[A]] => Update[A] =
       replyTo => Update(key, writeConsistency, replyTo)(modifyWithInitial(initial, modify))
 
     private def modifyWithInitial[A <: ReplicatedData](initial: A, modify: A => A): Option[A] => A = {
@@ -168,10 +175,12 @@ object Replicator {
    * function that only uses the data parameter and stable fields from enclosing scope. It must
    * for example not access `sender()` reference of an enclosing actor.
    */
-  final case class Update[A <: ReplicatedData](
-      key: Key[A],
-      writeConsistency: WriteConsistency,
-      replyTo: ActorRef[UpdateResponse[A]])(val modify: Option[A] => A)
+  final case class Update[A <: ReplicatedData]
+    (
+        key: Key[A],
+        writeConsistency: WriteConsistency,
+        replyTo: ActorRef[UpdateResponse[A]])
+    (val modify: Option[A] => A)
       extends Command
 
   type UpdateResponse[A <: ReplicatedData] = dd.Replicator.UpdateResponse[A]
@@ -296,9 +305,11 @@ object Replicator {
     /**
      * Convenience for `ask`.
      */
-    def apply[A <: ReplicatedData](
-        key: Key[A],
-        consistency: WriteConsistency): ActorRef[DeleteResponse[A]] => Delete[A] =
+    def apply[A <: ReplicatedData]
+      (
+          key: Key[A],
+          consistency: WriteConsistency)
+      : ActorRef[DeleteResponse[A]] => Delete[A] =
       replyTo => Delete(key, consistency, replyTo)
   }
 
@@ -306,10 +317,11 @@ object Replicator {
    * Send this message to the local `Replicator` to delete a data value for the
    * given `key`. The `Replicator` will reply with one of the [[DeleteResponse]] messages.
    */
-  final case class Delete[A <: ReplicatedData](
-      key: Key[A],
-      consistency: WriteConsistency,
-      replyTo: ActorRef[DeleteResponse[A]])
+  final case class Delete[A <: ReplicatedData]
+    (
+        key: Key[A],
+        consistency: WriteConsistency,
+        replyTo: ActorRef[DeleteResponse[A]])
       extends Command
 
   type DeleteResponse[A <: ReplicatedData] = dd.Replicator.DeleteResponse[A]

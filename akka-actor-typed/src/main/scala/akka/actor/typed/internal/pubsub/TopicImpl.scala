@@ -47,8 +47,10 @@ private[akka] object TopicImpl {
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class TopicImpl[T](topicName: String, context: ActorContext[TopicImpl.Command[T]])(
-    implicit classTag: ClassTag[T])
+private[akka] final class TopicImpl[T]
+  (topicName: String, context: ActorContext[TopicImpl.Command[T]])
+  (
+      implicit classTag: ClassTag[T])
     extends AbstractBehavior[TopicImpl.Command[T]](context) {
 
   /*

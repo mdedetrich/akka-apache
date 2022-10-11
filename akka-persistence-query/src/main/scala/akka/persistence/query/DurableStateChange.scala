@@ -44,12 +44,13 @@ object UpdatedDurableState {
  *   (same as `System.currentTimeMillis`).
  * @tparam A the type of the value
  */
-final class UpdatedDurableState[A](
-    val persistenceId: String,
-    val revision: Long,
-    val value: A,
-    override val offset: Offset,
-    val timestamp: Long)
+final class UpdatedDurableState[A]
+  (
+      val persistenceId: String,
+      val revision: Long,
+      val value: A,
+      override val offset: Offset,
+      val timestamp: Long)
     extends DurableStateChange[A]
 
 object DeletedDurableState {
@@ -66,9 +67,10 @@ object DeletedDurableState {
  *   (same as `System.currentTimeMillis`).
  * @tparam A the type of the value
  */
-final class DeletedDurableState[A](
-    val persistenceId: String,
-    val revision: Long,
-    override val offset: Offset,
-    val timestamp: Long)
+final class DeletedDurableState[A]
+  (
+      val persistenceId: String,
+      val revision: Long,
+      override val offset: Offset,
+      val timestamp: Long)
     extends DurableStateChange[A]

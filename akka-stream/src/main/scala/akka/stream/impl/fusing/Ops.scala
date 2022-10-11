@@ -1050,11 +1050,12 @@ private[stream] object Collect {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class Batch[In, Out](
-    val max: Long,
-    val costFn: In => Long,
-    val seed: In => Out,
-    val aggregate: (Out, In) => Out)
+@InternalApi private[akka] final case class Batch[In, Out]
+  (
+      val max: Long,
+      val costFn: In => Long,
+      val seed: In => Out,
+      val aggregate: (Out, In) => Out)
     extends GraphStage[FlowShape[In, Out]] {
 
   val in = Inlet[In]("Batch.in")
@@ -1607,11 +1608,12 @@ private[stream] object Collect {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final case class LogWithMarker[T](
-    name: String,
-    marker: T => LogMarker,
-    extract: T => Any,
-    logAdapter: Option[MarkerLoggingAdapter])
+@InternalApi private[akka] final case class LogWithMarker[T]
+  (
+      name: String,
+      marker: T => LogMarker,
+      extract: T => Any,
+      logAdapter: Option[MarkerLoggingAdapter])
     extends SimpleLinearGraphStage[T] {
 
   override def toString = "LogWithMarker"
@@ -1731,11 +1733,12 @@ private[stream] object Collect {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class GroupedWeightedWithin[T](
-    val maxWeight: Long,
-    val maxNumber: Int,
-    val costFn: T => Long,
-    val interval: FiniteDuration)
+@InternalApi private[akka] final class GroupedWeightedWithin[T]
+  (
+      val maxWeight: Long,
+      val maxNumber: Int,
+      val costFn: T => Long,
+      val interval: FiniteDuration)
     extends GraphStage[FlowShape[T, immutable.Seq[T]]] {
   require(maxWeight > 0, "maxWeight must be greater than 0")
   require(maxNumber > 0, "maxNumber must be greater than 0")
@@ -1888,9 +1891,10 @@ private[stream] object Collect {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class Delay[T](
-    delayStrategySupplier: () => DelayStrategy[T],
-    overflowStrategy: DelayOverflowStrategy)
+@InternalApi private[akka] final class Delay[T]
+  (
+      delayStrategySupplier: () => DelayStrategy[T],
+      overflowStrategy: DelayOverflowStrategy)
     extends SimpleLinearGraphStage[T] {
 
   override def initialAttributes: Attributes = DefaultAttributes.delay
@@ -2150,9 +2154,10 @@ private[akka] object TakeWithin {
  */
 @InternalApi private[stream] object RecoverWith
 
-@InternalApi private[akka] final class RecoverWith[T, M](
-    val maximumRetries: Int,
-    val pf: PartialFunction[Throwable, Graph[SourceShape[T], M]])
+@InternalApi private[akka] final class RecoverWith[T, M]
+  (
+      val maximumRetries: Int,
+      val pf: PartialFunction[Throwable, Graph[SourceShape[T], M]])
     extends SimpleLinearGraphStage[T] {
 
   override def initialAttributes = DefaultAttributes.recoverWith

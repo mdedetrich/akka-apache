@@ -97,8 +97,11 @@ object Effect {
    * The reply message will be sent also if `withEnforcedReplies` isn't used, but then the compiler will not help
    * finding mistakes.
    */
-  def reply[ReplyMessage, Event, State](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: ReplyMessage): ReplyEffect[Event, State] =
+  def reply[ReplyMessage, Event, State]
+    (replyTo: ActorRef[ReplyMessage])
+    (
+        replyWithMessage: ReplyMessage)
+    : ReplyEffect[Event, State] =
     none[Event, State].thenReply[ReplyMessage](replyTo)(_ => replyWithMessage)
 
   /**
@@ -164,8 +167,11 @@ trait EffectBuilder[+Event, State] extends Effect[Event, State] {
    * The reply message will be sent also if `withEnforcedReplies` isn't used, but then the compiler will not help
    * finding mistakes.
    */
-  def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: State => ReplyMessage): ReplyEffect[Event, State]
+  def thenReply[ReplyMessage]
+    (replyTo: ActorRef[ReplyMessage])
+    (
+        replyWithMessage: State => ReplyMessage)
+    : ReplyEffect[Event, State]
 
   /**
    * When [[EventSourcedBehavior.withEnforcedReplies]] is used there will be compilation errors if the returned effect

@@ -53,9 +53,11 @@ object Sink {
    * function evaluation when the input stream ends, or completed with `Failure`
    * if there is a failure is signaled in the stream.
    */
-  def foldAsync[U, In](
-      zero: U,
-      f: function.Function2[U, In, CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
+  def foldAsync[U, In]
+    (
+        zero: U,
+        f: function.Function2[U, In, CompletionStage[U]])
+    : javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.foldAsync[U, In](zero)(f(_, _).toScala).toCompletionStage())
 
   /**
@@ -136,8 +138,11 @@ object Sink {
    * normal end of the stream, or completed with `Failure` if there is a failure signaled in
    * the stream.
    */
-  def foreachAsync[T](parallelism: Int)(
-      f: function.Function[T, CompletionStage[Void]]): Sink[T, CompletionStage[Done]] =
+  def foreachAsync[T]
+    (parallelism: Int)
+    (
+        f: function.Function[T, CompletionStage[Void]])
+    : Sink[T, CompletionStage[Done]] =
     new Sink(
       scaladsl.Sink
         .foreachAsync(parallelism)((x: T) => f(x).toScala.map(_ => ())(ExecutionContexts.parasitic))
@@ -157,8 +162,12 @@ object Sink {
   @deprecated(
     "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a CompletionStage or using CompletableFuture.supplyAsync.",
     since = "2.5.17")
-  def foreachParallel[T](parallel: Int)(f: function.Procedure[T])(
-      ec: ExecutionContext): Sink[T, CompletionStage[Done]] =
+  def foreachParallel[T]
+    (parallel: Int)
+    (f: function.Procedure[T])
+    (
+        ec: ExecutionContext)
+    : Sink[T, CompletionStage[Done]] =
     new Sink(scaladsl.Sink.foreachParallel(parallel)(f.apply)(ec).toCompletionStage())
 
   /**
@@ -271,12 +280,14 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * message will be sent to the destination actor.
    */
-  def actorRefWithBackpressure[In](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
+  def actorRefWithBackpressure[In]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        ackMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: function.Function[Throwable, Any])
+    : Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink
         .actorRefWithBackpressure[In](ref, onInitMessage, ackMessage, onCompleteMessage, t => onFailureMessage(t)))
@@ -294,11 +305,13 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * message will be sent to the destination actor.
    */
-  def actorRefWithBackpressure[In](
-      ref: ActorRef,
-      onInitMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
+  def actorRefWithBackpressure[In]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: function.Function[Throwable, Any])
+    : Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink.actorRefWithBackpressure[In](ref, onInitMessage, onCompleteMessage, t => onFailureMessage(t)))
 
@@ -319,12 +332,14 @@ object Sink {
    */
   @Deprecated
   @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
-  def actorRefWithAck[In](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
+  def actorRefWithAck[In]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        ackMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: function.Function[Throwable, Any])
+    : Sink[In, NotUsed] =
     new Sink(
       scaladsl.Sink
         .actorRefWithBackpressure[In](ref, onInitMessage, ackMessage, onCompleteMessage, t => onFailureMessage(t)))
@@ -359,11 +374,13 @@ object Sink {
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
-  def combine[T, U](
-      output1: Sink[U, _],
-      output2: Sink[U, _],
-      rest: java.util.List[Sink[U, _]],
-      strategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]]): Sink[T, NotUsed] = {
+  def combine[T, U]
+    (
+        output1: Sink[U, _],
+        output2: Sink[U, _],
+        rest: java.util.List[Sink[U, _]],
+        strategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
+    : Sink[T, NotUsed] = {
     import akka.util.ccompat.JavaConverters._
     val seq = if (rest != null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
     new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => strategy.apply(num)))
@@ -419,9 +436,11 @@ object Sink {
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
   @deprecated("Use 'Sink.lazyCompletionStageSink' in combination with 'Flow.prefixAndTail(1)' instead", "2.6.0")
-  def lazyInit[T, M](
-      sinkFactory: function.Function[T, CompletionStage[Sink[T, M]]],
-      fallback: function.Creator[M]): Sink[T, CompletionStage[M]] =
+  def lazyInit[T, M]
+    (
+        sinkFactory: function.Function[T, CompletionStage[Sink[T, M]]],
+        fallback: function.Creator[M])
+    : Sink[T, CompletionStage[M]] =
     new Sink(
       scaladsl.Sink
         .lazyInit[T, M](
@@ -439,8 +458,10 @@ object Sink {
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
   @deprecated("Use 'Sink.lazyCompletionStageSink' instead", "2.6.0")
-  def lazyInitAsync[T, M](
-      sinkFactory: function.Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[Optional[M]]] = {
+  def lazyInitAsync[T, M]
+    (
+        sinkFactory: function.Creator[CompletionStage[Sink[T, M]]])
+    : Sink[T, CompletionStage[Optional[M]]] = {
     val sSink = scaladsl.Sink
       .lazyInitAsync[T, M](() => sinkFactory.create().toScala.map(_.asScala)(ExecutionContexts.parasitic))
       .mapMaterializedValue(fut =>
@@ -542,8 +563,9 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    *
    * Note that the `ActorSystem` can be used as the `systemProvider` parameter.
    */
-  def preMaterialize(systemProvider: ClassicActorSystemProvider)
-      : japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {
+  def preMaterialize
+    (systemProvider: ClassicActorSystemProvider)
+    : japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {
     val (mat, sink) = delegate.preMaterialize()(SystemMaterializer(systemProvider.classicSystem).materializer)
     akka.japi.Pair(mat, sink.asJava)
   }
@@ -556,8 +578,10 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    *
    * Prefer the method taking an ActorSystem unless you have special requirements.
    */
-  def preMaterialize(
-      materializer: Materializer): japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {
+  def preMaterialize
+    (
+        materializer: Materializer)
+    : japi.Pair[Mat @uncheckedVariance, Sink[In @uncheckedVariance, NotUsed]] = {
     val (mat, sink) = delegate.preMaterialize()(materializer)
     akka.japi.Pair(mat, sink.asJava)
   }

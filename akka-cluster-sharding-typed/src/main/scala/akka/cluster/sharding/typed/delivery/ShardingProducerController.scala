@@ -134,11 +134,12 @@ object ShardingProducerController {
    * to one `RequestNext` but it's recommended to only send one message and wait for next `RequestNext`
    * before sending more messages.
    */
-  final case class RequestNext[A](
-      sendNextTo: ActorRef[ShardingEnvelope[A]],
-      askNextTo: ActorRef[MessageWithConfirmation[A]],
-      entitiesWithDemand: Set[EntityId],
-      bufferedForEntitiesWithoutDemand: Map[EntityId, Int]) {
+  final case class RequestNext[A]
+    (
+        sendNextTo: ActorRef[ShardingEnvelope[A]],
+        askNextTo: ActorRef[MessageWithConfirmation[A]],
+        entitiesWithDemand: Set[EntityId],
+        bufferedForEntitiesWithoutDemand: Map[EntityId, Int]) {
 
     /** Java API */
     def getEntitiesWithDemand: java.util.Set[String] = {
@@ -245,12 +246,13 @@ object ShardingProducerController {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        bufferSize: Int = bufferSize,
-        internalAskTimeout: FiniteDuration = internalAskTimeout,
-        cleanupUnusedAfter: FiniteDuration = cleanupUnusedAfter,
-        resendFirstUnconfirmedIdleTimeout: FiniteDuration = resendFirstUnconfirmedIdleTimeout,
-        producerControllerSettings: ProducerController.Settings = producerControllerSettings) =
+    private def copy
+      (
+          bufferSize: Int = bufferSize,
+          internalAskTimeout: FiniteDuration = internalAskTimeout,
+          cleanupUnusedAfter: FiniteDuration = cleanupUnusedAfter,
+          resendFirstUnconfirmedIdleTimeout: FiniteDuration = resendFirstUnconfirmedIdleTimeout,
+          producerControllerSettings: ProducerController.Settings = producerControllerSettings) =
       new Settings(
         bufferSize,
         internalAskTimeout,
@@ -262,43 +264,51 @@ object ShardingProducerController {
       s"Settings($bufferSize,$internalAskTimeout,$resendFirstUnconfirmedIdleTimeout,$producerControllerSettings)"
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     Behaviors.setup { context =>
       ShardingProducerControllerImpl(producerId, region, durableQueueBehavior, Settings(context.system))
     }
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     ShardingProducerControllerImpl(producerId, region, durableQueueBehavior, settings)
   }
 
   /**
    * Java API
    */
-  def create[A](
-      messageClass: Class[A],
-      producerId: String,
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def create[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     apply(producerId, region, durableQueueBehavior.asScala)(ClassTag(messageClass))
   }
 
   /**
    * Java API
    */
-  def create[A](
-      messageClass: Class[A],
-      producerId: String,
-      region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def create[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     apply(producerId, region, durableQueueBehavior.asScala, settings)(ClassTag(messageClass))
   }
 

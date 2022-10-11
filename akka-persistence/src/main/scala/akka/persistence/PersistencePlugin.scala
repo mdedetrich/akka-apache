@@ -22,9 +22,10 @@ import akka.persistence.PersistencePlugin.PluginHolder
  */
 @InternalApi
 private[akka] object PersistencePlugin {
-  final private[persistence] case class PluginHolder[ScalaDsl, JavaDsl](
-      scaladslPlugin: ScalaDsl,
-      javadslPlugin: JavaDsl)
+  final private[persistence] case class PluginHolder[ScalaDsl, JavaDsl]
+    (
+        scaladslPlugin: ScalaDsl,
+        javadslPlugin: JavaDsl)
       extends Extension
 }
 
@@ -41,8 +42,10 @@ private[akka] trait PluginProvider[T, ScalaDsl, JavaDsl] {
  * INTERNAL API
  */
 @InternalApi
-private[akka] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](system: ExtendedActorSystem)(
-    implicit ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
+private[akka] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag]
+  (system: ExtendedActorSystem)
+  (
+      implicit ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
 
   private val plugins = new AtomicReference[Map[String, ExtensionId[PluginHolder[ScalaDsl, JavaDsl]]]](Map.empty)
   private val log = Logging(system, classOf[PersistencePlugin[_, _, _]])

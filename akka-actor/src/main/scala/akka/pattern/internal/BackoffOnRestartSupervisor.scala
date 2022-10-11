@@ -26,15 +26,16 @@ import akka.pattern.{
  * This back-off supervisor is created by using ``akka.pattern.BackoffSupervisor.props``
  * with ``akka.pattern.BackoffOpts.onFailure``.
  */
-@InternalApi private[pattern] class BackoffOnRestartSupervisor(
-    val childProps: Props,
-    val childName: String,
-    minBackoff: FiniteDuration,
-    maxBackoff: FiniteDuration,
-    val reset: BackoffReset,
-    randomFactor: Double,
-    strategy: OneForOneStrategy,
-    handlingWhileStopped: HandlingWhileStopped)
+@InternalApi private[pattern] class BackoffOnRestartSupervisor
+  (
+      val childProps: Props,
+      val childName: String,
+      minBackoff: FiniteDuration,
+      maxBackoff: FiniteDuration,
+      val reset: BackoffReset,
+      randomFactor: Double,
+      strategy: OneForOneStrategy,
+      handlingWhileStopped: HandlingWhileStopped)
     extends Actor
     with HandleBackoff
     with ActorLogging {

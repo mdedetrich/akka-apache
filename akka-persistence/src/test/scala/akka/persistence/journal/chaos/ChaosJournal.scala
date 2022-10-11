@@ -64,8 +64,11 @@ class ChaosJournal extends AsyncWriteJournal {
     }
   }
 
-  def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: (PersistentRepr) => Unit): Future[Unit] =
+  def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: (PersistentRepr) => Unit)
+    : Future[Unit] =
     if (shouldFail(replayFailureRate)) {
       val rm = read(persistenceId, fromSequenceNr, toSequenceNr, max)
       val sm = rm.take(random.nextInt(rm.length + 1)).map(_._1)

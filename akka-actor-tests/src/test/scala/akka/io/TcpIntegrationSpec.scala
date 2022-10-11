@@ -195,12 +195,13 @@ class TcpIntegrationSpec extends AkkaSpec("""
     }
   }
 
-  def chitchat(
-      clientHandler: TestProbe,
-      clientConnection: ActorRef,
-      serverHandler: TestProbe,
-      serverConnection: ActorRef,
-      rounds: Int = 100) = {
+  def chitchat
+    (
+        clientHandler: TestProbe,
+        clientConnection: ActorRef,
+        serverHandler: TestProbe,
+        serverConnection: ActorRef,
+        rounds: Int = 100) = {
 
     val testData = ByteString(0)
     (1 to rounds).foreach { _ =>

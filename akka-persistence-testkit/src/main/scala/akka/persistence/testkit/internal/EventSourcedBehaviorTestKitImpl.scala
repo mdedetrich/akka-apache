@@ -34,11 +34,12 @@ import akka.stream.scaladsl.Sink
  * INTERNAL API
  */
 @InternalApi private[akka] object EventSourcedBehaviorTestKitImpl {
-  final case class CommandResultImpl[Command, Event, State, Reply](
-      command: Command,
-      events: immutable.Seq[Event],
-      state: State,
-      replyOption: Option[Reply])
+  final case class CommandResultImpl[Command, Event, State, Reply]
+    (
+        command: Command,
+        events: immutable.Seq[Event],
+        state: State,
+        replyOption: Option[Reply])
       extends CommandResultWithReply[Command, Event, State, Reply] {
 
     override def hasNoEvents: Boolean = events.isEmpty
@@ -79,10 +80,11 @@ import akka.stream.scaladsl.Sink
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] class EventSourcedBehaviorTestKitImpl[Command, Event, State](
-    actorTestKit: ActorTestKit,
-    behavior: Behavior[Command],
-    serializationSettings: SerializationSettings)
+@InternalApi private[akka] class EventSourcedBehaviorTestKitImpl[Command, Event, State]
+  (
+      actorTestKit: ActorTestKit,
+      behavior: Behavior[Command],
+      serializationSettings: SerializationSettings)
     extends EventSourcedBehaviorTestKit[Command, Event, State] {
 
   import EventSourcedBehaviorTestKitImpl._

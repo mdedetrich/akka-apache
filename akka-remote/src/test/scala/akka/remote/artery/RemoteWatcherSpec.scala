@@ -54,7 +54,9 @@ object RemoteWatcherSpec {
 
     def this() = this(heartbeatExpectedResponseAfter = TurnOff)
 
-    override def publishAddressTerminated(address: Address): Unit =
+    override def publishAddressTerminated
+      (address: Address)
+      : Unit =
       // don't publish the real AddressTerminated, but a testable message,
       // that doesn't interfere with the real watch that is going on in the background
       context.system.eventStream.publish(TestRemoteWatcher.AddressTerm(address))

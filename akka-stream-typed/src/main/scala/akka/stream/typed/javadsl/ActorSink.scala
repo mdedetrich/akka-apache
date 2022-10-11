@@ -30,10 +30,12 @@ object ActorSink {
    * to use a bounded mailbox with zero `mailbox-push-timeout-time` or use a rate
    * limiting operator in front of this `Sink`.
    */
-  def actorRef[T](
-      ref: ActorRef[T],
-      onCompleteMessage: T,
-      onFailureMessage: akka.japi.function.Function[Throwable, T]): Sink[T, NotUsed] =
+  def actorRef[T]
+    (
+        ref: ActorRef[T],
+        onCompleteMessage: T,
+        onFailureMessage: akka.japi.function.Function[Throwable, T])
+    : Sink[T, NotUsed] =
     typed.scaladsl.ActorSink.actorRef(ref, onCompleteMessage, onFailureMessage.apply).asJava
 
   /**
@@ -56,13 +58,15 @@ object ActorSink {
    * @param onCompleteMessage the message to be sent to the actor when the stream completes
    * @param onFailureMessage a function that creates a message to be sent to the actor in case the stream fails from a `Throwable`
    */
-  def actorRefWithBackpressure[T, M, A](
-      ref: ActorRef[M],
-      messageAdapter: akka.japi.function.Function2[ActorRef[A], T, M],
-      onInitMessage: akka.japi.function.Function[ActorRef[A], M],
-      ackMessage: A,
-      onCompleteMessage: M,
-      onFailureMessage: akka.japi.function.Function[Throwable, M]): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T, M, A]
+    (
+        ref: ActorRef[M],
+        messageAdapter: akka.japi.function.Function2[ActorRef[A], T, M],
+        onInitMessage: akka.japi.function.Function[ActorRef[A], M],
+        ackMessage: A,
+        onCompleteMessage: M,
+        onFailureMessage: akka.japi.function.Function[Throwable, M])
+    : Sink[T, NotUsed] =
     typed.scaladsl.ActorSink
       .actorRefWithBackpressure(
         ref,
@@ -92,12 +96,14 @@ object ActorSink {
    * @param onCompleteMessage the message to be sent to the actor when the stream completes
    * @param onFailureMessage a function that creates a message to be sent to the actor in case the stream fails from a `Throwable`
    */
-  def actorRefWithBackpressure[T, M, A](
-      ref: ActorRef[M],
-      messageAdapter: akka.japi.function.Function2[ActorRef[A], T, M],
-      onInitMessage: akka.japi.function.Function[ActorRef[A], M],
-      onCompleteMessage: M,
-      onFailureMessage: akka.japi.function.Function[Throwable, M]): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T, M, A]
+    (
+        ref: ActorRef[M],
+        messageAdapter: akka.japi.function.Function2[ActorRef[A], T, M],
+        onInitMessage: akka.japi.function.Function[ActorRef[A], M],
+        onCompleteMessage: M,
+        onFailureMessage: akka.japi.function.Function[Throwable, M])
+    : Sink[T, NotUsed] =
     typed.scaladsl.ActorSink
       .actorRefWithBackpressure(
         ref,

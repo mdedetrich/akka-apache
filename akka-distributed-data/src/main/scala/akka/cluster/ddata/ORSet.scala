@@ -126,9 +126,11 @@ object ORSet {
    */
   @InternalApi private[akka] def subtractDots(dot: Dot, vvector: VersionVector): Dot = {
 
-    @tailrec def dropDots(
-        remaining: List[(UniqueAddress, Long)],
-        acc: List[(UniqueAddress, Long)]): List[(UniqueAddress, Long)] =
+    @tailrec def dropDots
+      (
+          remaining: List[(UniqueAddress, Long)],
+          acc: List[(UniqueAddress, Long)])
+      : List[(UniqueAddress, Long)] =
       remaining match {
         case Nil => acc
         case (d @ (node, v1)) :: rest =>
@@ -161,10 +163,12 @@ object ORSet {
    * INTERNAL API
    * @see [[ORSet#merge]]
    */
-  @InternalApi private[akka] def mergeCommonKeys[A](
-      commonKeys: Set[A],
-      lhs: ORSet[A],
-      rhs: ORSet[A]): Map[A, ORSet.Dot] =
+  @InternalApi private[akka] def mergeCommonKeys[A]
+    (
+        commonKeys: Set[A],
+        lhs: ORSet[A],
+        rhs: ORSet[A])
+    : Map[A, ORSet.Dot] =
     mergeCommonKeys(commonKeys.iterator, lhs, rhs)
 
   private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] = {
@@ -233,18 +237,22 @@ object ORSet {
    * INTERNAL API
    * @see [[ORSet#merge]]
    */
-  @InternalApi private[akka] def mergeDisjointKeys[A](
-      keys: Set[A],
-      elementsMap: Map[A, ORSet.Dot],
-      vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] =
+  @InternalApi private[akka] def mergeDisjointKeys[A]
+    (
+        keys: Set[A],
+        elementsMap: Map[A, ORSet.Dot],
+        vvector: VersionVector,
+        accumulator: Map[A, ORSet.Dot])
+    : Map[A, ORSet.Dot] =
     mergeDisjointKeys(keys.iterator, elementsMap, vvector, accumulator)
 
-  private def mergeDisjointKeys[A](
-      keys: Iterator[A],
-      elementsMap: Map[A, ORSet.Dot],
-      vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] = {
+  private def mergeDisjointKeys[A]
+    (
+        keys: Iterator[A],
+        elementsMap: Map[A, ORSet.Dot],
+        vvector: VersionVector,
+        accumulator: Map[A, ORSet.Dot])
+    : Map[A, ORSet.Dot] = {
     keys.foldLeft(accumulator) {
       case (acc, k) =>
         val dots = elementsMap(k)
@@ -289,10 +297,11 @@ object ORSet {
  * This class is immutable, i.e. "modifying" methods return a new instance.
  */
 @SerialVersionUID(1L)
-final class ORSet[A] private[akka] (
-    private[akka] val elementsMap: Map[A, ORSet.Dot],
-    private[akka] val vvector: VersionVector,
-    override val delta: Option[ORSet.DeltaOp] = None)
+final class ORSet[A] private[akka]
+  (
+      private[akka] val elementsMap: Map[A, ORSet.Dot],
+      private[akka] val vvector: VersionVector,
+      override val delta: Option[ORSet.DeltaOp] = None)
     extends DeltaReplicatedData
     with ReplicatedDataSerialization
     with RemovedNodePruning
@@ -540,10 +549,12 @@ final class ORSet[A] private[akka] (
     new ORSet(updated, vvector.pruningCleanup(removedNode))
   }
 
-  private def copy(
-      elementsMap: Map[A, ORSet.Dot] = this.elementsMap,
-      vvector: VersionVector = this.vvector,
-      delta: Option[ORSet.DeltaOp] = this.delta): ORSet[A] =
+  private def copy
+    (
+        elementsMap: Map[A, ORSet.Dot] = this.elementsMap,
+        vvector: VersionVector = this.vvector,
+        delta: Option[ORSet.DeltaOp] = this.delta)
+    : ORSet[A] =
     new ORSet(elementsMap, vvector, delta)
 
   // this class cannot be a `case class` because we need different `unapply`

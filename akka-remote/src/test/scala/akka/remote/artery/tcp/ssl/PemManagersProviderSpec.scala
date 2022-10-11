@@ -42,8 +42,10 @@ class PemManagersProviderSpec extends AnyWordSpec with Matchers {
 
   }
 
-  private def withFiles(keyFile: String, certFile: String, caCertFile: String)(
-      block: (PrivateKey, X509Certificate, Certificate) => Unit) = {
+  private def withFiles
+    (keyFile: String, certFile: String, caCertFile: String)
+    (
+        block: (PrivateKey, X509Certificate, Certificate) => Unit) = {
     block(
       PemManagersProvider.loadPrivateKey(nameToPath(keyFile)),
       PemManagersProvider.loadCertificate(nameToPath(certFile)).asInstanceOf[X509Certificate],

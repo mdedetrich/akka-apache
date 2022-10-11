@@ -35,10 +35,12 @@ object LeastShardAllocationStrategySpec {
     override def provider: ActorRefProvider = ???
   }
 
-  def afterRebalance(
-      allocationStrategy: ShardAllocationStrategy,
-      allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      rebalance: Set[ShardId]): Map[ActorRef, immutable.IndexedSeq[ShardId]] = {
+  def afterRebalance
+    (
+        allocationStrategy: ShardAllocationStrategy,
+        allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
+        rebalance: Set[ShardId])
+    : Map[ActorRef, immutable.IndexedSeq[ShardId]] = {
     val allocationsAfterRemoval = allocations.map {
       case (region, shards) => region -> shards.filterNot(rebalance)
     }
@@ -58,10 +60,12 @@ object LeastShardAllocationStrategySpec {
     countShardsPerRegion(allocations).sum
   }
 
-  def allocationCountsAfterRebalance(
-      allocationStrategy: ShardAllocationStrategy,
-      allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      rebalance: Set[ShardId]): Vector[Int] = {
+  def allocationCountsAfterRebalance
+    (
+        allocationStrategy: ShardAllocationStrategy,
+        allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
+        rebalance: Set[ShardId])
+    : Vector[Int] = {
     countShardsPerRegion(afterRebalance(allocationStrategy, allocations, rebalance))
   }
 
@@ -102,7 +106,8 @@ class LeastShardAllocationStrategySpec extends AkkaSpec {
   private val strategyWithoutLimits =
     strategyWithFakeCluster(absoluteLimit = 1000, relativeLimit = 1.0)
 
-  private def strategyWithFakeCluster(absoluteLimit: Int, relativeLimit: Double) =
+  private def strategyWithFakeCluster
+    (absoluteLimit: Int, relativeLimit: Double) =
     // we don't really "start" it as we fake the cluster access
     new LeastShardAllocationStrategy(absoluteLimit, relativeLimit) {
       override protected def clusterState: ClusterEvent.CurrentClusterState =

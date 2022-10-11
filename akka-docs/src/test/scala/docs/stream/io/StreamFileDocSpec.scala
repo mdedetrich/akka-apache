@@ -47,7 +47,9 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   "read data from a file" in {
     // #file-source
-    def handle(b: ByteString): Unit // #file-source
+    def handle
+      (b: ByteString)
+      : Unit // #file-source
     = ()
 
     // #file-source

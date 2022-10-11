@@ -76,9 +76,11 @@ object EventSourcedBehaviorStashSpec {
       }
       .onFailure(SupervisorStrategy.restart.withLoggingEnabled(enabled = false))
 
-  def eventSourcedCounter(
-      persistenceId: PersistenceId,
-      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[_], Event, State] = {
+  def eventSourcedCounter
+    (
+        persistenceId: PersistenceId,
+        signalProbe: Option[ActorRef[String]])
+    : EventSourcedBehavior[Command[_], Event, State] = {
     EventSourcedBehavior
       .withEnforcedReplies[Command[_], Event, State](
         persistenceId,

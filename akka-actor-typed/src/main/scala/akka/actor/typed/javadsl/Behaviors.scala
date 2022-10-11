@@ -151,9 +151,11 @@ object Behaviors {
    * that can potentially be different from this one. State is maintained by returning
    * a new behavior that holds the new immutable state.
    */
-  def receive[T](
-      onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
-      onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+  def receive[T]
+    (
+        onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
+        onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]])
+    : Behavior[T] = {
     new BehaviorImpl.ReceiveBehavior(
       (ctx, msg) => onMessage.apply(ctx.asJava, msg),
       {
@@ -255,7 +257,7 @@ object Behaviors {
   def supervise[T](wrapped: Behavior[T]): Supervise[T] =
     new Supervise[T](wrapped)
 
-  final class Supervise[T] private[akka] (wrapped: Behavior[T]) {
+  final class Supervise[T] private[akka](wrapped: Behavior[T]) {
 
     /**
      * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
@@ -303,10 +305,12 @@ object Behaviors {
    *          transformation
    * @return a behavior of the `Outer` type
    */
-  def transformMessages[Outer, Inner](
-      interceptMessageClass: Class[Outer],
-      behavior: Behavior[Inner],
-      selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]]): Behavior[Outer] =
+  def transformMessages[Outer, Inner]
+    (
+        interceptMessageClass: Class[Outer],
+        behavior: Behavior[Inner],
+        selector: JFunction[PFBuilder[Outer, Inner], PFBuilder[Outer, Inner]])
+    : Behavior[Outer] =
     BehaviorImpl.transformMessages(behavior, selector.apply(new PFBuilder).build())(ClassTag(interceptMessageClass))
 
   /**
@@ -330,10 +334,12 @@ object Behaviors {
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
    */
-  def withMdc[T](
-      interceptMessageClass: Class[T],
-      mdcForMessage: akka.japi.function.Function[T, java.util.Map[String, String]],
-      behavior: Behavior[T]): Behavior[T] =
+  def withMdc[T]
+    (
+        interceptMessageClass: Class[T],
+        mdcForMessage: akka.japi.function.Function[T, java.util.Map[String, String]],
+        behavior: Behavior[T])
+    : Behavior[T] =
     withMdc(interceptMessageClass, Collections.emptyMap[String, String], mdcForMessage, behavior)
 
   /**
@@ -346,10 +352,12 @@ object Behaviors {
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
    */
-  def withMdc[T](
-      interceptMessageClass: Class[T],
-      staticMdc: java.util.Map[String, String],
-      behavior: Behavior[T]): Behavior[T] =
+  def withMdc[T]
+    (
+        interceptMessageClass: Class[T],
+        staticMdc: java.util.Map[String, String],
+        behavior: Behavior[T])
+    : Behavior[T] =
     withMdc(interceptMessageClass, staticMdc, null, behavior)
 
   /**
@@ -370,11 +378,13 @@ object Behaviors {
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
    */
-  def withMdc[T](
-      interceptMessageClass: Class[T],
-      staticMdc: java.util.Map[String, String],
-      mdcForMessage: akka.japi.function.Function[T, java.util.Map[String, String]],
-      behavior: Behavior[T]): Behavior[T] = {
+  def withMdc[T]
+    (
+        interceptMessageClass: Class[T],
+        staticMdc: java.util.Map[String, String],
+        mdcForMessage: akka.japi.function.Function[T, java.util.Map[String, String]],
+        behavior: Behavior[T])
+    : Behavior[T] = {
 
     def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {
       if (m == null || m.isEmpty) Map.empty[String, String]

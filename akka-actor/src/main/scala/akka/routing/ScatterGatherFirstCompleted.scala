@@ -41,9 +41,10 @@ final case class ScatterGatherFirstCompletedRoutingLogic(within: FiniteDuration)
  * INTERNAL API
  */
 @SerialVersionUID(1L)
-private[akka] final case class ScatterGatherFirstCompletedRoutees(
-    routees: immutable.IndexedSeq[Routee],
-    within: FiniteDuration)
+private[akka] final case class ScatterGatherFirstCompletedRoutees
+  (
+      routees: immutable.IndexedSeq[Routee],
+      within: FiniteDuration)
     extends Routee {
 
   override def send(message: Any, sender: ActorRef): Unit = {
@@ -101,13 +102,14 @@ private[akka] final case class ScatterGatherFirstCompletedRoutees(
  *   supervision, death watch and router management messages
  */
 @SerialVersionUID(1L)
-final case class ScatterGatherFirstCompletedPool(
-    nrOfInstances: Int,
-    override val resizer: Option[Resizer] = None,
-    within: FiniteDuration,
-    override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
-    override val usePoolDispatcher: Boolean = false)
+final case class ScatterGatherFirstCompletedPool
+  (
+      nrOfInstances: Int,
+      override val resizer: Option[Resizer] = None,
+      within: FiniteDuration,
+      override val supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId,
+      override val usePoolDispatcher: Boolean = false)
     extends Pool
     with PoolOverrideUnsetConfig[ScatterGatherFirstCompletedPool] {
 
@@ -181,10 +183,11 @@ final case class ScatterGatherFirstCompletedPool(
  *   router management messages
  */
 @SerialVersionUID(1L)
-final case class ScatterGatherFirstCompletedGroup(
-    paths: immutable.Iterable[String],
-    within: FiniteDuration,
-    override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
+final case class ScatterGatherFirstCompletedGroup
+  (
+      paths: immutable.Iterable[String],
+      within: FiniteDuration,
+      override val routerDispatcher: String = Dispatchers.DefaultDispatcherId)
     extends Group {
 
   def this(config: Config) =

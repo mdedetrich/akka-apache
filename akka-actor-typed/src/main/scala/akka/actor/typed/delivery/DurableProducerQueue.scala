@@ -54,30 +54,34 @@ object DurableProducerQueue {
    * This command may be retied and the implementation should be idempotent, i.e. deduplicate
    * already processed sequence numbers.
    */
-  final case class StoreMessageConfirmed[A](
-      seqNr: SeqNr,
-      confirmationQualifier: ConfirmationQualifier,
-      timestampMillis: TimestampMillis)
+  final case class StoreMessageConfirmed[A]
+    (
+        seqNr: SeqNr,
+        confirmationQualifier: ConfirmationQualifier,
+        timestampMillis: TimestampMillis)
       extends Command[A]
 
   object State {
     def empty[A]: State[A] = State(1L, 0L, Map.empty, Vector.empty)
   }
-  final case class State[A](
-      currentSeqNr: SeqNr,
-      highestConfirmedSeqNr: SeqNr,
-      confirmedSeqNr: Map[ConfirmationQualifier, (SeqNr, TimestampMillis)],
-      unconfirmed: immutable.IndexedSeq[MessageSent[A]])
+  final case class State[A]
+    (
+        currentSeqNr: SeqNr,
+        highestConfirmedSeqNr: SeqNr,
+        confirmedSeqNr: Map[ConfirmationQualifier, (SeqNr, TimestampMillis)],
+        unconfirmed: immutable.IndexedSeq[MessageSent[A]])
       extends DeliverySerializable {
 
     def addMessageSent(sent: MessageSent[A]): State[A] = {
       copy(currentSeqNr = sent.seqNr + 1, unconfirmed = unconfirmed :+ sent)
     }
 
-    def confirmed(
-        seqNr: SeqNr,
-        confirmationQualifier: ConfirmationQualifier,
-        timestampMillis: TimestampMillis): State[A] = {
+    def confirmed
+      (
+          seqNr: SeqNr,
+          confirmationQualifier: ConfirmationQualifier,
+          timestampMillis: TimestampMillis)
+      : State[A] = {
       val newUnconfirmed = unconfirmed.filterNot { u =>
         u.confirmationQualifier == confirmationQualifier && u.seqNr <= seqNr
       }
@@ -131,12 +135,13 @@ object DurableProducerQueue {
   /**
    * The fact (event) that a message has been sent.
    */
-  final class MessageSent[A](
-      val seqNr: SeqNr,
-      val message: MessageSent.MessageOrChunk,
-      val ack: Boolean,
-      val confirmationQualifier: ConfirmationQualifier,
-      val timestampMillis: TimestampMillis)
+  final class MessageSent[A]
+    (
+        val seqNr: SeqNr,
+        val message: MessageSent.MessageOrChunk,
+        val ack: Boolean,
+        val confirmationQualifier: ConfirmationQualifier,
+        val timestampMillis: TimestampMillis)
       extends Event {
 
     /** INTERNAL API */
@@ -183,48 +188,57 @@ object DurableProducerQueue {
      */
     type MessageOrChunk = Any
 
-    def apply[A](
-        seqNr: SeqNr,
-        message: A,
-        ack: Boolean,
-        confirmationQualifier: ConfirmationQualifier,
-        timestampMillis: TimestampMillis): MessageSent[A] =
+    def apply[A]
+      (
+          seqNr: SeqNr,
+          message: A,
+          ack: Boolean,
+          confirmationQualifier: ConfirmationQualifier,
+          timestampMillis: TimestampMillis)
+      : MessageSent[A] =
       new MessageSent(seqNr, message, ack, confirmationQualifier, timestampMillis)
 
     /**
      * INTERNAL API
      */
-    @InternalApi private[akka] def fromChunked[A](
-        seqNr: SeqNr,
-        chunkedMessage: ChunkedMessage,
-        ack: Boolean,
-        confirmationQualifier: ConfirmationQualifier,
-        timestampMillis: TimestampMillis): MessageSent[A] =
+    @InternalApi private[akka] def fromChunked[A]
+      (
+          seqNr: SeqNr,
+          chunkedMessage: ChunkedMessage,
+          ack: Boolean,
+          confirmationQualifier: ConfirmationQualifier,
+          timestampMillis: TimestampMillis)
+      : MessageSent[A] =
       new MessageSent(seqNr, chunkedMessage, ack, confirmationQualifier, timestampMillis)
 
     /**
      * INTERNAL API
      */
-    @InternalApi private[akka] def fromMessageOrChunked[A](
-        seqNr: SeqNr,
-        message: MessageOrChunk,
-        ack: Boolean,
-        confirmationQualifier: ConfirmationQualifier,
-        timestampMillis: TimestampMillis): MessageSent[A] =
+    @InternalApi private[akka] def fromMessageOrChunked[A]
+      (
+          seqNr: SeqNr,
+          message: MessageOrChunk,
+          ack: Boolean,
+          confirmationQualifier: ConfirmationQualifier,
+          timestampMillis: TimestampMillis)
+      : MessageSent[A] =
       new MessageSent(seqNr, message, ack, confirmationQualifier, timestampMillis)
 
-    def unapply(
-        sent: MessageSent[_]): Option[(SeqNr, MessageOrChunk, Boolean, ConfirmationQualifier, TimestampMillis)] =
+    def unapply
+      (
+          sent: MessageSent[_])
+      : Option[(SeqNr, MessageOrChunk, Boolean, ConfirmationQualifier, TimestampMillis)] =
       Some((sent.seqNr, sent.message, sent.ack, sent.confirmationQualifier, sent.timestampMillis))
   }
 
   /**
    * INTERNAL API: The fact (event) that a message has been confirmed to be delivered and processed.
    */
-  @InternalApi private[akka] final case class Confirmed(
-      seqNr: SeqNr,
-      confirmationQualifier: ConfirmationQualifier,
-      timestampMillis: TimestampMillis)
+  @InternalApi private[akka] final case class Confirmed
+    (
+        seqNr: SeqNr,
+        confirmationQualifier: ConfirmationQualifier,
+        timestampMillis: TimestampMillis)
       extends Event
 
   /**

@@ -768,13 +768,14 @@ trait QueueSetupHelper {
 
   import akka.util.QueueTestEvents._
 
-  case class TestContext(
-      queue: BoundedBlockingQueue[String],
-      events: mutable.Buffer[QueueEvent],
-      notEmpty: TestCondition,
-      notFull: TestCondition,
-      lock: ReentrantLock,
-      backingQueue: util.Queue[String])
+  case class TestContext
+    (
+        queue: BoundedBlockingQueue[String],
+        events: mutable.Buffer[QueueEvent],
+        notEmpty: TestCondition,
+        notFull: TestCondition,
+        lock: ReentrantLock,
+        backingQueue: util.Queue[String])
 
   /**
    * Backing queue that records all poll and offer calls in `events`
@@ -800,11 +801,12 @@ trait QueueSetupHelper {
   /**
    * Reentrant lock condition that records when the condition is signaled or `await`ed.
    */
-  class TestCondition(
-      events: mutable.Buffer[QueueEvent],
-      condition: Condition,
-      signalEvent: QueueEvent,
-      awaitEvent: QueueEvent)
+  class TestCondition
+    (
+        events: mutable.Buffer[QueueEvent],
+        condition: Condition,
+        signalEvent: QueueEvent,
+        awaitEvent: QueueEvent)
       extends Condition {
 
     case class Manual(waitTime: Long = 0, waitingThread: Option[Thread] = None)

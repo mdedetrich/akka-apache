@@ -257,12 +257,14 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   /**
    * Process the messages in the mailbox
    */
-  @tailrec private final def processMailbox(
-      left: Int = java.lang.Math.max(dispatcher.throughput, 1),
-      deadlineNs: Long =
-        if (dispatcher.isThroughputDeadlineTimeDefined)
-          System.nanoTime + dispatcher.throughputDeadlineTime.toNanos
-        else 0L): Unit =
+  @tailrec private final def processMailbox
+    (
+        left: Int = java.lang.Math.max(dispatcher.throughput, 1),
+        deadlineNs: Long =
+          if (dispatcher.isThroughputDeadlineTimeDefined)
+            System.nanoTime + dispatcher.throughputDeadlineTime.toNanos
+          else 0L)
+    : Unit =
     if (shouldProcessMessage) {
       val next = dequeue()
       if (next ne null) {
@@ -746,10 +748,11 @@ object UnboundedPriorityMailbox {
  * BoundedPriorityMailbox is a bounded mailbox that allows for prioritization of its contents.
  * Extend this class and provide the Comparator in the constructor.
  */
-class BoundedPriorityMailbox(
-    final val cmp: Comparator[Envelope],
-    final val capacity: Int,
-    override final val pushTimeOut: Duration)
+class BoundedPriorityMailbox
+  (
+      final val cmp: Comparator[Envelope],
+      final val capacity: Int,
+      override final val pushTimeOut: Duration)
     extends MailboxType
     with ProducesMessageQueue[BoundedPriorityMailbox.MessageQueue]
     with ProducesPushTimeoutSemanticsMailbox {
@@ -795,10 +798,11 @@ object UnboundedStablePriorityMailbox {
  * [[BoundedPriorityMailbox]] it preserves ordering for messages of equal priority.
  * Extend this class and provide the Comparator in the constructor.
  */
-class BoundedStablePriorityMailbox(
-    final val cmp: Comparator[Envelope],
-    final val capacity: Int,
-    override final val pushTimeOut: Duration)
+class BoundedStablePriorityMailbox
+  (
+      final val cmp: Comparator[Envelope],
+      final val capacity: Int,
+      override final val pushTimeOut: Duration)
     extends MailboxType
     with ProducesMessageQueue[BoundedStablePriorityMailbox.MessageQueue]
     with ProducesPushTimeoutSemanticsMailbox {

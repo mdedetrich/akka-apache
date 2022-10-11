@@ -27,13 +27,14 @@ import akka.util.{ unused, Unsafe }
  * with a fully functional one, transfer all messages from dummy to real queue
  * and swap out the cell ref.
  */
-private[akka] class RepointableActorRef(
-    val system: ActorSystemImpl,
-    val props: Props,
-    val dispatcher: MessageDispatcher,
-    val mailboxType: MailboxType,
-    val supervisor: InternalActorRef,
-    val path: ActorPath)
+private[akka] class RepointableActorRef
+  (
+      val system: ActorSystemImpl,
+      val props: Props,
+      val dispatcher: MessageDispatcher,
+      val mailboxType: MailboxType,
+      val supervisor: InternalActorRef,
+      val path: ActorPath)
     extends ActorRefWithCell
     with RepointableRef {
 
@@ -187,11 +188,12 @@ private[akka] class RepointableActorRef(
   protected def writeReplace(): AnyRef = SerializedActorRef(this)
 }
 
-private[akka] class UnstartedCell(
-    val systemImpl: ActorSystemImpl,
-    val self: RepointableActorRef,
-    val props: Props,
-    val supervisor: InternalActorRef)
+private[akka] class UnstartedCell
+  (
+      val systemImpl: ActorSystemImpl,
+      val self: RepointableActorRef,
+      val props: Props,
+      val supervisor: InternalActorRef)
     extends Cell {
 
   /*

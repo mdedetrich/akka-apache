@@ -33,10 +33,12 @@ object Producer {
 
   private implicit val askTimeout: akka.util.Timeout = 5.seconds
 
-  def apply(
-      numberOfMessages: Int,
-      useAsk: Boolean,
-      producerController: ActorRef[ProducerController.Command[Consumer.Command]]): Behavior[Command] = {
+  def apply
+    (
+        numberOfMessages: Int,
+        useAsk: Boolean,
+        producerController: ActorRef[ProducerController.Command[Consumer.Command]])
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       val requestNextAdapter =
         context.messageAdapter[ProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
@@ -105,9 +107,11 @@ object WorkPullingProducer {
   case object Run extends Command
   private case class WrappedRequestNext(r: WorkPullingProducerController.RequestNext[Consumer.Command]) extends Command
 
-  def apply(
-      numberOfMessages: Int,
-      producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]]): Behavior[Command] = {
+  def apply
+    (
+        numberOfMessages: Int,
+        producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]])
+    : Behavior[Command] = {
     Behaviors.setup { context =>
       val requestNextAdapter =
         context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))

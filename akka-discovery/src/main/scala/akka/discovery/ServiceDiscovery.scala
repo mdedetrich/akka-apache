@@ -163,10 +163,12 @@ final class Lookup(val serviceName: String, val portName: Option[String], val pr
   def getProtocol: Optional[String] =
     protocol.asJava
 
-  private def copy(
-      serviceName: String = serviceName,
-      portName: Option[String] = portName,
-      protocol: Option[String] = protocol): Lookup =
+  private def copy
+    (
+        serviceName: String = serviceName,
+        portName: Option[String] = portName,
+        protocol: Option[String] = protocol)
+    : Lookup =
     new Lookup(serviceName, portName, protocol)
 
   override def toString: String = s"Lookup($serviceName,$portName,$protocol)"

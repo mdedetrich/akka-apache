@@ -114,10 +114,11 @@ object Replicator {
    * Send this message to the local `Replicator` to retrieve a data value for the
    * given `key`. The `Replicator` will reply with one of the [[GetResponse]] messages.
    */
-  final case class Get[A <: ReplicatedData](
-      key: Key[A],
-      consistency: ReadConsistency,
-      replyTo: ActorRef[GetResponse[A]])
+  final case class Get[A <: ReplicatedData]
+    (
+        key: Key[A],
+        consistency: ReadConsistency,
+        replyTo: ActorRef[GetResponse[A]])
       extends Command
 
   @DoNotInherit sealed abstract class GetResponse[A <: ReplicatedData] {
@@ -189,12 +190,13 @@ object Replicator {
      * If there is no current data value for the `key` the `initial` value will be
      * passed to the `modify` function.
      */
-    def this(
-        key: Key[A],
-        initial: A,
-        writeConsistency: WriteConsistency,
-        replyTo: ActorRef[UpdateResponse[A]],
-        modify: JFunction[A, A]) =
+    def this
+      (
+          key: Key[A],
+          initial: A,
+          writeConsistency: WriteConsistency,
+          replyTo: ActorRef[UpdateResponse[A]],
+          modify: JFunction[A, A]) =
       this(key, writeConsistency, replyTo)(Update.modifyWithInitial(initial, data => modify.apply(data)))
 
   }
@@ -306,10 +308,11 @@ object Replicator {
    * Send this message to the local `Replicator` to delete a data value for the
    * given `key`. The `Replicator` will reply with one of the [[DeleteResponse]] messages.
    */
-  final case class Delete[A <: ReplicatedData](
-      key: Key[A],
-      consistency: WriteConsistency,
-      replyTo: ActorRef[DeleteResponse[A]])
+  final case class Delete[A <: ReplicatedData]
+    (
+        key: Key[A],
+        consistency: WriteConsistency,
+        replyTo: ActorRef[DeleteResponse[A]])
       extends Command
 
   sealed trait DeleteResponse[A <: ReplicatedData] {

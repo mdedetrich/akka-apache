@@ -301,10 +301,12 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
    *
    * INTERNAL API
    */
-  protected[akka] def registerForExecution(
-      mbox: Mailbox,
-      hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean
+  protected[akka] def registerForExecution
+    (
+        mbox: Mailbox,
+        hasMessageHint: Boolean,
+        hasSystemMessageHint: Boolean)
+    : Boolean
 
   // TODO check whether this should not actually be a property of the mailbox
   /**
@@ -397,9 +399,11 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
 
   val threadPoolConfig: ThreadPoolConfig = createThreadPoolConfigBuilder(config, prerequisites).config
 
-  protected def createThreadPoolConfigBuilder(
-      config: Config,
-      @unused prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
+  protected def createThreadPoolConfigBuilder
+    (
+        config: Config,
+        @unused prerequisites: DispatcherPrerequisites)
+    : ThreadPoolConfigBuilder = {
     import akka.util.Helpers.ConfigOps
     val builder =
       ThreadPoolConfigBuilder(ThreadPoolConfig())
@@ -438,10 +442,11 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
     threadPoolConfig.createExecutorServiceFactory(id, threadFactory)
 }
 
-class DefaultExecutorServiceConfigurator(
-    config: Config,
-    prerequisites: DispatcherPrerequisites,
-    fallback: ExecutorServiceConfigurator)
+class DefaultExecutorServiceConfigurator
+  (
+      config: Config,
+      prerequisites: DispatcherPrerequisites,
+      fallback: ExecutorServiceConfigurator)
     extends ExecutorServiceConfigurator(config, prerequisites) {
   val provider: ExecutorServiceFactoryProvider =
     prerequisites.defaultExecutionContext match {

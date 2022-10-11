@@ -218,10 +218,12 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   /**
    * Same as the other `fishForMessage` but includes the provided hint in all error messages
    */
-  def fishForMessage(
-      max: Duration,
-      hint: String,
-      fisher: java.util.function.Function[M, FishingOutcome]): java.util.List[M]
+  def fishForMessage
+    (
+        max: Duration,
+        hint: String,
+        fisher: java.util.function.Function[M, FishingOutcome])
+    : java.util.List[M]
 
   /**
    * Expect the given actor to be stopped or stop within the given timeout or

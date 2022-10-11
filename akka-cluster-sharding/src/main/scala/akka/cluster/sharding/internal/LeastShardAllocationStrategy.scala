@@ -43,19 +43,23 @@ import akka.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.Shard
     extends AbstractLeastShardAllocationStrategy {
   import LeastShardAllocationStrategy.emptyRebalanceResult
 
-  override def rebalance(
-      currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
+  override def rebalance
+    (
+        currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
+        rebalanceInProgress: Set[ShardId])
+    : Future[Set[ShardId]] = {
     import math.max
     import math.min
 
     def limit(numberOfShards: Int): Int =
       max(1, min((relativeLimit * numberOfShards).toInt, absoluteLimit))
 
-    def rebalancePhase1(
-        numberOfShards: Int,
-        optimalPerRegion: Int,
-        sortedEntries: Iterable[RegionEntry]): Set[ShardId] = {
+    def rebalancePhase1
+      (
+          numberOfShards: Int,
+          optimalPerRegion: Int,
+          sortedEntries: Iterable[RegionEntry])
+      : Set[ShardId] = {
       val selected = Vector.newBuilder[ShardId]
       sortedEntries.foreach {
         case RegionEntry(_, _, shardIds) =>
@@ -67,10 +71,12 @@ import akka.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.Shard
       result.take(limit(numberOfShards)).toSet
     }
 
-    def rebalancePhase2(
-        numberOfShards: Int,
-        optimalPerRegion: Int,
-        sortedEntries: Iterable[RegionEntry]): Future[Set[ShardId]] = {
+    def rebalancePhase2
+      (
+          numberOfShards: Int,
+          optimalPerRegion: Int,
+          sortedEntries: Iterable[RegionEntry])
+      : Future[Set[ShardId]] = {
       // In the first phase the optimalPerRegion is rounded up, and depending on number of shards per region and number
       // of regions that might not be the exact optimal.
       // In second phase we look for diff of >= 2 below optimalPerRegion and rebalance that number of shards.

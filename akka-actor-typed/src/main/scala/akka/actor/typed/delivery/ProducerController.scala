@@ -105,12 +105,13 @@ object ProducerController {
    * message via the `sendNextTo` or `askNextTo`. Note that only one message is allowed, and then
    * it must wait for next `RequestNext` before sending one more message.
    */
-  final case class RequestNext[A](
-      producerId: String,
-      currentSeqNr: SeqNr,
-      confirmedSeqNr: SeqNr,
-      sendNextTo: ActorRef[A],
-      askNextTo: ActorRef[MessageWithConfirmation[A]])
+  final case class RequestNext[A]
+    (
+        producerId: String,
+        currentSeqNr: SeqNr,
+        confirmedSeqNr: SeqNr,
+        sendNextTo: ActorRef[A],
+        askNextTo: ActorRef[MessageWithConfirmation[A]])
 
   /**
    * Java API: The generic `Class` type for `ProducerController.RequestNext` that can be used when creating a
@@ -227,11 +228,12 @@ object ProducerController {
     /**
      * Private copy method for internal use only.
      */
-    private def copy(
-        durableQueueRequestTimeout: FiniteDuration = durableQueueRequestTimeout,
-        durableQueueRetryAttempts: Int = durableQueueRetryAttempts,
-        durableQueueResendFirstInterval: FiniteDuration = durableQueueResendFirstInterval,
-        chunkLargeMessagesBytes: Int = chunkLargeMessagesBytes) =
+    private def copy
+      (
+          durableQueueRequestTimeout: FiniteDuration = durableQueueRequestTimeout,
+          durableQueueRetryAttempts: Int = durableQueueRetryAttempts,
+          durableQueueResendFirstInterval: FiniteDuration = durableQueueResendFirstInterval,
+          chunkLargeMessagesBytes: Int = chunkLargeMessagesBytes) =
       new Settings(
         durableQueueRequestTimeout,
         durableQueueRetryAttempts,
@@ -242,18 +244,22 @@ object ProducerController {
       s"Settings($durableQueueRequestTimeout, $durableQueueRetryAttempts, $durableQueueResendFirstInterval, $chunkLargeMessagesBytes)"
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     Behaviors.setup { context =>
       ProducerControllerImpl(producerId, durableQueueBehavior, ProducerController.Settings(context.system))
     }
   }
 
-  def apply[A: ClassTag](
-      producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def apply[A: ClassTag]
+    (
+        producerId: String,
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     ProducerControllerImpl(producerId, durableQueueBehavior, settings)
   }
 
@@ -269,32 +275,38 @@ object ProducerController {
    * wrap it or send it in other ways when building higher level abstractions that are using the `ProducerController`.
    * That is used by `ShardingProducerController`.
    */
-  @InternalApi private[akka] def apply[A: ClassTag](
-      producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings,
-      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] = {
+  @InternalApi private[akka] def apply[A: ClassTag]
+    (
+        producerId: String,
+        durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings,
+        send: ConsumerController.SequencedMessage[A] => Unit)
+    : Behavior[Command[A]] = {
     ProducerControllerImpl(producerId, durableQueueBehavior, settings, send)
   }
 
   /**
    * Java API
    */
-  def create[A](
-      messageClass: Class[A],
-      producerId: String,
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+  def create[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]])
+    : Behavior[Command[A]] = {
     apply(producerId, durableQueueBehavior.asScala)(ClassTag(messageClass))
   }
 
   /**
    * Java API
    */
-  def create[A](
-      messageClass: Class[A],
-      producerId: String,
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+  def create[A]
+    (
+        messageClass: Class[A],
+        producerId: String,
+        durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
+        settings: Settings)
+    : Behavior[Command[A]] = {
     apply(producerId, durableQueueBehavior.asScala, settings)(ClassTag(messageClass))
   }
 

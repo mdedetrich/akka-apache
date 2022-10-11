@@ -90,22 +90,24 @@ object DistributedPubSubSettings {
  *   the registries. Next chunk will be transferred in next round of gossip.
  * @param sendToDeadLettersWhenNoSubscribers When a message is published to a topic with no subscribers send it to the dead letters.
  */
-final class DistributedPubSubSettings(
-    val role: Option[String],
-    val routingLogic: RoutingLogic,
-    val gossipInterval: FiniteDuration,
-    val removedTimeToLive: FiniteDuration,
-    val maxDeltaElements: Int,
-    val sendToDeadLettersWhenNoSubscribers: Boolean)
+final class DistributedPubSubSettings
+  (
+      val role: Option[String],
+      val routingLogic: RoutingLogic,
+      val gossipInterval: FiniteDuration,
+      val removedTimeToLive: FiniteDuration,
+      val maxDeltaElements: Int,
+      val sendToDeadLettersWhenNoSubscribers: Boolean)
     extends NoSerializationVerificationNeeded {
 
   @deprecated("Use the other constructor instead.", "2.5.5")
-  def this(
-      role: Option[String],
-      routingLogic: RoutingLogic,
-      gossipInterval: FiniteDuration,
-      removedTimeToLive: FiniteDuration,
-      maxDeltaElements: Int) =
+  def this
+    (
+        role: Option[String],
+        routingLogic: RoutingLogic,
+        gossipInterval: FiniteDuration,
+        removedTimeToLive: FiniteDuration,
+        maxDeltaElements: Int) =
     this(
       role,
       routingLogic,
@@ -137,13 +139,15 @@ final class DistributedPubSubSettings(
   def withSendToDeadLettersWhenNoSubscribers(sendToDeadLetterWhenNoSubscribers: Boolean): DistributedPubSubSettings =
     copy(sendToDeadLettersWhenNoSubscribers = sendToDeadLetterWhenNoSubscribers)
 
-  private def copy(
-      role: Option[String] = role,
-      routingLogic: RoutingLogic = routingLogic,
-      gossipInterval: FiniteDuration = gossipInterval,
-      removedTimeToLive: FiniteDuration = removedTimeToLive,
-      maxDeltaElements: Int = maxDeltaElements,
-      sendToDeadLettersWhenNoSubscribers: Boolean = sendToDeadLettersWhenNoSubscribers): DistributedPubSubSettings =
+  private def copy
+    (
+        role: Option[String] = role,
+        routingLogic: RoutingLogic = routingLogic,
+        gossipInterval: FiniteDuration = gossipInterval,
+        removedTimeToLive: FiniteDuration = removedTimeToLive,
+        maxDeltaElements: Int = maxDeltaElements,
+        sendToDeadLettersWhenNoSubscribers: Boolean = sendToDeadLettersWhenNoSubscribers)
+    : DistributedPubSubSettings =
     new DistributedPubSubSettings(
       role,
       routingLogic,

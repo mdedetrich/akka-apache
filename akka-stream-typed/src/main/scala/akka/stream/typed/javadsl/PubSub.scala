@@ -33,10 +33,12 @@ object PubSub {
    * @tparam T The type of the published messages
    */
   @ApiMayChange
-  def source[T](
-      topicActor: ActorRef[Topic.Command[T]],
-      bufferSize: Int,
-      overflowStrategy: OverflowStrategy): Source[T, NotUsed] =
+  def source[T]
+    (
+        topicActor: ActorRef[Topic.Command[T]],
+        bufferSize: Int,
+        overflowStrategy: OverflowStrategy)
+    : Source[T, NotUsed] =
     akka.stream.typed.scaladsl.PubSub.source(topicActor, bufferSize, overflowStrategy).asJava
 
   /**

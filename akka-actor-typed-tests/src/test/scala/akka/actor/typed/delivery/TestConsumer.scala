@@ -24,28 +24,32 @@ object TestConsumer {
 
   final case class Job(payload: String)
   sealed trait Command
-  final case class JobDelivery(
-      msg: Job,
-      confirmTo: ActorRef[ConsumerController.Confirmed],
-      producerId: String,
-      seqNr: Long)
+  final case class JobDelivery
+    (
+        msg: Job,
+        confirmTo: ActorRef[ConsumerController.Confirmed],
+        producerId: String,
+        seqNr: Long)
       extends Command
-  final case class SomeAsyncJob(
-      msg: Job,
-      confirmTo: ActorRef[ConsumerController.Confirmed],
-      producerId: String,
-      seqNr: Long)
+  final case class SomeAsyncJob
+    (
+        msg: Job,
+        confirmTo: ActorRef[ConsumerController.Confirmed],
+        producerId: String,
+        seqNr: Long)
       extends Command
 
   final case class Collected(producerIds: Set[String], messageCount: Int)
 
   val defaultConsumerDelay: FiniteDuration = 10.millis
 
-  def sequencedMessage(
-      producerId: String,
-      n: Long,
-      producerController: ActorRef[ProducerController.Command[TestConsumer.Job]],
-      ack: Boolean = false): SequencedMessage[TestConsumer.Job] = {
+  def sequencedMessage
+    (
+        producerId: String,
+        n: Long,
+        producerController: ActorRef[ProducerController.Command[TestConsumer.Job]],
+        ack: Boolean = false)
+    : SequencedMessage[TestConsumer.Job] = {
     ConsumerController.SequencedMessage(producerId, n, TestConsumer.Job(s"msg-$n"), first = n == 1, ack)(
       producerController.unsafeUpcast[ProducerControllerImpl.InternalCommand])
   }
@@ -54,30 +58,35 @@ object TestConsumer {
     case TestConsumer.SomeAsyncJob(_, _, _, nr) => nr >= seqNr
   }
 
-  def apply(
-      delay: FiniteDuration,
-      endSeqNr: Long,
-      endReplyTo: ActorRef[Collected],
-      controller: ActorRef[ConsumerController.Start[TestConsumer.Job]]): Behavior[Command] =
+  def apply
+    (
+        delay: FiniteDuration,
+        endSeqNr: Long,
+        endReplyTo: ActorRef[Collected],
+        controller: ActorRef[ConsumerController.Start[TestConsumer.Job]])
+    : Behavior[Command] =
     apply(delay, consumerEndCondition(endSeqNr), endReplyTo, controller)
 
-  def apply(
-      delay: FiniteDuration,
-      endCondition: SomeAsyncJob => Boolean,
-      endReplyTo: ActorRef[Collected],
-      controller: ActorRef[ConsumerController.Start[TestConsumer.Job]]): Behavior[Command] =
+  def apply
+    (
+        delay: FiniteDuration,
+        endCondition: SomeAsyncJob => Boolean,
+        endReplyTo: ActorRef[Collected],
+        controller: ActorRef[ConsumerController.Start[TestConsumer.Job]])
+    : Behavior[Command] =
     Behaviors.setup[Command] { ctx =>
       new TestConsumer(ctx, delay, endCondition, endReplyTo, controller).active(Set.empty, 0)
     }
 
 }
 
-class TestConsumer(
-    ctx: ActorContext[TestConsumer.Command],
-    delay: FiniteDuration,
-    endCondition: TestConsumer.SomeAsyncJob => Boolean,
-    endReplyTo: ActorRef[TestConsumer.Collected],
-    controller: ActorRef[ConsumerController.Start[TestConsumer.Job]]) {
+class TestConsumer
+  (
+      ctx: ActorContext[TestConsumer.Command],
+      delay: FiniteDuration,
+      endCondition: TestConsumer.SomeAsyncJob => Boolean,
+      endReplyTo: ActorRef[TestConsumer.Collected],
+      controller: ActorRef[ConsumerController.Start[TestConsumer.Job]]) {
   import TestConsumer._
 
   ctx.setLoggerName("TestConsumer")

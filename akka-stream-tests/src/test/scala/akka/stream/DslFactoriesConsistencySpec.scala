@@ -131,11 +131,12 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
   private def toMethod(m: java.lang.reflect.Method): Method =
     Method(m.getName, List(m.getParameterTypes.toIndexedSeq: _*), m.getReturnType, m.getDeclaringClass)
 
-  private case class Ignore(
-      cls: Class[_] => Boolean,
-      name: String => Boolean,
-      parameters: Int => Boolean,
-      paramTypes: List[Class[_]] => Boolean)
+  private case class Ignore
+    (
+        cls: Class[_] => Boolean,
+        name: String => Boolean,
+        parameters: Int => Boolean,
+        paramTypes: List[Class[_]] => Boolean)
 
   private def ignore(m: Method): Boolean = {
     val ignores = Seq(

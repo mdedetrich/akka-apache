@@ -45,11 +45,13 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def withBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        sinkFactory: Creator[Sink[T, _]])
+    : Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sinkFactory)
   }
@@ -80,11 +82,13 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        sinkFactory: Creator[Sink[T, _]])
+    : Sink[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings, sinkFactory)
   }
@@ -117,12 +121,14 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
-  def withBackoff[T](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sinkFactory: Creator[Sink[T, _]])
+    : Sink[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sinkFactory)
   }
@@ -155,12 +161,14 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[T](
-      minBackoff: java.time.Duration,
-      maxBackoff: java.time.Duration,
-      randomFactor: Double,
-      maxRestarts: Int,
-      sinkFactory: Creator[Sink[T, _]]): Sink[T, NotUsed] = {
+  def withBackoff[T]
+    (
+        minBackoff: java.time.Duration,
+        maxBackoff: java.time.Duration,
+        randomFactor: Double,
+        maxRestarts: Int,
+        sinkFactory: Creator[Sink[T, _]])
+    : Sink[T, NotUsed] = {
     val settings = RestartSettings.create(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings, sinkFactory)
   }

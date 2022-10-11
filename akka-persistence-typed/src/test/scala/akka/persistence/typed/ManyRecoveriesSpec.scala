@@ -24,10 +24,12 @@ object ManyRecoveriesSpec {
 
   final case class Evt(s: String)
 
-  def persistentBehavior(
-      name: String,
-      probe: TestProbe[String],
-      latch: Option[TestLatch]): EventSourcedBehavior[Cmd, Evt, String] =
+  def persistentBehavior
+    (
+        name: String,
+        probe: TestProbe[String],
+        latch: Option[TestLatch])
+    : EventSourcedBehavior[Cmd, Evt, String] =
     EventSourcedBehavior[Cmd, Evt, String](
       persistenceId = PersistenceId.ofUniqueId(name),
       emptyState = "",

@@ -15,11 +15,12 @@ import akka.stream.stage.{ GraphStage, GraphStageLogic, GraphStageLogicWithLoggi
  * INTERNAL API
  */
 @InternalApi
-final private[akka] class EventsByPersistenceIdStage(
-    persistenceId: String,
-    fromSequenceNr: Long,
-    toSequenceNr: Long,
-    storage: EventStorage)
+final private[akka] class EventsByPersistenceIdStage
+  (
+      persistenceId: String,
+      fromSequenceNr: Long,
+      toSequenceNr: Long,
+      storage: EventStorage)
     extends GraphStage[SourceShape[EventEnvelope]] {
   val out: Outlet[EventEnvelope] = Outlet("EventsByPersistenceIdSource")
   override def shape: SourceShape[EventEnvelope] = SourceShape(out)

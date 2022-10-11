@@ -122,8 +122,11 @@ object AskPattern {
      * If the status response is a [[akka.pattern.StatusReply.Error]] the returned future will be failed with the
      * exception in the error (normally a [[akka.pattern.StatusReply.ErrorMessage]]).
      */
-    def askWithStatus[Res](
-        replyTo: ActorRef[StatusReply[Res]] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] =
+    def askWithStatus[Res]
+      (
+          replyTo: ActorRef[StatusReply[Res]] => Req)
+      (implicit timeout: Timeout, scheduler: Scheduler)
+      : Future[Res] =
       StatusReply.flattenStatusFuture(ask(replyTo))
 
   }

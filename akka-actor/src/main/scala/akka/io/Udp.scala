@@ -101,10 +101,11 @@ object Udp extends ExtensionId[UdpExt] with ExtensionIdProvider {
    * message, or the manager will reply with a [[CommandFailed]] message.
    */
   @nowarn("msg=deprecated")
-  final case class Bind(
-      handler: ActorRef,
-      localAddress: InetSocketAddress,
-      options: immutable.Traversable[SocketOption] = Nil)
+  final case class Bind
+    (
+        handler: ActorRef,
+        localAddress: InetSocketAddress,
+        options: immutable.Traversable[SocketOption] = Nil)
       extends Command
 
   /**

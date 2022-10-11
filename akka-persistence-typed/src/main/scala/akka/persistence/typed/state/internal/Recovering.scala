@@ -49,18 +49,20 @@ private[akka] object Recovering {
   }
 
   @InternalApi
-  private[akka] final case class RecoveryState[State](
-      revision: Long,
-      state: State,
-      receivedPoisonPill: Boolean,
-      recoveryStartTime: Long)
+  private[akka] final case class RecoveryState[State]
+    (
+        revision: Long,
+        state: State,
+        receivedPoisonPill: Boolean,
+        recoveryStartTime: Long)
 
 }
 
 @InternalApi
-private[akka] class Recovering[C, S](
-    override val setup: BehaviorSetup[C, S],
-    var recoveryState: Recovering.RecoveryState[S])
+private[akka] class Recovering[C, S]
+  (
+      override val setup: BehaviorSetup[C, S],
+      var recoveryState: Recovering.RecoveryState[S])
     extends AbstractBehavior[InternalProtocol](setup.context) // must be class for WithSeqNrAccessible
     with DurableStateStoreInteractions[C, S]
     with StashManagement[C, S]

@@ -416,13 +416,14 @@ class SplitBrainResolverIntegrationSpec
 
   val defaultDcDecider: RoleName => DataCenter = _ => DefaultDataCenter
 
-  case class Scenario(
-      cfg: Config,
-      side1Size: Int,
-      side2Size: Int,
-      expected: Expected,
-      dcDecider: RoleName => DataCenter = defaultDcDecider // allows to set the dc per indexed node
-  ) {
+  case class Scenario
+    (
+        cfg: Config,
+        side1Size: Int,
+        side2Size: Int,
+        expected: Expected,
+        dcDecider: RoleName => DataCenter = defaultDcDecider // allows to set the dc per indexed node
+    ) {
 
     val activeStrategy: String = cfg.getString("akka.cluster.split-brain-resolver.active-strategy")
 

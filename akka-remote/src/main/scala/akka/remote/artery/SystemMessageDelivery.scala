@@ -70,11 +70,12 @@ import akka.util.PrettyDuration.PrettyPrintableDuration
 /**
  * INTERNAL API
  */
-@InternalApi private[remote] class SystemMessageDelivery(
-    outboundContext: OutboundContext,
-    deadLetters: ActorRef,
-    resendInterval: FiniteDuration,
-    maxBufferSize: Int)
+@InternalApi private[remote] class SystemMessageDelivery
+  (
+      outboundContext: OutboundContext,
+      deadLetters: ActorRef,
+      resendInterval: FiniteDuration,
+      maxBufferSize: Int)
     extends GraphStage[FlowShape[OutboundEnvelope, OutboundEnvelope]] {
 
   import SystemMessageDelivery._

@@ -293,20 +293,24 @@ object CodecBenchmark {
 
     override def identifier: Byte = 7 // Lucky number slevin
 
-    override def remoteWriteMetadata(
-        recipient: ActorRef,
-        message: Object,
-        sender: ActorRef,
-        buffer: ByteBuffer): Unit = {
+    override def remoteWriteMetadata
+      (
+          recipient: ActorRef,
+          message: Object,
+          sender: ActorRef,
+          buffer: ByteBuffer)
+      : Unit = {
       buffer.putInt(Metadata.length)
       buffer.put(Metadata)
     }
 
-    override def remoteReadMetadata(
-        recipient: ActorRef,
-        message: Object,
-        sender: ActorRef,
-        buffer: ByteBuffer): Unit = {
+    override def remoteReadMetadata
+      (
+          recipient: ActorRef,
+          message: Object,
+          sender: ActorRef,
+          buffer: ByteBuffer)
+      : Unit = {
       val length = Metadata.length
       val metaLength = buffer.getInt
       @tailrec
@@ -319,18 +323,22 @@ object CodecBenchmark {
         throw new IOException(s"DummyInstrument deserialization error. Expected ${Metadata.toString}")
     }
 
-    override def remoteMessageSent(
-        recipient: ActorRef,
-        message: Object,
-        sender: ActorRef,
-        size: Int,
-        time: Long): Unit = ()
+    override def remoteMessageSent
+      (
+          recipient: ActorRef,
+          message: Object,
+          sender: ActorRef,
+          size: Int,
+          time: Long)
+      : Unit = ()
 
-    override def remoteMessageReceived(
-        recipient: ActorRef,
-        message: Object,
-        sender: ActorRef,
-        size: Int,
-        time: Long): Unit = ()
+    override def remoteMessageReceived
+      (
+          recipient: ActorRef,
+          message: Object,
+          sender: ActorRef,
+          size: Int,
+          time: Long)
+      : Unit = ()
   }
 }

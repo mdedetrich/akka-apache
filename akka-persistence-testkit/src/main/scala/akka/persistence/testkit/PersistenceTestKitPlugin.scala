@@ -55,8 +55,11 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
   override def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] =
     Future.fromTry(Try(storage.tryDelete(persistenceId, toSequenceNr)))
 
-  override def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      recoveryCallback: PersistentRepr => Unit): Future[Unit] =
+  override def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        recoveryCallback: PersistentRepr => Unit)
+    : Future[Unit] =
     Future.fromTry(
       Try(
         storage

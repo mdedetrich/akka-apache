@@ -92,8 +92,11 @@ class ActorSystemSpec
 
   case class Probe(message: String, replyTo: ActorRef[String])
 
-  def withSystem[T](name: String, behavior: Behavior[T], doTerminate: Boolean = true)(
-      block: ActorSystem[T] => Unit): Unit = {
+  def withSystem[T]
+    (name: String, behavior: Behavior[T], doTerminate: Boolean = true)
+    (
+        block: ActorSystem[T] => Unit)
+    : Unit = {
     val sys = system(behavior, s"$suite-$name")
     try {
       block(sys)

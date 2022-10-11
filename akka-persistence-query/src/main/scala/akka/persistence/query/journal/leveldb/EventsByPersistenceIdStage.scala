@@ -38,14 +38,15 @@ private[akka] object EventsByPersistenceIdStage {
  * INTERNAL API
  */
 @InternalApi
-final private[akka] class EventsByPersistenceIdStage(
-    persistenceId: String,
-    fromSequenceNr: Long,
-    initialToSequenceNr: Long,
-    maxBufSize: Int,
-    writeJournalPluginId: String,
-    refreshInterval: Option[FiniteDuration],
-    mat: Materializer)
+final private[akka] class EventsByPersistenceIdStage
+  (
+      persistenceId: String,
+      fromSequenceNr: Long,
+      initialToSequenceNr: Long,
+      maxBufSize: Int,
+      writeJournalPluginId: String,
+      refreshInterval: Option[FiniteDuration],
+      mat: Materializer)
     extends GraphStage[SourceShape[EventEnvelope]] {
   val out: Outlet[EventEnvelope] = Outlet("EventsByPersistenceIdSource")
   override def shape: SourceShape[EventEnvelope] = SourceShape(out)

@@ -43,24 +43,26 @@ object ClusterSingletonSettings {
   }
 }
 
-final class ClusterSingletonSettings(
-    val role: Option[String],
-    val dataCenter: Option[DataCenter],
-    val singletonIdentificationInterval: FiniteDuration,
-    val removalMargin: FiniteDuration,
-    val handOverRetryInterval: FiniteDuration,
-    val bufferSize: Int,
-    val leaseSettings: Option[LeaseUsageSettings]) {
+final class ClusterSingletonSettings
+  (
+      val role: Option[String],
+      val dataCenter: Option[DataCenter],
+      val singletonIdentificationInterval: FiniteDuration,
+      val removalMargin: FiniteDuration,
+      val handOverRetryInterval: FiniteDuration,
+      val bufferSize: Int,
+      val leaseSettings: Option[LeaseUsageSettings]) {
 
   // bin compat for 2.6.14
   @deprecated("Use constructor with leaseSettings", "2.6.15")
-  def this(
-      role: Option[String],
-      dataCenter: Option[DataCenter],
-      singletonIdentificationInterval: FiniteDuration,
-      removalMargin: FiniteDuration,
-      handOverRetryInterval: FiniteDuration,
-      bufferSize: Int) =
+  def this
+    (
+        role: Option[String],
+        dataCenter: Option[DataCenter],
+        singletonIdentificationInterval: FiniteDuration,
+        removalMargin: FiniteDuration,
+        handOverRetryInterval: FiniteDuration,
+        bufferSize: Int) =
     this(role, dataCenter, singletonIdentificationInterval, removalMargin, handOverRetryInterval, bufferSize, None)
 
   def withRole(role: String): ClusterSingletonSettings = copy(role = Some(role))
@@ -86,14 +88,15 @@ final class ClusterSingletonSettings(
 
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 
-  private def copy(
-      role: Option[String] = role,
-      dataCenter: Option[DataCenter] = dataCenter,
-      singletonIdentificationInterval: FiniteDuration = singletonIdentificationInterval,
-      removalMargin: FiniteDuration = removalMargin,
-      handOverRetryInterval: FiniteDuration = handOverRetryInterval,
-      bufferSize: Int = bufferSize,
-      leaseSettings: Option[LeaseUsageSettings] = leaseSettings) =
+  private def copy
+    (
+        role: Option[String] = role,
+        dataCenter: Option[DataCenter] = dataCenter,
+        singletonIdentificationInterval: FiniteDuration = singletonIdentificationInterval,
+        removalMargin: FiniteDuration = removalMargin,
+        handOverRetryInterval: FiniteDuration = handOverRetryInterval,
+        bufferSize: Int = bufferSize,
+        leaseSettings: Option[LeaseUsageSettings] = leaseSettings) =
     new ClusterSingletonSettings(
       role,
       dataCenter,
@@ -193,11 +196,13 @@ final class SingletonActor[M] private (
    */
   def withSettings(settings: ClusterSingletonSettings): SingletonActor[M] = copy(settings = Option(settings))
 
-  private def copy(
-      behavior: Behavior[M] = behavior,
-      props: Props = props,
-      stopMessage: Option[M] = stopMessage,
-      settings: Option[ClusterSingletonSettings] = settings): SingletonActor[M] =
+  private def copy
+    (
+        behavior: Behavior[M] = behavior,
+        props: Props = props,
+        stopMessage: Option[M] = stopMessage,
+        settings: Option[ClusterSingletonSettings] = settings)
+    : SingletonActor[M] =
     new SingletonActor[M](behavior, name, props, stopMessage, settings)
 }
 
@@ -286,20 +291,22 @@ object ClusterSingletonManagerSettings {
  *                              (+ `removalMargin`).
  * @param leaseSettings         LeaseSettings for acquiring before creating the singleton actor
  */
-final class ClusterSingletonManagerSettings(
-    val singletonName: String,
-    val role: Option[String],
-    val removalMargin: FiniteDuration,
-    val handOverRetryInterval: FiniteDuration,
-    val leaseSettings: Option[LeaseUsageSettings]) {
+final class ClusterSingletonManagerSettings
+  (
+      val singletonName: String,
+      val role: Option[String],
+      val removalMargin: FiniteDuration,
+      val handOverRetryInterval: FiniteDuration,
+      val leaseSettings: Option[LeaseUsageSettings]) {
 
   // bin compat for 2.6.14
   @deprecated("Use constructor with leaseSettings", "2.6.15")
-  def this(
-      singletonName: String,
-      role: Option[String],
-      removalMargin: FiniteDuration,
-      handOverRetryInterval: FiniteDuration) =
+  def this
+    (
+        singletonName: String,
+        role: Option[String],
+        removalMargin: FiniteDuration,
+        handOverRetryInterval: FiniteDuration) =
     this(singletonName, role, removalMargin, handOverRetryInterval, None)
 
   def withSingletonName(name: String): ClusterSingletonManagerSettings = copy(singletonName = name)
@@ -323,12 +330,14 @@ final class ClusterSingletonManagerSettings(
 
   def withLeaseSettings(leaseSettings: LeaseUsageSettings) = copy(leaseSettings = Option(leaseSettings))
 
-  private def copy(
-      singletonName: String = singletonName,
-      role: Option[String] = role,
-      removalMargin: FiniteDuration = removalMargin,
-      handOverRetryInterval: FiniteDuration = handOverRetryInterval,
-      leaseSettings: Option[LeaseUsageSettings] = leaseSettings): ClusterSingletonManagerSettings =
+  private def copy
+    (
+        singletonName: String = singletonName,
+        role: Option[String] = role,
+        removalMargin: FiniteDuration = removalMargin,
+        handOverRetryInterval: FiniteDuration = handOverRetryInterval,
+        leaseSettings: Option[LeaseUsageSettings] = leaseSettings)
+    : ClusterSingletonManagerSettings =
     new ClusterSingletonManagerSettings(singletonName, role, removalMargin, handOverRetryInterval, leaseSettings)
 }
 

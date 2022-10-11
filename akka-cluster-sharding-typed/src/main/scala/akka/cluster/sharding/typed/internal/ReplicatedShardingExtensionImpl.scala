@@ -39,9 +39,11 @@ private[akka] final class ReplicatedShardingExtensionImpl(system: ActorSystem[_]
   override def init[M](thisReplica: ReplicaId, settings: ReplicatedEntityProvider[M]): ReplicatedSharding[M] =
     initInternal(Some(thisReplica), settings)
 
-  private def initInternal[M](
-      thisReplica: Option[ReplicaId],
-      settings: ReplicatedEntityProvider[M]): ReplicatedSharding[M] = {
+  private def initInternal[M]
+    (
+        thisReplica: Option[ReplicaId],
+        settings: ReplicatedEntityProvider[M])
+    : ReplicatedSharding[M] = {
     require(settings.replicas.nonEmpty, "Replicas must not be empty")
     val sharding = ClusterSharding(system)
     val initializedReplicas = settings.replicas.map {
@@ -81,9 +83,10 @@ private[akka] final class ReplicatedShardingExtensionImpl(system: ActorSystem[_]
  * INTERNAL API
  */
 @InternalApi
-private[akka] final class ReplicatedShardingImpl[M](
-    sharding: ClusterSharding,
-    replicaTypeKeys: Map[ReplicaId, (EntityTypeKey[M], Option[DataCenter], String)])
+private[akka] final class ReplicatedShardingImpl[M]
+  (
+      sharding: ClusterSharding,
+      replicaTypeKeys: Map[ReplicaId, (EntityTypeKey[M], Option[DataCenter], String)])
     extends ReplicatedSharding[M] {
 
   override def entityRefsFor(entityId: String): Map[ReplicaId, EntityRef[M]] =

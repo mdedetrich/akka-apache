@@ -43,10 +43,12 @@ object DurableStateBehavior {
    * @param emptyState the intial state for the entity before any state has been stored
    * @param commandHandler map commands to effects e.g. persisting state, replying to commands
    */
-  def apply[Command, State](
-      persistenceId: PersistenceId,
-      emptyState: State,
-      commandHandler: (State, Command) => Effect[State]): DurableStateBehavior[Command, State] = {
+  def apply[Command, State]
+    (
+        persistenceId: PersistenceId,
+        emptyState: State,
+        commandHandler: (State, Command) => Effect[State])
+    : DurableStateBehavior[Command, State] = {
     val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }
@@ -56,10 +58,12 @@ object DurableStateBehavior {
    * Then there will be compilation errors if the returned effect isn't a [[ReplyEffect]], which can be
    * created with [[Effect.reply]], [[Effect.noReply]], [[EffectBuilder.thenReply]], or [[EffectBuilder.thenNoReply]].
    */
-  def withEnforcedReplies[Command, State](
-      persistenceId: PersistenceId,
-      emptyState: State,
-      commandHandler: (State, Command) => ReplyEffect[State]): DurableStateBehavior[Command, State] = {
+  def withEnforcedReplies[Command, State]
+    (
+        persistenceId: PersistenceId,
+        emptyState: State,
+        commandHandler: (State, Command) => ReplyEffect[State])
+    : DurableStateBehavior[Command, State] = {
     val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }

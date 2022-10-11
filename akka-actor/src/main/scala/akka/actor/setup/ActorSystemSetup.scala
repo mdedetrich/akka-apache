@@ -51,7 +51,7 @@ object ActorSystemSetup {
  * Constructor is *Internal API*. Use the factory methods [[ActorSystemSetup#create]] and [[akka.actor.Actor#apply]] to create
  * instances.
  */
-final class ActorSystemSetup private[akka] (@InternalApi private[akka] val setups: Map[Class[_], AnyRef]) {
+final class ActorSystemSetup private[akka](@InternalApi private[akka] val setups: Map[Class[_], AnyRef]) {
 
   /**
    * Java API: Extract a concrete [[Setup]] of type `T` if it is defined in the settings.

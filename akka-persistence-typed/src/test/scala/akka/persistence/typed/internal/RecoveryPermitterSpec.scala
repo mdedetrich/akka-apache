@@ -43,11 +43,13 @@ object RecoveryPermitterSpec {
 
   case object Recovered extends Event
 
-  def persistentBehavior(
-      name: String,
-      commandProbe: TestProbe[Any],
-      eventProbe: TestProbe[Any],
-      throwOnRecovery: Boolean = false): Behavior[Command] =
+  def persistentBehavior
+    (
+        name: String,
+        commandProbe: TestProbe[Any],
+        eventProbe: TestProbe[Any],
+        throwOnRecovery: Boolean = false)
+    : Behavior[Command] =
     EventSourcedBehavior[Command, Event, State](
       persistenceId = PersistenceId.ofUniqueId(name),
       emptyState = EmptyState,

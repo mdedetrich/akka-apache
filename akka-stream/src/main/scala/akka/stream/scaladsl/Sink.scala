@@ -328,8 +328,11 @@ object Sink {
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
-  def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      strategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
+  def combine[T, U]
+    (first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)
+    (
+        strategy: Int => Graph[UniformFanOutShape[T, U], NotUsed])
+    : Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
       val d = b.add(strategy(rest.size + 2))
@@ -512,13 +515,15 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * function will be sent to the destination actor.
    */
-  @InternalApi private[akka] def actorRefWithAck[T](
-      ref: ActorRef,
-      messageAdapter: ActorRef => T => Any,
-      onInitMessage: ActorRef => Any,
-      ackMessage: Option[Any],
-      onCompleteMessage: Any,
-      onFailureMessage: (Throwable) => Any): Sink[T, NotUsed] =
+  @InternalApi private[akka] def actorRefWithAck[T]
+    (
+        ref: ActorRef,
+        messageAdapter: ActorRef => T => Any,
+        onInitMessage: ActorRef => Any,
+        ackMessage: Option[Any],
+        onCompleteMessage: Any,
+        onFailureMessage: (Throwable) => Any)
+    : Sink[T, NotUsed] =
     Sink.fromGraph(
       new ActorRefBackpressureSinkStage(
         ref,
@@ -541,12 +546,14 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * function will be sent to the destination actor.
    */
-  def actorRefWithBackpressure[T](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: Throwable => Any): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        ackMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: Throwable => Any)
+    : Sink[T, NotUsed] =
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, Some(ackMessage), onCompleteMessage, onFailureMessage)
 
   /**
@@ -562,11 +569,13 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * function will be sent to the destination actor.
    */
-  def actorRefWithBackpressure[T](
-      ref: ActorRef,
-      onInitMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: Throwable => Any): Sink[T, NotUsed] =
+  def actorRefWithBackpressure[T]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: Throwable => Any)
+    : Sink[T, NotUsed] =
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, None, onCompleteMessage, onFailureMessage)
 
   /**
@@ -583,12 +592,14 @@ object Sink {
    * function will be sent to the destination actor.
    */
   @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "2.6.0")
-  def actorRefWithAck[T](
-      ref: ActorRef,
-      onInitMessage: Any,
-      ackMessage: Any,
-      onCompleteMessage: Any,
-      onFailureMessage: (Throwable) => Any = Status.Failure.apply): Sink[T, NotUsed] =
+  def actorRefWithAck[T]
+    (
+        ref: ActorRef,
+        onInitMessage: Any,
+        ackMessage: Any,
+        onCompleteMessage: Any,
+        onFailureMessage: (Throwable) => Any = Status.Failure.apply)
+    : Sink[T, NotUsed] =
     actorRefWithAck(ref, _ => identity, _ => onInitMessage, Some(ackMessage), onCompleteMessage, onFailureMessage)
 
   /**

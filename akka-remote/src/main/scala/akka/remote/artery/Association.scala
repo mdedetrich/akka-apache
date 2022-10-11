@@ -118,10 +118,11 @@ private[remote] object Association {
   case object OutboundStreamStopIdleSignal extends RuntimeException("") with StopSignal with NoStackTrace
   case object OutboundStreamStopQuarantinedSignal extends RuntimeException("") with StopSignal with NoStackTrace
 
-  final case class OutboundStreamMatValues(
-      streamKillSwitch: OptionVal[SharedKillSwitch],
-      completed: Future[Done],
-      stopping: OptionVal[StopSignal])
+  final case class OutboundStreamMatValues
+    (
+        streamKillSwitch: OptionVal[SharedKillSwitch],
+        completed: Future[Done],
+        stopping: OptionVal[StopSignal])
 }
 
 /**
@@ -131,15 +132,16 @@ private[remote] object Association {
  * remote address.
  */
 @ccompatUsedUntil213
-private[remote] class Association(
-    val transport: ArteryTransport,
-    val materializer: Materializer,
-    val controlMaterializer: Materializer,
-    override val remoteAddress: Address,
-    override val controlSubject: ControlMessageSubject,
-    largeMessageDestinations: WildcardIndex[NotUsed],
-    priorityMessageDestinations: WildcardIndex[NotUsed],
-    outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope])
+private[remote] class Association
+  (
+      val transport: ArteryTransport,
+      val materializer: Materializer,
+      val controlMaterializer: Materializer,
+      override val remoteAddress: Address,
+      override val controlSubject: ControlMessageSubject,
+      largeMessageDestinations: WildcardIndex[NotUsed],
+      priorityMessageDestinations: WildcardIndex[NotUsed],
+      outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope])
     extends AbstractAssociation
     with OutboundContext {
   import Association._
@@ -932,12 +934,14 @@ private[remote] class Association(
       () => runOutboundLargeMessagesStream())
   }
 
-  private def attachOutboundStreamRestart(
-      streamName: String,
-      queueIndex: Int,
-      queueCapacity: Int,
-      streamCompleted: Future[Done],
-      restart: () => Unit): Unit = {
+  private def attachOutboundStreamRestart
+    (
+        streamName: String,
+        queueIndex: Int,
+        queueCapacity: Int,
+        streamCompleted: Future[Done],
+        restart: () => Unit)
+    : Unit = {
 
     def lazyRestart(): Unit = {
       flightRecorder.transportRestartOutbound(remoteAddress, streamName)
@@ -1051,10 +1055,12 @@ private[remote] class Association(
     }
   }
 
-  private def updateStreamMatValues(
-      streamId: Int,
-      streamKillSwitch: SharedKillSwitch,
-      completed: Future[Done]): Unit = {
+  private def updateStreamMatValues
+    (
+        streamId: Int,
+        streamKillSwitch: SharedKillSwitch,
+        completed: Future[Done])
+    : Unit = {
     implicit val ec = materializer.executionContext
     updateStreamMatValues(
       streamId,

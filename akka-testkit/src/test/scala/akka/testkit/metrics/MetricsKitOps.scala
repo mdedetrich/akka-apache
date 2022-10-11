@@ -46,11 +46,13 @@ private[akka] trait MetricsKitOps extends MetricKeyDSL {
    *
    * @param unitString just for human readable output, during console printing
    */
-  def hdrHistogram(
-      key: MetricKeyType,
-      highestTrackableValue: Long,
-      numberOfSignificantValueDigits: Int,
-      unitString: String = ""): HdrHistogram =
+  def hdrHistogram
+    (
+        key: MetricKeyType,
+        highestTrackableValue: Long,
+        numberOfSignificantValueDigits: Int,
+        unitString: String = "")
+    : HdrHistogram =
     getOrRegister(
       (key / "hdr-histogram").toString,
       new HdrHistogram(highestTrackableValue, numberOfSignificantValueDigits, unitString))

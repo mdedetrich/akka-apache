@@ -156,8 +156,11 @@ trait EffectBuilder[+State] extends Effect[State] {
    * The reply message will be sent also if `withEnforcedReplies` isn't used, but then the compiler will not help
    * finding mistakes.
    */
-  def thenReply[ReplyMessage](replyTo: ActorRef[ReplyMessage])(
-      replyWithMessage: State => ReplyMessage): ReplyEffect[State]
+  def thenReply[ReplyMessage]
+    (replyTo: ActorRef[ReplyMessage])
+    (
+        replyWithMessage: State => ReplyMessage)
+    : ReplyEffect[State]
 
   /**
    * When [[DurableStateBehavior.withEnforcedReplies]] is used there will be compilation errors if the returned effect

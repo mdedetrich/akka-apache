@@ -52,8 +52,11 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[In, Out](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
-      flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] = {
+  def withBackoff[In, Out]
+    (minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)
+    (
+        flowFactory: () => Flow[In, Out, _])
+    : Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
     withBackoff(settings)(flowFactory)
   }
@@ -85,11 +88,14 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def withBackoff[In, Out](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRestarts: Int)(flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] = {
+  def withBackoff[In, Out]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRestarts: Int)
+    (flowFactory: () => Flow[In, Out, _])
+    : Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     withBackoff(settings)(flowFactory)
   }
@@ -143,11 +149,14 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts akka.stream.RestartSettings instead.", since = "2.6.10")
-  def onFailuresWithBackoff[In, Out](
-      minBackoff: FiniteDuration,
-      maxBackoff: FiniteDuration,
-      randomFactor: Double,
-      maxRestarts: Int)(flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] = {
+  def onFailuresWithBackoff[In, Out]
+    (
+        minBackoff: FiniteDuration,
+        maxBackoff: FiniteDuration,
+        randomFactor: Double,
+        maxRestarts: Int)
+    (flowFactory: () => Flow[In, Out, _])
+    : Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
     onFailuresWithBackoff(settings)(flowFactory)
   }
@@ -171,16 +180,20 @@ object RestartFlow {
    * @param settings [[RestartSettings]] defining restart configuration
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
-  def onFailuresWithBackoff[In, Out](settings: RestartSettings)(
-      flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] =
+  def onFailuresWithBackoff[In, Out]
+    (settings: RestartSettings)
+    (
+        flowFactory: () => Flow[In, Out, _])
+    : Flow[In, Out, NotUsed] =
     Flow.fromGraph(new RestartWithBackoffFlow(flowFactory, settings, onlyOnFailures = true))
 
 }
 
-private final class RestartWithBackoffFlow[In, Out](
-    flowFactory: () => Flow[In, Out, _],
-    settings: RestartSettings,
-    onlyOnFailures: Boolean)
+private final class RestartWithBackoffFlow[In, Out]
+  (
+      flowFactory: () => Flow[In, Out, _],
+      settings: RestartSettings,
+      onlyOnFailures: Boolean)
     extends GraphStage[FlowShape[In, Out]] { self =>
 
   val in = Inlet[In]("RestartWithBackoffFlow.in")
@@ -239,12 +252,13 @@ private final class RestartWithBackoffFlow[In, Out](
 /**
  * Shared logic for all restart with backoff logics.
  */
-private abstract class RestartWithBackoffLogic[S <: Shape](
-    name: String,
-    shape: S,
-    inheritedAttributes: Attributes,
-    settings: RestartSettings,
-    onlyOnFailures: Boolean)
+private abstract class RestartWithBackoffLogic[S <: Shape]
+  (
+      name: String,
+      shape: S,
+      inheritedAttributes: Attributes,
+      settings: RestartSettings,
+      onlyOnFailures: Boolean)
     extends TimerGraphStageLogicWithLogging(shape) {
   import settings._
   var restartCount = 0
@@ -317,10 +331,12 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
     if (level >= minLogLevel || level == Logging.OffLevel) level else minLogLevel
   }
 
-  private def logIt(
-      message: String,
-      exc: OptionVal[Throwable],
-      minLogLevel: Logging.LogLevel = Logging.ErrorLevel): Unit = {
+  private def logIt
+    (
+        message: String,
+        exc: OptionVal[Throwable],
+        minLogLevel: Logging.LogLevel = Logging.ErrorLevel)
+    : Unit = {
     if (loggingEnabled) {
       logLevel(minLogLevel) match {
         case Logging.ErrorLevel =>

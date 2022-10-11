@@ -83,12 +83,13 @@ object MultiNodeClusterShardingConfig {
  * @param additionalConfig additional config
  * @param loglevel defaults to INFO
  */
-abstract class MultiNodeClusterShardingConfig(
-    val mode: String = ClusterShardingSettings.StateStoreModeDData,
-    val rememberEntities: Boolean = false,
-    val rememberEntitiesStore: String = ClusterShardingSettings.RememberEntitiesStoreDData,
-    additionalConfig: String = "",
-    loglevel: String = "INFO")
+abstract class MultiNodeClusterShardingConfig
+  (
+      val mode: String = ClusterShardingSettings.StateStoreModeDData,
+      val rememberEntities: Boolean = false,
+      val rememberEntitiesStore: String = ClusterShardingSettings.RememberEntitiesStoreDData,
+      additionalConfig: String = "",
+      loglevel: String = "INFO")
     extends MultiNodeConfig {
 
   import MultiNodeClusterShardingConfig._

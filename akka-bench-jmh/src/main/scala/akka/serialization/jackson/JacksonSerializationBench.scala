@@ -27,29 +27,31 @@ object JacksonSerializationBench {
 
   final case class Small(name: String, num: Int) extends TestMessage
 
-  final case class Medium(
-      field1: String,
-      field2: String,
-      field3: String,
-      num1: Int,
-      num2: Int,
-      num3: Int,
-      flag1: Boolean,
-      flag2: Boolean,
-      duration: FiniteDuration,
-      date: LocalDateTime,
-      instant: Instant,
-      nested1: Small,
-      nested2: Small,
-      nested3: Small)
+  final case class Medium
+    (
+        field1: String,
+        field2: String,
+        field3: String,
+        num1: Int,
+        num2: Int,
+        num3: Int,
+        flag1: Boolean,
+        flag2: Boolean,
+        duration: FiniteDuration,
+        date: LocalDateTime,
+        instant: Instant,
+        nested1: Small,
+        nested2: Small,
+        nested3: Small)
       extends TestMessage
 
-  final case class Large(
-      nested1: Medium,
-      nested2: Medium,
-      nested3: Medium,
-      vector: Vector[Medium],
-      map: Map[String, Medium])
+  final case class Large
+    (
+        nested1: Medium,
+        nested2: Medium,
+        nested3: Medium,
+        vector: Vector[Medium],
+        map: Map[String, Medium])
       extends TestMessage
 
   final class TimeMessage(val duration: FiniteDuration, val date: LocalDateTime, val instant: Instant)

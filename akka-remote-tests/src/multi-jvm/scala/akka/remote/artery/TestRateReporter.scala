@@ -10,11 +10,13 @@ class TestRateReporter(name: String)
     extends RateReporter(
       SECONDS.toNanos(1),
       new RateReporter.Reporter {
-        override def onReport(
-            messagesPerSec: Double,
-            bytesPerSec: Double,
-            totalMessages: Long,
-            totalBytes: Long): Unit = {
+        override def onReport
+          (
+              messagesPerSec: Double,
+              bytesPerSec: Double,
+              totalMessages: Long,
+              totalBytes: Long)
+          : Unit = {
           if (totalBytes > 0) {
             println(
               name +

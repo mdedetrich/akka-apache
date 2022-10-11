@@ -25,13 +25,15 @@ object Deploy {
    */
   @InternalApi private[akka] final val DispatcherSameAsParent = ".."
 
-  def apply(
-      path: String = "",
-      config: Config = ConfigFactory.empty,
-      routerConfig: RouterConfig = NoRouter,
-      scope: Scope = NoScopeGiven,
-      dispatcher: String = Deploy.NoDispatcherGiven,
-      mailbox: String = Deploy.NoMailboxGiven): Deploy =
+  def apply
+    (
+        path: String = "",
+        config: Config = ConfigFactory.empty,
+        routerConfig: RouterConfig = NoRouter,
+        scope: Scope = NoScopeGiven,
+        dispatcher: String = Deploy.NoDispatcherGiven,
+        mailbox: String = Deploy.NoMailboxGiven)
+    : Deploy =
     new Deploy(path, config, routerConfig, scope, dispatcher, mailbox, Set.empty)
 
   // for bincomp, pre 2.6 was case class
@@ -55,26 +57,28 @@ object Deploy {
  * }}}
  */
 @SerialVersionUID(3L)
-final class Deploy(
-    val path: String = "",
-    val config: Config = ConfigFactory.empty,
-    val routerConfig: RouterConfig = NoRouter,
-    val scope: Scope = NoScopeGiven,
-    val dispatcher: String = Deploy.NoDispatcherGiven,
-    val mailbox: String = Deploy.NoMailboxGiven,
-    val tags: Set[String] = Set.empty)
+final class Deploy
+  (
+      val path: String = "",
+      val config: Config = ConfigFactory.empty,
+      val routerConfig: RouterConfig = NoRouter,
+      val scope: Scope = NoScopeGiven,
+      val dispatcher: String = Deploy.NoDispatcherGiven,
+      val mailbox: String = Deploy.NoMailboxGiven,
+      val tags: Set[String] = Set.empty)
     extends Serializable
     with Product
     with Equals {
 
   // for bincomp, pre 2.6 did not have tags
-  def this(
-      path: String,
-      config: Config,
-      routerConfig: RouterConfig,
-      scope: Scope,
-      dispatcher: String,
-      mailbox: String) = this(path, config, routerConfig, scope, dispatcher, mailbox, Set.empty)
+  def this
+    (
+        path: String,
+        config: Config,
+        routerConfig: RouterConfig,
+        scope: Scope,
+        dispatcher: String,
+        mailbox: String) = this(path, config, routerConfig, scope, dispatcher, mailbox, Set.empty)
 
   /**
    * Java API to create a Deploy with the given RouterConfig
@@ -110,13 +114,15 @@ final class Deploy(
     new Deploy(path, config, routerConfig, scope, dispatcher, mailbox, tags)
 
   // below are for bincomp, pre 2.6 was case class
-  def copy(
-      path: String = path,
-      config: Config = config,
-      routerConfig: RouterConfig = routerConfig,
-      scope: Scope = scope,
-      dispatcher: String = dispatcher,
-      mailbox: String = mailbox): Deploy =
+  def copy
+    (
+        path: String = path,
+        config: Config = config,
+        routerConfig: RouterConfig = routerConfig,
+        scope: Scope = scope,
+        dispatcher: String = dispatcher,
+        mailbox: String = mailbox)
+    : Deploy =
     new Deploy(path, config, routerConfig, scope, dispatcher, mailbox, tags)
 
   override def productElement(n: Int): Any = n match {

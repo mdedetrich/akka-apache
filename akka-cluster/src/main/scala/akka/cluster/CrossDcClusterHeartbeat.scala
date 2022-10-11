@@ -231,11 +231,12 @@ private[akka] object CrossDcHeartbeatSender {
 
 /** INTERNAL API */
 @InternalApi
-private[cluster] final case class CrossDcHeartbeatingState(
-    selfDataCenter: DataCenter,
-    failureDetector: FailureDetectorRegistry[Address],
-    nrOfMonitoredNodesPerDc: Int,
-    state: Map[ClusterSettings.DataCenter, immutable.SortedSet[Member]]) {
+private[cluster] final case class CrossDcHeartbeatingState
+  (
+      selfDataCenter: DataCenter,
+      failureDetector: FailureDetectorRegistry[Address],
+      nrOfMonitoredNodesPerDc: Int,
+      state: Map[ClusterSettings.DataCenter, immutable.SortedSet[Member]]) {
   import CrossDcHeartbeatingState._
 
   /**
@@ -331,11 +332,13 @@ private[cluster] object CrossDcHeartbeatingState {
   def atLeastInUpState(m: Member): Boolean =
     m.status != MemberStatus.WeaklyUp && m.status != MemberStatus.Joining
 
-  def init(
-      selfDataCenter: DataCenter,
-      crossDcFailureDetector: FailureDetectorRegistry[Address],
-      nrOfMonitoredNodesPerDc: Int,
-      members: immutable.SortedSet[Member]): CrossDcHeartbeatingState = {
+  def init
+    (
+        selfDataCenter: DataCenter,
+        crossDcFailureDetector: FailureDetectorRegistry[Address],
+        nrOfMonitoredNodesPerDc: Int,
+        members: immutable.SortedSet[Member])
+    : CrossDcHeartbeatingState = {
     new CrossDcHeartbeatingState(
       selfDataCenter,
       crossDcFailureDetector,

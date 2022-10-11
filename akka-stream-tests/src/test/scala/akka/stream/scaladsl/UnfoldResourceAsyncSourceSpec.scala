@@ -27,12 +27,14 @@ import akka.testkit.TestProbe
 
 object UnfoldResourceAsyncSourceSpec {
 
-  class ResourceDummy[T](
-      values: Seq[T],
-      // these can be used to control when the resource creates, reads first element and completes closing
-      createFuture: Future[Done] = Future.successful(Done),
-      firstReadFuture: Future[Done] = Future.successful(Done),
-      closeFuture: Future[Done] = Future.successful(Done))(implicit ec: ExecutionContext) {
+  class ResourceDummy[T]
+    (
+        values: Seq[T],
+        // these can be used to control when the resource creates, reads first element and completes closing
+        createFuture: Future[Done] = Future.successful(Done),
+        firstReadFuture: Future[Done] = Future.successful(Done),
+        closeFuture: Future[Done] = Future.successful(Done))
+    (implicit ec: ExecutionContext) {
     private val iterator = values.iterator
     private val createdP = Promise[Done]()
     private val closedP = Promise[Done]()

@@ -79,10 +79,12 @@ package object adapter {
     /**
      * INTERNAL API
      */
-    @InternalApi private[akka] def internalSystemActorOf[U](
-        behavior: Behavior[U],
-        name: String,
-        props: Props): ActorRef[U] = {
+    @InternalApi private[akka] def internalSystemActorOf[U]
+      (
+          behavior: Behavior[U],
+          name: String,
+          props: Props)
+      : ActorRef[U] = {
       toClassic.asInstanceOf[ExtendedActorSystem].systemActorOf(PropsAdapter(behavior, props), name)
     }
   }

@@ -17,12 +17,13 @@ import java.util.function.Predicate
  * INTERNAL API
  */
 @InternalApi
-private[akka] final case class PoolRouterBuilder[T](
-    poolSize: Int,
-    behavior: Behavior[T],
-    logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RoundRobinLogic[T],
-    broadcastPredicate: T => Boolean = ConstantFun.anyToFalse,
-    routeeProps: Props = Props.empty)
+private[akka] final case class PoolRouterBuilder[T]
+  (
+      poolSize: Int,
+      behavior: Behavior[T],
+      logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RoundRobinLogic[T],
+      broadcastPredicate: T => Boolean = ConstantFun.anyToFalse,
+      routeeProps: Props = Props.empty)
     extends javadsl.PoolRouter[T]
     with scaladsl.PoolRouter[T] {
   if (poolSize < 1) throw new IllegalArgumentException(s"pool size must be positive, was $poolSize")
@@ -63,13 +64,14 @@ private[akka] final case class PoolRouterBuilder[T](
  * INTERNAL API
  */
 @InternalApi
-private final class PoolRouterImpl[T](
-    ctx: ActorContext[T],
-    poolSize: Int,
-    behavior: Behavior[T],
-    logic: RoutingLogic[T],
-    broadcastPredicate: T => Boolean,
-    routeeProps: Props)
+private final class PoolRouterImpl[T]
+  (
+      ctx: ActorContext[T],
+      poolSize: Int,
+      behavior: Behavior[T],
+      logic: RoutingLogic[T],
+      broadcastPredicate: T => Boolean,
+      routeeProps: Props)
     extends AbstractBehavior[T](ctx) {
 
   (1 to poolSize).foreach { _ =>

@@ -765,11 +765,13 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
     // retry a few times as the temporaryServerAddress can be taken by the time the new actor system
     // binds
-    def selectionAndBind(
-        config: Config,
-        thisSystem: ActorSystem,
-        probe: TestProbe,
-        retries: Int = 3): (ActorSystem, ActorSelection) = {
+    def selectionAndBind
+      (
+          config: Config,
+          thisSystem: ActorSystem,
+          probe: TestProbe,
+          retries: Int = 3)
+      : (ActorSystem, ActorSelection) = {
       val otherAddress = temporaryServerAddress()
       val otherConfig = ConfigFactory.parseString(s"""
               akka.remote.classic.netty.tcp.port = ${otherAddress.getPort}

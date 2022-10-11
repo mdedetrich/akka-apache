@@ -162,8 +162,11 @@ class MyJournal extends AsyncWriteJournal {
   // #sync-journal-plugin-api
 
   def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = ???
-  def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
-      replayCallback: (PersistentRepr) => Unit): Future[Unit] = ???
+  def asyncReplayMessages
+    (persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)
+    (
+        replayCallback: (PersistentRepr) => Unit)
+    : Future[Unit] = ???
   def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] = ???
 
   // optionally override:

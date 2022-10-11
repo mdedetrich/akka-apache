@@ -218,8 +218,11 @@ private[testkit] trait ExpectOps[U] {
   /**
    * Receive for `max` time next `n` events/snapshots that have been persisted in the storage.
    */
-  def receivePersisted[A](persistenceId: String, n: Int, max: FiniteDuration)(
-      implicit t: ClassTag[A]): immutable.Seq[A] =
+  def receivePersisted[A]
+    (persistenceId: String, n: Int, max: FiniteDuration)
+    (
+        implicit t: ClassTag[A])
+    : immutable.Seq[A] =
     receivePersisted(persistenceId, n, t.runtimeClass.asInstanceOf[Class[A]], max)
 
   /**

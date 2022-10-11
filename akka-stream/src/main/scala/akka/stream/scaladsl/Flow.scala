@@ -47,9 +47,10 @@ import akka.util.ccompat._
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
  */
-final class Flow[-In, +Out, +Mat](
-    override val traversalBuilder: LinearTraversalBuilder,
-    override val shape: FlowShape[In, Out])
+final class Flow[-In, +Out, +Mat]
+  (
+      override val traversalBuilder: LinearTraversalBuilder,
+      override val shape: FlowShape[In, Out])
     extends FlowOpsMat[Out, Mat]
     with Graph[FlowShape[In, Out], Mat] {
 
@@ -66,8 +67,11 @@ final class Flow[-In, +Out, +Mat](
 
   override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] = viaMat(flow)(Keep.left)
 
-  override def viaMat[T, Mat2, Mat3](flow: Graph[FlowShape[Out, T], Mat2])(
-      combine: (Mat, Mat2) => Mat3): Flow[In, T, Mat3] = {
+  override def viaMat[T, Mat2, Mat3]
+    (flow: Graph[FlowShape[Out, T], Mat2])
+    (
+        combine: (Mat, Mat2) => Mat3)
+    : Flow[In, T, Mat3] = {
     if (this.isIdentity) {
       // optimization by returning flow if possible since we know Mat2 == Mat3 from flow
       if (combine == Keep.right) Flow.fromGraph(flow).asInstanceOf[Flow[In, T, Mat3]]
@@ -238,8 +242,11 @@ final class Flow[-In, +Out, +Mat](
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def joinMat[I2, O1, Mat2, M](bidi: Graph[BidiShape[Out, O1, I2, In], Mat2])(
-      combine: (Mat, Mat2) => M): Flow[I2, O1, M] = {
+  def joinMat[I2, O1, Mat2, M]
+    (bidi: Graph[BidiShape[Out, O1, I2, In], Mat2])
+    (
+        combine: (Mat, Mat2) => M)
+    : Flow[I2, O1, M] = {
     val newBidiShape = bidi.shape.deepCopy()
     val newFlowShape = shape.deepCopy()
 
@@ -310,8 +317,11 @@ final class Flow[-In, +Out, +Mat](
    * Note that the `ActorSystem` can be used as the implicit `materializer` parameter to use the
    * [[akka.stream.SystemMaterializer]] for running the stream.
    */
-  def runWith[Mat1, Mat2](source: Graph[SourceShape[In], Mat1], sink: Graph[SinkShape[Out], Mat2])(
-      implicit materializer: Materializer): (Mat1, Mat2) =
+  def runWith[Mat1, Mat2]
+    (source: Graph[SourceShape[In], Mat1], sink: Graph[SinkShape[Out], Mat2])
+    (
+        implicit materializer: Materializer)
+    : (Mat1, Mat2) =
     Source.fromGraph(source).via(this).toMat(sink)(Keep.both).run()
 
   /**
@@ -343,8 +353,11 @@ final class Flow[-In, +Out, +Mat](
    * @param collapseContext turn each incoming pair of element and context value into an element of this Flow
    * @param extractContext turn each outgoing element of this Flow into an outgoing context value
    */
-  def asFlowWithContext[U, CtxU, CtxOut](collapseContext: (U, CtxU) => In)(
-      extractContext: Out => CtxOut): FlowWithContext[U, CtxU, Out, CtxOut, Mat] =
+  def asFlowWithContext[U, CtxU, CtxOut]
+    (collapseContext: (U, CtxU) => In)
+    (
+        extractContext: Out => CtxOut)
+    : FlowWithContext[U, CtxU, Out, CtxOut, Mat] =
     new FlowWithContext(
       Flow[(U, CtxU)]
         .map {
@@ -480,8 +493,11 @@ object Flow {
    * The `combine` function is used to compose the materialized values of the `sink` and `source`
    * into the materialized value of the resulting [[Flow]].
    */
-  def fromSinkAndSourceMat[I, O, M1, M2, M](sink: Graph[SinkShape[I], M1], source: Graph[SourceShape[O], M2])(
-      combine: (M1, M2) => M): Flow[I, O, M] =
+  def fromSinkAndSourceMat[I, O, M1, M2, M]
+    (sink: Graph[SinkShape[I], M1], source: Graph[SourceShape[O], M2])
+    (
+        combine: (M1, M2) => M)
+    : Flow[I, O, M] =
     fromGraph(GraphDSL.createGraph(sink, source)(combine) { _ => (in, out) =>
       FlowShape(in.in, out.out)
     })
@@ -546,9 +562,11 @@ object Flow {
    *
    * See also [[fromSinkAndSourceCoupledMat]] when access to materialized values of the parameters is needed.
    */
-  def fromSinkAndSourceCoupled[I, O](
-      sink: Graph[SinkShape[I], _],
-      source: Graph[SourceShape[O], _]): Flow[I, O, NotUsed] =
+  def fromSinkAndSourceCoupled[I, O]
+    (
+        sink: Graph[SinkShape[I], _],
+        source: Graph[SourceShape[O], _])
+    : Flow[I, O, NotUsed] =
     fromSinkAndSourceCoupledMat(sink, source)(Keep.none)
 
   /**
@@ -575,8 +593,11 @@ object Flow {
    * The `combine` function is used to compose the materialized values of the `sink` and `source`
    * into the materialized value of the resulting [[Flow]].
    */
-  def fromSinkAndSourceCoupledMat[I, O, M1, M2, M](sink: Graph[SinkShape[I], M1], source: Graph[SourceShape[O], M2])(
-      combine: (M1, M2) => M): Flow[I, O, M] =
+  def fromSinkAndSourceCoupledMat[I, O, M1, M2, M]
+    (sink: Graph[SinkShape[I], M1], source: Graph[SourceShape[O], M2])
+    (
+        combine: (M1, M2) => M)
+    : Flow[I, O, M] =
     // format: OFF
     Flow.fromGraph(GraphDSL.createGraph(sink, source)(combine) { implicit b => (i, o) =>
       import GraphDSL.Implicits._
@@ -905,9 +926,11 @@ trait FlowOps[+Out, +Mat] {
    * @param attempts Maximum number of retries or -1 to retry indefinitely
    * @param pf Receives the failure cause and returns the new Source to be materialized if any
    */
-  def recoverWithRetries[T >: Out](
-      attempts: Int,
-      pf: PartialFunction[Throwable, Graph[SourceShape[T], NotUsed]]): Repr[T] =
+  def recoverWithRetries[T >: Out]
+    (
+        attempts: Int,
+        pf: PartialFunction[Throwable, Graph[SourceShape[T], NotUsed]])
+    : Repr[T] =
     via(new RecoverWith(attempts, pf))
 
   /**
@@ -1707,8 +1730,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream completes
    */
-  def groupedWeightedWithin(maxWeight: Long, maxNumber: Int, d: FiniteDuration)(
-      costFn: Out => Long): Repr[immutable.Seq[Out]] =
+  def groupedWeightedWithin
+    (maxWeight: Long, maxNumber: Int, d: FiniteDuration)
+    (
+        costFn: Out => Long)
+    : Repr[immutable.Seq[Out]] =
     via(new GroupedWeightedWithin[Out](maxWeight, maxNumber, costFn, d))
 
   /**
@@ -2152,10 +2178,12 @@ trait FlowOps[+Out, +Mat] {
    * @param allowClosedSubstreamRecreation enables recreation of already closed substreams if elements with their
    *        corresponding keys arrive after completion
    */
-  def groupBy[K](
-      maxSubstreams: Int,
-      f: Out => K,
-      allowClosedSubstreamRecreation: Boolean): SubFlow[Out, Mat, Repr, Closed] = {
+  def groupBy[K]
+    (
+        maxSubstreams: Int,
+        f: Out => K,
+        allowClosedSubstreamRecreation: Boolean)
+    : SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
         via(new GroupBy(maxSubstreams, f, allowClosedSubstreamRecreation))
@@ -2237,8 +2265,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.splitAfter]].
    */
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(
-      p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
+  def splitWhen
+    (substreamCancelStrategy: SubstreamCancelStrategy)
+    (
+        p: Out => Boolean)
+    : SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
         via(Split.when(p, substreamCancelStrategy)).map(_.via(flow)).via(new FlattenMerge(breadth))
@@ -2306,8 +2337,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.splitWhen]].
    */
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(
-      p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
+  def splitAfter
+    (substreamCancelStrategy: SubstreamCancelStrategy)
+    (
+        p: Out => Boolean)
+    : SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
         via(Split.after(p, substreamCancelStrategy)).map(_.via(flow)).via(new FlattenMerge(breadth))
@@ -2580,12 +2614,14 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def throttle(
-      cost: Int,
-      per: FiniteDuration,
-      maximumBurst: Int,
-      costCalculation: (Out) => Int,
-      mode: ThrottleMode): Repr[Out] =
+  def throttle
+    (
+        cost: Int,
+        per: FiniteDuration,
+        maximumBurst: Int,
+        costCalculation: (Out) => Int,
+        mode: ThrottleMode)
+    : Repr[Out] =
     via(new Throttle(cost, per, maximumBurst, costCalculation, mode))
 
   /**
@@ -2665,8 +2701,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def log(name: String, extract: Out => Any = ConstantFun.scalaIdentityFunction)(
-      implicit log: LoggingAdapter = null): Repr[Out] =
+  def log
+    (name: String, extract: Out => Any = ConstantFun.scalaIdentityFunction)
+    (
+        implicit log: LoggingAdapter = null)
+    : Repr[Out] =
     via(Log(name, extract.asInstanceOf[Any => Any], Option(log)))
 
   /**
@@ -2688,8 +2727,11 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def logWithMarker(name: String, marker: Out => LogMarker, extract: Out => Any = ConstantFun.scalaIdentityFunction)(
-      implicit log: MarkerLoggingAdapter = null): Repr[Out] =
+  def logWithMarker
+    (name: String, marker: Out => LogMarker, extract: Out => Any = ConstantFun.scalaIdentityFunction)
+    (
+        implicit log: MarkerLoggingAdapter = null)
+    : Repr[Out] =
     via(LogWithMarker(name, marker, extract.asInstanceOf[Any => Any], Option(log)))
 
   /**
@@ -2720,10 +2762,12 @@ trait FlowOps[+Out, +Mat] {
     via(zipAllFlow(that, thisElem, thatElem))
   }
 
-  protected def zipAllFlow[U, A >: Out, Mat2](
-      that: Graph[SourceShape[U], Mat2],
-      thisElem: A,
-      thatElem: U): Flow[Out @uncheckedVariance, (A, U), Mat2] = {
+  protected def zipAllFlow[U, A >: Out, Mat2]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        thisElem: A,
+        thatElem: U)
+    : Flow[Out @uncheckedVariance, (A, U), Mat2] = {
     case object passedEnd
     val passedEndSrc = Source.repeat(passedEnd)
     val left: Flow[Out, Any, NotUsed] = Flow[A].concat(passedEndSrc)
@@ -2767,8 +2811,10 @@ trait FlowOps[+Out, +Mat] {
    */
   def zipLatest[U](that: Graph[SourceShape[U], _]): Repr[(Out, U)] = via(zipLatestGraph(that))
 
-  protected def zipLatestGraph[U, M](
-      that: Graph[SourceShape[U], M]): Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =
+  protected def zipLatestGraph[U, M]
+    (
+        that: Graph[SourceShape[U], M])
+    : Graph[FlowShape[Out @uncheckedVariance, (Out, U)], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val zip = b.add(ZipLatest[Out, U]())
       r ~> zip.in1
@@ -2790,8 +2836,11 @@ trait FlowOps[+Out, +Mat] {
   def zipWith[Out2, Out3](that: Graph[SourceShape[Out2], _])(combine: (Out, Out2) => Out3): Repr[Out3] =
     via(zipWithGraph(that)(combine))
 
-  protected def zipWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M])(
-      combine: (Out, Out2) => Out3): Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
+  protected def zipWithGraph[Out2, Out3, M]
+    (that: Graph[SourceShape[Out2], M])
+    (
+        combine: (Out, Out2) => Out3)
+    : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val zip = b.add(ZipWith[Out, Out2, Out3](combine))
       r ~> zip.in1
@@ -2835,16 +2884,25 @@ trait FlowOps[+Out, +Mat] {
    *
    *   '''Cancels when''' downstream cancels
    */
-  def zipLatestWith[Out2, Out3](that: Graph[SourceShape[Out2], _], eagerComplete: Boolean)(
-      combine: (Out, Out2) => Out3): Repr[Out3] =
+  def zipLatestWith[Out2, Out3]
+    (that: Graph[SourceShape[Out2], _], eagerComplete: Boolean)
+    (
+        combine: (Out, Out2) => Out3)
+    : Repr[Out3] =
     via(zipLatestWithGraph(that, eagerComplete)(combine))
 
-  protected def zipLatestWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M])(
-      combine: (Out, Out2) => Out3): Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
+  protected def zipLatestWithGraph[Out2, Out3, M]
+    (that: Graph[SourceShape[Out2], M])
+    (
+        combine: (Out, Out2) => Out3)
+    : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
     zipLatestWithGraph(that, eagerComplete = true)(combine)
 
-  protected def zipLatestWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M], eagerComplete: Boolean)(
-      combine: (Out, Out2) => Out3): Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
+  protected def zipLatestWithGraph[Out2, Out3, M]
+    (that: Graph[SourceShape[Out2], M], eagerComplete: Boolean)
+    (
+        combine: (Out, Out2) => Out3)
+    : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val zip = b.add(ZipLatestWith[Out, Out2, Out3](combine, eagerComplete))
       r ~> zip.in1
@@ -2923,10 +2981,12 @@ trait FlowOps[+Out, +Mat] {
   def interleave[U >: Out](that: Graph[SourceShape[U], _], segmentSize: Int, eagerClose: Boolean): Repr[U] =
     via(interleaveGraph(that, segmentSize, eagerClose))
 
-  protected def interleaveGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      segmentSize: Int,
-      eagerClose: Boolean = false): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def interleaveGraph[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        segmentSize: Int,
+        eagerClose: Boolean = false)
+    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val interleave = b.add(Interleave[U](2, segmentSize, eagerClose))
       r ~> interleave.in(1)
@@ -2953,10 +3013,12 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleaveAll[U >: Out](
-      those: immutable.Seq[Graph[SourceShape[U], _]],
-      segmentSize: Int,
-      eagerClose: Boolean): Repr[U] = those match {
+  def interleaveAll[U >: Out]
+    (
+        those: immutable.Seq[Graph[SourceShape[U], _]],
+        segmentSize: Int,
+        eagerClose: Boolean)
+    : Repr[U] = those match {
     case those if those.isEmpty => this.asInstanceOf[Repr[U]]
     case _ =>
       via(GraphDSL.create() { implicit b =>
@@ -2983,9 +3045,11 @@ trait FlowOps[+Out, +Mat] {
   def merge[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[U] =
     via(mergeGraph(that, eagerComplete))
 
-  protected def mergeGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def mergeGraph[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        eagerComplete: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(Merge[U](2, eagerComplete))
       r ~> merge.in(1)
@@ -3030,9 +3094,11 @@ trait FlowOps[+Out, +Mat] {
   def mergeLatest[U >: Out, M](that: Graph[SourceShape[U], M], eagerComplete: Boolean = false): Repr[immutable.Seq[U]] =
     via(mergeLatestGraph(that, eagerComplete))
 
-  protected def mergeLatestGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, immutable.Seq[U]], M] =
+  protected def mergeLatestGraph[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        eagerComplete: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, immutable.Seq[U]], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(MergeLatest[U](2, eagerComplete))
       r ~> merge.in(1)
@@ -3049,19 +3115,23 @@ trait FlowOps[+Out, +Mat] {
    * '''completes''' when all upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
   @nowarn
-  def mergePreferred[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      @deprecatedName(Symbol("priority"))
-      preferred: Boolean,
-      eagerComplete: Boolean = false): Repr[U] =
+  def mergePreferred[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        @deprecatedName(Symbol("priority"))
+        preferred: Boolean,
+        eagerComplete: Boolean = false)
+    : Repr[U] =
     via(mergePreferredGraph(that, preferred, eagerComplete))
 
   @nowarn
-  protected def mergePreferredGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      @deprecatedName(Symbol("priority"))
-      preferred: Boolean,
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def mergePreferredGraph[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        @deprecatedName(Symbol("priority"))
+        preferred: Boolean,
+        eagerComplete: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(MergePreferred[U](1, eagerComplete))
       r ~> merge.in(if (preferred) 0 else 1)
@@ -3077,18 +3147,22 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''completes''' when both upstreams complete (This behavior is changeable to completing when any upstream completes by setting `eagerComplete=true`.)
    */
-  def mergePrioritized[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      leftPriority: Int,
-      rightPriority: Int,
-      eagerComplete: Boolean = false): Repr[U] =
+  def mergePrioritized[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        leftPriority: Int,
+        rightPriority: Int,
+        eagerComplete: Boolean = false)
+    : Repr[U] =
     via(mergePrioritizedGraph(that, leftPriority, rightPriority, eagerComplete))
 
-  protected def mergePrioritizedGraph[U >: Out, M](
-      that: Graph[SourceShape[U], M],
-      leftPriority: Int,
-      rightPriority: Int,
-      eagerComplete: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def mergePrioritizedGraph[U >: Out, M]
+    (
+        that: Graph[SourceShape[U], M],
+        leftPriority: Int,
+        rightPriority: Int,
+        eagerComplete: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(MergePrioritized[U](Seq(leftPriority, rightPriority), eagerComplete))
       r ~> merge.in(1)
@@ -3113,8 +3187,11 @@ trait FlowOps[+Out, +Mat] {
   def mergeSorted[U >: Out, M](that: Graph[SourceShape[U], M])(implicit ord: Ordering[U]): Repr[U] =
     via(mergeSortedGraph(that))
 
-  protected def mergeSortedGraph[U >: Out, M](that: Graph[SourceShape[U], M])(
-      implicit ord: Ordering[U]): Graph[FlowShape[Out @uncheckedVariance, U], M] =
+  protected def mergeSortedGraph[U >: Out, M]
+    (that: Graph[SourceShape[U], M])
+    (
+        implicit ord: Ordering[U])
+    : Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(new MergeSorted[U])
       r ~> merge.in1
@@ -3147,9 +3224,11 @@ trait FlowOps[+Out, +Mat] {
   def concat[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2]): Repr[U] =
     internalConcat(that, detached = true)
 
-  protected def concatGraph[U >: Out, Mat2](
-      that: Graph[SourceShape[U], Mat2],
-      detached: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
+  protected def concatGraph[U >: Out, Mat2]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        detached: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(akka.stream.scaladsl.Concat[U](2, detached))
       r ~> merge.in(1)
@@ -3257,9 +3336,11 @@ trait FlowOps[+Out, +Mat] {
   def prepend[U >: Out, Mat2](that: Graph[SourceShape[U], Mat2]): Repr[U] =
     via(prependGraph(that, detached = true))
 
-  protected def prependGraph[U >: Out, Mat2](
-      that: Graph[SourceShape[U], Mat2],
-      detached: Boolean): Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
+  protected def prependGraph[U >: Out, Mat2]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        detached: Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
     GraphDSL.createGraph(that) { implicit b => r =>
       val merge = b.add(Concat[U](2, detached))
       r ~> merge.in(0)
@@ -3314,8 +3395,10 @@ trait FlowOps[+Out, +Mat] {
   def orElse[U >: Out, Mat2](secondary: Graph[SourceShape[U], Mat2]): Repr[U] =
     via(orElseGraph(secondary))
 
-  protected def orElseGraph[U >: Out, Mat2](
-      secondary: Graph[SourceShape[U], Mat2]): Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
+  protected def orElseGraph[U >: Out, Mat2]
+    (
+        secondary: Graph[SourceShape[U], Mat2])
+    : Graph[FlowShape[Out @uncheckedVariance, U], Mat2] =
     GraphDSL.createGraph(secondary) { implicit b => secondary =>
       val orElse = b.add(OrElse[U]())
 
@@ -3419,9 +3502,11 @@ trait FlowOps[+Out, +Mat] {
    */
   def divertTo(that: Graph[SinkShape[Out], _], when: Out => Boolean): Repr[Out] = via(divertToGraph(that, when))
 
-  protected def divertToGraph[M](
-      that: Graph[SinkShape[Out], M],
-      when: Out => Boolean): Graph[FlowShape[Out @uncheckedVariance, Out], M] =
+  protected def divertToGraph[M]
+    (
+        that: Graph[SinkShape[Out], M],
+        when: Out => Boolean)
+    : Graph[FlowShape[Out @uncheckedVariance, Out], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
       import GraphDSL.Implicits._
       val partition = b.add(new Partition[Out](2, out => if (when(out)) 1 else 0, true))
@@ -3490,10 +3575,13 @@ trait FlowOps[+Out, +Mat] {
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @ApiMayChange
-  def aggregateWithBoundary[Agg, Emit](allocate: () => Agg)(
-      aggregate: (Agg, Out) => (Agg, Boolean),
-      harvest: Agg => Emit,
-      emitOnTimer: Option[(Agg => Boolean, FiniteDuration)]): Repr[Emit] =
+  def aggregateWithBoundary[Agg, Emit]
+    (allocate: () => Agg)
+    (
+        aggregate: (Agg, Out) => (Agg, Boolean),
+        harvest: Agg => Emit,
+        emitOnTimer: Option[(Agg => Boolean, FiniteDuration)])
+    : Repr[Emit] =
     via(AggregateWithBoundary(allocate, aggregate, harvest, emitOnTimer))
 
 }
@@ -3566,8 +3654,12 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * mat version of [[#flatMapPrefix]], this method gives access to a future materialized value of the downstream flow.
    * see [[#flatMapPrefix]] for details.
    */
-  def flatMapPrefixMat[Out2, Mat2, Mat3](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2])(
-      matF: (Mat, Future[Mat2]) => Mat3): ReprMat[Out2, Mat3] = {
+  def flatMapPrefixMat[Out2, Mat2, Mat3]
+    (n: Int)
+    (f: immutable.Seq[Out] => Flow[Out, Out2, Mat2])
+    (
+        matF: (Mat, Future[Mat2]) => Mat3)
+    : ReprMat[Out2, Mat3] = {
     viaMat(new FlatMapPrefix(n, f))(matF)
   }
 
@@ -3595,8 +3687,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAllMat[U, Mat2, Mat3, A >: Out](that: Graph[SourceShape[U], Mat2], thisElem: A, thatElem: U)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[(A, U), Mat3] = {
+  def zipAllMat[U, Mat2, Mat3, A >: Out]
+    (that: Graph[SourceShape[U], Mat2], thisElem: A, thatElem: U)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[(A, U), Mat3] = {
     viaMat(zipAllFlow(that, thisElem, thatElem))(matF)
   }
 
@@ -3609,8 +3704,12 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def zipWithMat[Out2, Out3, Mat2, Mat3](that: Graph[SourceShape[Out2], Mat2])(combine: (Out, Out2) => Out3)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[Out3, Mat3] =
+  def zipWithMat[Out2, Out3, Mat2, Mat3]
+    (that: Graph[SourceShape[Out2], Mat2])
+    (combine: (Out, Out2) => Out3)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[Out3, Mat3] =
     viaMat(zipWithGraph(that)(combine))(matF)
 
   /**
@@ -3622,8 +3721,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def zipLatestMat[U, Mat2, Mat3](that: Graph[SourceShape[U], Mat2])(
-      matF: (Mat, Mat2) => Mat3): ReprMat[(Out, U), Mat3] =
+  def zipLatestMat[U, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2])
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[(Out, U), Mat3] =
     viaMat(zipLatestGraph(that))(matF)
 
   /**
@@ -3635,8 +3737,12 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def zipLatestWithMat[Out2, Out3, Mat2, Mat3](that: Graph[SourceShape[Out2], Mat2])(combine: (Out, Out2) => Out3)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[Out3, Mat3] =
+  def zipLatestWithMat[Out2, Out3, Mat2, Mat3]
+    (that: Graph[SourceShape[Out2], Mat2])
+    (combine: (Out, Out2) => Out3)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[Out3, Mat3] =
     zipLatestWithMat(that, eagerComplete = true)(combine)(matF)
 
   /**
@@ -3648,8 +3754,12 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def zipLatestWithMat[Out2, Out3, Mat2, Mat3](that: Graph[SourceShape[Out2], Mat2], eagerComplete: Boolean)(
-      combine: (Out, Out2) => Out3)(matF: (Mat, Mat2) => Mat3): ReprMat[Out3, Mat3] =
+  def zipLatestWithMat[Out2, Out3, Mat2, Mat3]
+    (that: Graph[SourceShape[Out2], Mat2], eagerComplete: Boolean)
+    (
+        combine: (Out, Out2) => Out3)
+    (matF: (Mat, Mat2) => Mat3)
+    : ReprMat[Out3, Mat3] =
     viaMat(zipLatestWithGraph(that, eagerComplete)(combine))(matF)
 
   /**
@@ -3661,8 +3771,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def mergeMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2], eagerComplete: Boolean = false)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def mergeMat[U >: Out, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2], eagerComplete: Boolean = false)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(mergeGraph(that, eagerComplete))(matF)
 
   /**
@@ -3680,10 +3793,13 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   @nowarn("msg=deprecated")
-  def interleaveMat[U >: Out, Mat2, Mat3](
-      that: Graph[SourceShape[U], Mat2],
-      @deprecatedName(Symbol("request"))
-      segmentSize: Int)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def interleaveMat[U >: Out, Mat2, Mat3]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        @deprecatedName(Symbol("request"))
+        segmentSize: Int)
+    (matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     interleaveMat(that, segmentSize, eagerClose = false)(matF)
 
   /**
@@ -3703,11 +3819,14 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   @nowarn("msg=deprecated")
-  def interleaveMat[U >: Out, Mat2, Mat3](
-      that: Graph[SourceShape[U], Mat2],
-      @deprecatedName(Symbol("request"))
-      segmentSize: Int,
-      eagerClose: Boolean)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def interleaveMat[U >: Out, Mat2, Mat3]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        @deprecatedName(Symbol("request"))
+        segmentSize: Int,
+        eagerClose: Boolean)
+    (matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(interleaveGraph(that, segmentSize, eagerClose))(matF)
 
   /**
@@ -3721,8 +3840,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def mergeLatestMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2], eagerClose: Boolean)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[immutable.Seq[U], Mat3] =
+  def mergeLatestMat[U >: Out, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2], eagerClose: Boolean)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[immutable.Seq[U], Mat3] =
     viaMat(mergeLatestGraph(that, eagerClose))(matF)
 
   /**
@@ -3733,10 +3855,13 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def mergePreferredMat[U >: Out, Mat2, Mat3](
-      that: Graph[SourceShape[U], Mat2],
-      preferred: Boolean,
-      eagerClose: Boolean)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def mergePreferredMat[U >: Out, Mat2, Mat3]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        preferred: Boolean,
+        eagerClose: Boolean)
+    (matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(mergePreferredGraph(that, preferred, eagerClose))(matF)
 
   /**
@@ -3745,11 +3870,14 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def mergePrioritizedMat[U >: Out, Mat2, Mat3](
-      that: Graph[SourceShape[U], Mat2],
-      leftPriority: Int,
-      rightPriority: Int,
-      eagerClose: Boolean)(matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def mergePrioritizedMat[U >: Out, Mat2, Mat3]
+    (
+        that: Graph[SourceShape[U], Mat2],
+        leftPriority: Int,
+        rightPriority: Int,
+        eagerClose: Boolean)
+    (matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(mergePrioritizedGraph(that, leftPriority, rightPriority, eagerClose))(matF)
 
   /**
@@ -3764,8 +3892,12 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def mergeSortedMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2])(matF: (Mat, Mat2) => Mat3)(
-      implicit ord: Ordering[U]): ReprMat[U, Mat3] =
+  def mergeSortedMat[U >: Out, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2])
+    (matF: (Mat, Mat2) => Mat3)
+    (
+        implicit ord: Ordering[U])
+    : ReprMat[U, Mat3] =
     viaMat(mergeSortedGraph(that))(matF)
 
   /**
@@ -3806,8 +3938,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def concatLazyMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2])(
-      matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def concatLazyMat[U >: Out, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2])
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(concatGraph(that, detached = false))(matF)
 
   /**
@@ -3848,8 +3983,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def prependLazyMat[U >: Out, Mat2, Mat3](that: Graph[SourceShape[U], Mat2])(
-      matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def prependLazyMat[U >: Out, Mat2, Mat3]
+    (that: Graph[SourceShape[U], Mat2])
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(prependGraph(that, detached = true))(matF)
 
   /**
@@ -3874,8 +4012,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * '''Cancels when''' downstream cancels and additionally the alternative is cancelled as soon as an element passes
    *                    by from this stream.
    */
-  def orElseMat[U >: Out, Mat2, Mat3](secondary: Graph[SourceShape[U], Mat2])(
-      matF: (Mat, Mat2) => Mat3): ReprMat[U, Mat3] =
+  def orElseMat[U >: Out, Mat2, Mat3]
+    (secondary: Graph[SourceShape[U], Mat2])
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[U, Mat3] =
     viaMat(orElseGraph(secondary))(matF)
 
   /**
@@ -3899,8 +4040,11 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * It is recommended to use the internally optimized `Keep.left` and `Keep.right` combiners
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
-  def divertToMat[Mat2, Mat3](that: Graph[SinkShape[Out], Mat2], when: Out => Boolean)(
-      matF: (Mat, Mat2) => Mat3): ReprMat[Out, Mat3] =
+  def divertToMat[Mat2, Mat3]
+    (that: Graph[SinkShape[Out], Mat2], when: Out => Boolean)
+    (
+        matF: (Mat, Mat2) => Mat3)
+    : ReprMat[Out, Mat3] =
     viaMat(divertToGraph(that, when))(matF)
 
   /**

@@ -18,11 +18,12 @@ private object ActorRefBackpressureSource {
 /**
  * INTERNAL API
  */
-@InternalApi private[akka] final class ActorRefBackpressureSource[T](
-    ackTo: Option[ActorRef],
-    ackMessage: Any,
-    completionMatcher: PartialFunction[Any, CompletionStrategy],
-    failureMatcher: PartialFunction[Any, Throwable])
+@InternalApi private[akka] final class ActorRefBackpressureSource[T]
+  (
+      ackTo: Option[ActorRef],
+      ackMessage: Any,
+      completionMatcher: PartialFunction[Any, CompletionStrategy],
+      failureMatcher: PartialFunction[Any, Throwable])
     extends GraphStageWithMaterializedValue[SourceShape[T], ActorRef] {
   import ActorRefBackpressureSource._
 
@@ -34,9 +35,11 @@ private object ActorRefBackpressureSource {
   def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ActorRef) =
     throw new IllegalStateException("Not supported")
 
-  private[akka] override def createLogicAndMaterializedValue(
-      inheritedAttributes: Attributes,
-      eagerMaterializer: Materializer): (GraphStageLogic, ActorRef) = {
+  private[akka] override def createLogicAndMaterializedValue
+    (
+        inheritedAttributes: Attributes,
+        eagerMaterializer: Materializer)
+    : (GraphStageLogic, ActorRef) = {
     val stage: GraphStageLogic with OutHandler with StageLogging with ActorRefStage = new GraphStageLogic(shape)
       with OutHandler
       with StageLogging

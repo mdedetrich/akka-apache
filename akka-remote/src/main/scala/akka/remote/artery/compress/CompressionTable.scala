@@ -17,10 +17,11 @@ import akka.util.HashCode
  *
  * @param version Either -1 for disabled or a version between 0 and 127
  */
-private[remote] final class CompressionTable[T](
-    val originUid: Long,
-    val version: Byte,
-    private val _dictionary: Object2IntHashMap[T]) {
+private[remote] final class CompressionTable[T]
+  (
+      val originUid: Long,
+      val version: Byte,
+      private val _dictionary: Object2IntHashMap[T]) {
 
   def dictionary: Map[T, Int] = {
     import akka.util.ccompat.JavaConverters._

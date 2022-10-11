@@ -36,10 +36,12 @@ import akka.annotation.InternalApi
  */
 @InternalApi private[akka] final class PoisonPillInterceptor[M] extends BehaviorSignalInterceptor[M] {
 
-  override def aroundSignal(
-      ctx: TypedActorContext[M],
-      signal: Signal,
-      target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
+  override def aroundSignal
+    (
+        ctx: TypedActorContext[M],
+        signal: Signal,
+        target: BehaviorInterceptor.SignalTarget[M])
+    : Behavior[M] = {
     signal match {
       case p: PoisonPill =>
         val next = target(ctx, p)
@@ -49,7 +51,9 @@ import akka.annotation.InternalApi
     }
   }
 
-  override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
+  override def isSame
+    (other: BehaviorInterceptor[Any, Any])
+    : Boolean =
     // only one interceptor per behavior stack is needed
     other.isInstanceOf[PoisonPillInterceptor[_]]
 }

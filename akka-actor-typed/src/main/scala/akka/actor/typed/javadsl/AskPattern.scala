@@ -34,11 +34,13 @@ object AskPattern {
    * @tparam Req The request protocol, what the other actor accepts
    * @tparam Res The response protocol, what the other actor sends back
    */
-  def ask[Req, Res](
-      actor: RecipientRef[Req],
-      messageFactory: JFunction[ActorRef[Res], Req],
-      timeout: Duration,
-      scheduler: Scheduler): CompletionStage[Res] =
+  def ask[Req, Res]
+    (
+        actor: RecipientRef[Req],
+        messageFactory: JFunction[ActorRef[Res], Req],
+        timeout: Duration,
+        scheduler: Scheduler)
+    : CompletionStage[Res] =
     actor.ask(messageFactory.apply)(timeout.asScala, scheduler).toJava
 
   /**
@@ -47,11 +49,13 @@ object AskPattern {
    * If the status response is a [[akka.pattern.StatusReply#error]] the returned future will be failed with the
    * exception in the error (normally a [[akka.pattern.StatusReply.ErrorMessage]]).
    */
-  def askWithStatus[Req, Res](
-      actor: RecipientRef[Req],
-      messageFactory: JFunction[ActorRef[StatusReply[Res]], Req],
-      timeout: Duration,
-      scheduler: Scheduler): CompletionStage[Res] =
+  def askWithStatus[Req, Res]
+    (
+        actor: RecipientRef[Req],
+        messageFactory: JFunction[ActorRef[StatusReply[Res]], Req],
+        timeout: Duration,
+        scheduler: Scheduler)
+    : CompletionStage[Res] =
     actor.askWithStatus(messageFactory.apply)(timeout.asScala, scheduler).toJava
 
 }

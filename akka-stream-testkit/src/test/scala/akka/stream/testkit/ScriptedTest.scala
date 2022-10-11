@@ -54,14 +54,15 @@ trait ScriptedTest extends Matchers {
     }
   }
 
-  final class Script[In, Out](
-      val providedInputs: Vector[In],
-      val expectedOutputs: Vector[Out],
-      val jumps: Vector[Int],
-      val inputCursor: Int,
-      val outputCursor: Int,
-      val outputEndCursor: Int,
-      val completed: Boolean) {
+  final class Script[In, Out]
+    (
+        val providedInputs: Vector[In],
+        val expectedOutputs: Vector[Out],
+        val jumps: Vector[Int],
+        val inputCursor: Int,
+        val outputCursor: Int,
+        val outputEndCursor: Int,
+        val completed: Boolean) {
     require(jumps.size == providedInputs.size)
 
     def provideInput: (In, Script[In, Out]) =
@@ -124,13 +125,15 @@ trait ScriptedTest extends Matchers {
           .mkString("/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
   }
 
-  class ScriptRunner[In, Out, M](
-      op: Flow[In, In, NotUsed] => Flow[In, Out, M],
-      settings: ActorMaterializerSettings,
-      script: Script[In, Out],
-      maximumOverrun: Int,
-      maximumRequest: Int,
-      maximumBuffer: Int)(implicit _system: ActorSystem)
+  class ScriptRunner[In, Out, M]
+    (
+        op: Flow[In, In, NotUsed] => Flow[In, Out, M],
+        settings: ActorMaterializerSettings,
+        script: Script[In, Out],
+        maximumOverrun: Int,
+        maximumRequest: Int,
+        maximumBuffer: Int)
+    (implicit _system: ActorSystem)
       extends ChainSetup(op, settings, toPublisher) {
 
     var _debugLog = Vector.empty[String]
@@ -236,16 +239,24 @@ trait ScriptedTest extends Matchers {
   }
 
   @nowarn("msg=deprecated")
-  def runScript[In, Out, M](script: Script[In, Out])(op: Flow[In, In, NotUsed] => Flow[In, Out, M])(
-      implicit system: ActorSystem): Unit =
+  def runScript[In, Out, M]
+    (script: Script[In, Out])
+    (op: Flow[In, In, NotUsed] => Flow[In, Out, M])
+    (
+        implicit system: ActorSystem)
+    : Unit =
     runScript(script, SystemMaterializer(system).materializer.settings)(op)(system)
 
-  def runScript[In, Out, M](
-      script: Script[In, Out],
-      settings: ActorMaterializerSettings,
-      maximumOverrun: Int = 3,
-      maximumRequest: Int = 3,
-      maximumBuffer: Int = 3)(op: Flow[In, In, NotUsed] => Flow[In, Out, M])(implicit system: ActorSystem): Unit = {
+  def runScript[In, Out, M]
+    (
+        script: Script[In, Out],
+        settings: ActorMaterializerSettings,
+        maximumOverrun: Int = 3,
+        maximumRequest: Int = 3,
+        maximumBuffer: Int = 3)
+    (op: Flow[In, In, NotUsed] => Flow[In, Out, M])
+    (implicit system: ActorSystem)
+    : Unit = {
     new ScriptRunner(op, settings, script, maximumOverrun, maximumRequest, maximumBuffer).run()
   }
 

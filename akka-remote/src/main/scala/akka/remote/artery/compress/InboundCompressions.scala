@@ -56,11 +56,12 @@ private[remote] trait InboundCompressions {
  * One per incoming Aeron stream, actual compression tables are kept per-originUid and created on demand.
  * All access is via the Decoder stage.
  */
-private[remote] final class InboundCompressionsImpl(
-    system: ActorSystem,
-    inboundContext: InboundContext,
-    settings: ArterySettings.Compression,
-    flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
+private[remote] final class InboundCompressionsImpl
+  (
+      system: ActorSystem,
+      inboundContext: InboundContext,
+      settings: ArterySettings.Compression,
+      flightRecorder: RemotingFlightRecorder = NoOpRemotingFlightRecorder)
     extends InboundCompressions {
 
   private[this] val _actorRefsIns = new Long2ObjectHashMap[InboundActorRefCompression]()
@@ -174,12 +175,13 @@ private[remote] final class InboundCompressionsImpl(
  * It can be used to advertise a compression table.
  * If the association is not complete - we simply dont advertise the table, which is fine (handshake not yet complete).
  */
-private[remote] final class InboundActorRefCompression(
-    log: LoggingAdapter,
-    settings: ArterySettings.Compression,
-    originUid: Long,
-    inboundContext: InboundContext,
-    heavyHitters: TopHeavyHitters[ActorRef])
+private[remote] final class InboundActorRefCompression
+  (
+      log: LoggingAdapter,
+      settings: ArterySettings.Compression,
+      originUid: Long,
+      inboundContext: InboundContext,
+      heavyHitters: TopHeavyHitters[ActorRef])
     extends InboundCompression[ActorRef](log, settings, originUid, inboundContext, heavyHitters) {
 
   override def increment(remoteAddress: Address, value: ActorRef, n: Long): Unit = {
@@ -219,12 +221,13 @@ private[remote] final class InboundActorRefCompression(
 /**
  * INTERNAL API
  */
-private[remote] final class InboundManifestCompression(
-    log: LoggingAdapter,
-    settings: ArterySettings.Compression,
-    originUid: Long,
-    inboundContext: InboundContext,
-    heavyHitters: TopHeavyHitters[String])
+private[remote] final class InboundManifestCompression
+  (
+      log: LoggingAdapter,
+      settings: ArterySettings.Compression,
+      originUid: Long,
+      inboundContext: InboundContext,
+      heavyHitters: TopHeavyHitters[String])
     extends InboundCompression[String](log, settings, originUid, inboundContext, heavyHitters) {
 
   override def advertiseCompressionTable(outboundContext: OutboundContext, table: CompressionTable[String]): Unit = {
@@ -269,12 +272,13 @@ private[remote] object InboundCompression {
    *                  It starts with containing only a single "disabled" table (versioned as `DecompressionTable.DisabledVersion`),
    *                  and from there on continuously accumulates at most [[keepOldTables]] recently used tables.
    */
-  final case class Tables[T](
-      oldTables: List[DecompressionTable[T]],
-      activeTable: DecompressionTable[T],
-      nextTable: DecompressionTable[T],
-      advertisementInProgress: Option[CompressionTable[T]],
-      keepOldTables: Int) {
+  final case class Tables[T]
+    (
+        oldTables: List[DecompressionTable[T]],
+        activeTable: DecompressionTable[T],
+        nextTable: DecompressionTable[T],
+        advertisementInProgress: Option[CompressionTable[T]],
+        keepOldTables: Int) {
 
     def selectTable(version: Int): OptionVal[DecompressionTable[T]] = {
       if (activeTable.version == version) {
@@ -328,12 +332,13 @@ private[remote] object InboundCompression {
  *
  * Access to this class must be externally synchronised (e.g. by accessing it from only Actors or a GraphStage etc).
  */
-private[remote] abstract class InboundCompression[T >: Null](
-    val log: LoggingAdapter,
-    val settings: ArterySettings.Compression,
-    val originUid: Long,
-    inboundContext: InboundContext,
-    val heavyHitters: TopHeavyHitters[T]) {
+private[remote] abstract class InboundCompression[T >: Null]
+  (
+      val log: LoggingAdapter,
+      val settings: ArterySettings.Compression,
+      val originUid: Long,
+      inboundContext: InboundContext,
+      val heavyHitters: TopHeavyHitters[T]) {
 
   private[this] var tables: InboundCompression.Tables[T] = InboundCompression.Tables.empty
 

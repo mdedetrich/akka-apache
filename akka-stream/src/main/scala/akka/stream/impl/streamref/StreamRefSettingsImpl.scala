@@ -12,11 +12,12 @@ import akka.stream.StreamRefSettings
 
 /** INTERNAL API */
 @InternalApi
-private[akka] final case class StreamRefSettingsImpl(
-    override val bufferCapacity: Int,
-    override val demandRedeliveryInterval: FiniteDuration,
-    override val subscriptionTimeout: FiniteDuration,
-    override val finalTerminationSignalDeadline: FiniteDuration)
+private[akka] final case class StreamRefSettingsImpl
+  (
+      override val bufferCapacity: Int,
+      override val demandRedeliveryInterval: FiniteDuration,
+      override val subscriptionTimeout: FiniteDuration,
+      override val finalTerminationSignalDeadline: FiniteDuration)
     extends StreamRefSettings {
 
   override def withBufferCapacity(value: Int): StreamRefSettings = copy(bufferCapacity = value)

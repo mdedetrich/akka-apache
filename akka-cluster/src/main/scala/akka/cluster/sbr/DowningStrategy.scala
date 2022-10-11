@@ -131,9 +131,11 @@ import akka.coordination.lease.scaladsl.Lease
   def reachableMembersWithRole: immutable.SortedSet[Member] =
     reachableMembersWithRole(includingPossiblyUp = false, excludingPossiblyExiting = false)
 
-  def reachableMembersWithRole(
-      includingPossiblyUp: Boolean,
-      excludingPossiblyExiting: Boolean): immutable.SortedSet[Member] =
+  def reachableMembersWithRole
+    (
+        includingPossiblyUp: Boolean,
+        excludingPossiblyExiting: Boolean)
+    : immutable.SortedSet[Member] =
     role match {
       case None    => reachableMembers(includingPossiblyUp, excludingPossiblyExiting)
       case Some(r) => reachableMembers(includingPossiblyUp, excludingPossiblyExiting).filter(_.hasRole(r))
@@ -142,9 +144,11 @@ import akka.coordination.lease.scaladsl.Lease
   def unreachableMembers: immutable.SortedSet[Member] =
     unreachableMembers(includingPossiblyUp = false, excludingPossiblyExiting = false)
 
-  def unreachableMembers(
-      includingPossiblyUp: Boolean,
-      excludingPossiblyExiting: Boolean): immutable.SortedSet[Member] = {
+  def unreachableMembers
+    (
+        includingPossiblyUp: Boolean,
+        excludingPossiblyExiting: Boolean)
+    : immutable.SortedSet[Member] = {
     if (unreachable.isEmpty) immutable.SortedSet.empty
     else members(includingPossiblyUp, excludingPossiblyExiting).filter(unreachable)
   }
@@ -152,9 +156,11 @@ import akka.coordination.lease.scaladsl.Lease
   def unreachableMembersWithRole: immutable.SortedSet[Member] =
     unreachableMembersWithRole(includingPossiblyUp = false, excludingPossiblyExiting = false)
 
-  def unreachableMembersWithRole(
-      includingPossiblyUp: Boolean,
-      excludingPossiblyExiting: Boolean): immutable.SortedSet[Member] =
+  def unreachableMembersWithRole
+    (
+        includingPossiblyUp: Boolean,
+        excludingPossiblyExiting: Boolean)
+    : immutable.SortedSet[Member] =
     role match {
       case None    => unreachableMembers(includingPossiblyUp, excludingPossiblyExiting)
       case Some(r) => unreachableMembers(includingPossiblyUp, excludingPossiblyExiting).filter(_.hasRole(r))
@@ -354,11 +360,12 @@ import akka.coordination.lease.scaladsl.Lease
  *
  * It is only counting members within the own data center.
  */
-@InternalApi private[sbr] final class StaticQuorum(
-    selfDc: DataCenter,
-    val quorumSize: Int,
-    override val role: Option[String],
-    selfUniqueAddress: UniqueAddress)
+@InternalApi private[sbr] final class StaticQuorum
+  (
+      selfDc: DataCenter,
+      val quorumSize: Int,
+      override val role: Option[String],
+      selfUniqueAddress: UniqueAddress)
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 
@@ -391,10 +398,11 @@ import akka.coordination.lease.scaladsl.Lease
  *
  * It is only counting members within the own data center.
  */
-@InternalApi private[sbr] final class KeepMajority(
-    selfDc: DataCenter,
-    override val role: Option[String],
-    selfUniqueAddress: UniqueAddress)
+@InternalApi private[sbr] final class KeepMajority
+  (
+      selfDc: DataCenter,
+      override val role: Option[String],
+      selfUniqueAddress: UniqueAddress)
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 
@@ -480,11 +488,12 @@ import akka.coordination.lease.scaladsl.Lease
  * It is only using members within the own data center, i.e. oldest within the
  * data center.
  */
-@InternalApi private[sbr] final class KeepOldest(
-    selfDc: DataCenter,
-    val downIfAlone: Boolean,
-    override val role: Option[String],
-    selfUniqueAddress: UniqueAddress)
+@InternalApi private[sbr] final class KeepOldest
+  (
+      selfDc: DataCenter,
+      val downIfAlone: Boolean,
+      override val role: Option[String],
+      selfUniqueAddress: UniqueAddress)
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 
@@ -583,13 +592,14 @@ import akka.coordination.lease.scaladsl.Lease
  * If the `role` is defined the majority/minority is based only on members with that `role`.
  * It is only counting members within the own data center.
  */
-@InternalApi private[sbr] final class LeaseMajority(
-    selfDc: DataCenter,
-    override val role: Option[String],
-    _lease: Lease,
-    acquireLeaseDelayForMinority: FiniteDuration,
-    val releaseAfter: FiniteDuration,
-    selfUniqueAddress: UniqueAddress)
+@InternalApi private[sbr] final class LeaseMajority
+  (
+      selfDc: DataCenter,
+      override val role: Option[String],
+      _lease: Lease,
+      acquireLeaseDelayForMinority: FiniteDuration,
+      val releaseAfter: FiniteDuration,
+      selfUniqueAddress: UniqueAddress)
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 

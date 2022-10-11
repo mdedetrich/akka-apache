@@ -93,14 +93,21 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     }
   }
 
-  override def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable = {
+  override def scheduleWithFixedDelay
+    (initialDelay: FiniteDuration, delay: FiniteDuration)
+    (runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable = {
     checkMaxDelay(roundUp(delay).toNanos)
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
-  override def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable = {
+  override def schedule
+    (initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable = {
     checkMaxDelay(roundUp(delay).toNanos)
     try new AtomicReference[Cancellable](InitialRepeatMarker) with Cancellable { self =>
         compareAndSet(
@@ -148,8 +155,11 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     }
   }
 
-  override def scheduleOnce(delay: FiniteDuration, runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable =
+  override def scheduleOnce
+    (delay: FiniteDuration, runnable: Runnable)
+    (
+        implicit executor: ExecutionContext)
+    : Cancellable =
     try schedule(executor, runnable, roundUp(delay))
     catch {
       case cause @ SchedulerException(msg) => throw new IllegalStateException(msg, cause)

@@ -268,8 +268,11 @@ private[akka] final class TestProbeImpl[M](name: String, system: ActorSystem[_])
   override def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): immutable.Seq[M] =
     fishForMessage_internal(max.dilated, hint, fisher)
 
-  override def fishForMessagePF(max: FiniteDuration, hint: String)(
-      fisher: PartialFunction[M, FishingOutcome]): immutable.Seq[M] =
+  override def fishForMessagePF
+    (max: FiniteDuration, hint: String)
+    (
+        fisher: PartialFunction[M, FishingOutcome])
+    : immutable.Seq[M] =
     fishForMessage(max, hint)(fisher)
 
   override def fishForMessage(max: FiniteDuration)(fisher: M => FishingOutcome): immutable.Seq[M] =
@@ -281,10 +284,12 @@ private[akka] final class TestProbeImpl[M](name: String, system: ActorSystem[_])
   override def fishForMessage(max: JDuration, fisher: java.util.function.Function[M, FishingOutcome]): JList[M] =
     fishForMessage(max, "", fisher)
 
-  override def fishForMessage(
-      max: JDuration,
-      hint: String,
-      fisher: java.util.function.Function[M, FishingOutcome]): JList[M] =
+  override def fishForMessage
+    (
+        max: JDuration,
+        hint: String,
+        fisher: java.util.function.Function[M, FishingOutcome])
+    : JList[M] =
     fishForMessage_internal(max.asScala.dilated, hint, fisher.apply).asJava
 
   private def fishForMessage_internal(max: FiniteDuration, hint: String, fisher: M => FishingOutcome): List[M] = {

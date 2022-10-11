@@ -66,11 +66,13 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       baseConf
   }
 
-  private def createJsonFactory(
-      bindingName: String,
-      objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config,
-      baseJsonFactory: Option[JsonFactory]): JsonFactory = {
+  private def createJsonFactory
+    (
+        bindingName: String,
+        objectMapperFactory: JacksonObjectMapperFactory,
+        config: Config,
+        baseJsonFactory: Option[JsonFactory])
+    : JsonFactory = {
 
     val jsonFactory: JsonFactory = baseJsonFactory match {
       case Some(factory) =>
@@ -126,11 +128,13 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     jsonFactory
   }
 
-  private def configureObjectMapperFeatures(
-      bindingName: String,
-      objectMapper: ObjectMapper,
-      objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config): Unit = {
+  private def configureObjectMapperFeatures
+    (
+        bindingName: String,
+        objectMapper: ObjectMapper,
+        objectMapperFactory: JacksonObjectMapperFactory,
+        config: Config)
+    : Unit = {
 
     val configuredSerializationFeatures =
       features(config, "serialization-features").map {
@@ -179,11 +183,13 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     }
   }
 
-  private def configureObjectVisibility(
-      bindingName: String,
-      objectMapper: ObjectMapper,
-      objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config): Unit = {
+  private def configureObjectVisibility
+    (
+        bindingName: String,
+        objectMapper: ObjectMapper,
+        objectMapperFactory: JacksonObjectMapperFactory,
+        config: Config)
+    : Unit = {
 
     val configuredVisibility: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
       configPairs(config, "visibility").map {
@@ -198,13 +204,15 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
 
   }
 
-  private def configureObjectMapperModules(
-      bindingName: String,
-      objectMapper: ObjectMapper,
-      objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config,
-      dynamicAccess: DynamicAccess,
-      log: Option[LoggingAdapter]): Unit = {
+  private def configureObjectMapperModules
+    (
+        bindingName: String,
+        objectMapper: ObjectMapper,
+        objectMapperFactory: JacksonObjectMapperFactory,
+        config: Config,
+        dynamicAccess: DynamicAccess,
+        log: Option[LoggingAdapter])
+    : Unit = {
 
     import akka.util.ccompat.JavaConverters._
 
@@ -250,13 +258,15 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
    * This is needed by one test in Lagom where the ObjectMapper is created without starting and ActorSystem.
    */
   @InternalStableApi
-  def createObjectMapper(
-      bindingName: String,
-      jsonFactory: Option[JsonFactory],
-      objectMapperFactory: JacksonObjectMapperFactory,
-      config: Config,
-      dynamicAccess: DynamicAccess,
-      log: Option[LoggingAdapter]): ObjectMapper = {
+  def createObjectMapper
+    (
+        bindingName: String,
+        jsonFactory: Option[JsonFactory],
+        objectMapperFactory: JacksonObjectMapperFactory,
+        config: Config,
+        dynamicAccess: DynamicAccess,
+        log: Option[LoggingAdapter])
+    : ObjectMapper = {
 
     val configuredJsonFactory = createJsonFactory(bindingName, objectMapperFactory, config, jsonFactory)
     val mapper = objectMapperFactory.newObjectMapper(bindingName, configuredJsonFactory)
@@ -428,9 +438,11 @@ class JacksonObjectMapperFactory {
    * @param configuredModules the list of `Modules` that were configured in
    *                           `akka.serialization.jackson.deserialization-features`
    */
-  def overrideConfiguredModules(
-      @unused bindingName: String,
-      configuredModules: immutable.Seq[Module]): immutable.Seq[Module] =
+  def overrideConfiguredModules
+    (
+        @unused bindingName: String,
+        configuredModules: immutable.Seq[Module])
+    : immutable.Seq[Module] =
     configuredModules
 
   /**
@@ -445,10 +457,11 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `SerializationFeature` that were configured in
    *                           `akka.serialization.jackson.serialization-features`
    */
-  def overrideConfiguredSerializationFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-      : immutable.Seq[(SerializationFeature, Boolean)] =
+  def overrideConfiguredSerializationFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
+    : immutable.Seq[(SerializationFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -463,10 +476,11 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `DeserializationFeature` that were configured in
    *                           `akka.serialization.jackson.deserialization-features`
    */
-  def overrideConfiguredDeserializationFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(DeserializationFeature, Boolean)])
-      : immutable.Seq[(DeserializationFeature, Boolean)] =
+  def overrideConfiguredDeserializationFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(DeserializationFeature, Boolean)])
+    : immutable.Seq[(DeserializationFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -477,9 +491,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `MapperFeatures` that were configured in `akka.serialization.jackson.mapper-features`
    */
-  def overrideConfiguredMapperFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(MapperFeature, Boolean)]): immutable.Seq[(MapperFeature, Boolean)] =
+  def overrideConfiguredMapperFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(MapperFeature, Boolean)])
+    : immutable.Seq[(MapperFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -490,9 +506,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `JsonParser.Feature` that were configured in `akka.serialization.jackson.json-parser-features`
    */
-  def overrideConfiguredJsonParserFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)]): immutable.Seq[(JsonParser.Feature, Boolean)] =
+  def overrideConfiguredJsonParserFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(JsonParser.Feature, Boolean)])
+    : immutable.Seq[(JsonParser.Feature, Boolean)] =
     configuredFeatures
 
   /**
@@ -503,10 +521,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `JsonGenerator.Feature` that were configured in `akka.serialization.jackson.json-generator-features`
    */
-  def overrideConfiguredJsonGeneratorFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
-      : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
+  def overrideConfiguredJsonGeneratorFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(JsonGenerator.Feature, Boolean)])
+    : immutable.Seq[(JsonGenerator.Feature, Boolean)] =
     configuredFeatures
 
   /**
@@ -517,9 +536,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `StreamReadFeature` that were configured in `akka.serialization.jackson.stream-read-features`
    */
-  def overrideConfiguredStreamReadFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)]): immutable.Seq[(StreamReadFeature, Boolean)] =
+  def overrideConfiguredStreamReadFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(StreamReadFeature, Boolean)])
+    : immutable.Seq[(StreamReadFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -530,9 +551,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `StreamWriterFeature` that were configured in `akka.serialization.jackson.stream-write-features`
    */
-  def overrideConfiguredStreamWriteFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)]): immutable.Seq[(StreamWriteFeature, Boolean)] =
+  def overrideConfiguredStreamWriteFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(StreamWriteFeature, Boolean)])
+    : immutable.Seq[(StreamWriteFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -543,9 +566,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `JsonReadFeature` that were configured in `akka.serialization.jackson.json-read-features`
    */
-  def overrideConfiguredJsonReadFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonReadFeature, Boolean)]): immutable.Seq[(JsonReadFeature, Boolean)] =
+  def overrideConfiguredJsonReadFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(JsonReadFeature, Boolean)])
+    : immutable.Seq[(JsonReadFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -556,9 +581,11 @@ class JacksonObjectMapperFactory {
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `JsonWriteFeature` that were configured in `akka.serialization.jackson.json-write-features`
    */
-  def overrideConfiguredJsonWriteFeatures(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(JsonWriteFeature, Boolean)]): immutable.Seq[(JsonWriteFeature, Boolean)] =
+  def overrideConfiguredJsonWriteFeatures
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(JsonWriteFeature, Boolean)])
+    : immutable.Seq[(JsonWriteFeature, Boolean)] =
     configuredFeatures
 
   /**
@@ -570,10 +597,11 @@ class JacksonObjectMapperFactory {
    * @param configuredFeatures the list of `PropertyAccessor`/`JsonAutoDetect.Visibility` that were configured in
    *                           `akka.serialization.jackson.visibility`
    */
-  def overrideConfiguredVisibility(
-      @unused bindingName: String,
-      configuredFeatures: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)])
-      : immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
+  def overrideConfiguredVisibility
+    (
+        @unused bindingName: String,
+        configuredFeatures: immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)])
+    : immutable.Seq[(PropertyAccessor, JsonAutoDetect.Visibility)] =
     configuredFeatures
 
 }

@@ -25,17 +25,20 @@ import akka.util.Timeout
   import akka.cluster.ddata.typed.javadsl.{ Replicator => JReplicator }
   import akka.cluster.ddata.typed.scaladsl.{ Replicator => SReplicator }
 
-  private case class InternalSubscribeResponse[A <: ReplicatedData](
-      chg: dd.Replicator.SubscribeResponse[A],
-      subscriber: ActorRef[JReplicator.SubscribeResponse[A]])
+  private case class InternalSubscribeResponse[A <: ReplicatedData]
+    (
+        chg: dd.Replicator.SubscribeResponse[A],
+        subscriber: ActorRef[JReplicator.SubscribeResponse[A]])
       extends JReplicator.Command
 
   val localAskTimeout = 60.seconds // ReadLocal, WriteLocal shouldn't timeout
   val additionalAskTimeout = 1.second
 
-  def apply(
-      settings: dd.ReplicatorSettings,
-      underlyingReplicator: Option[akka.actor.ActorRef]): Behavior[SReplicator.Command] = {
+  def apply
+    (
+        settings: dd.ReplicatorSettings,
+        underlyingReplicator: Option[akka.actor.ActorRef])
+    : Behavior[SReplicator.Command] = {
 
     Behaviors.setup { ctx =>
       val classicReplicator = underlyingReplicator match {
@@ -46,13 +49,17 @@ import akka.util.Timeout
           ctx.actorOf(classicReplicatorProps, name = "underlying")
       }
 
-      def withState(
-          subscribeAdapters: Map[
-            ActorRef[JReplicator.SubscribeResponse[ReplicatedData]],
-            ActorRef[dd.Replicator.SubscribeResponse[ReplicatedData]]]): Behavior[SReplicator.Command] = {
+      def withState
+        (
+            subscribeAdapters: Map[
+              ActorRef[JReplicator.SubscribeResponse[ReplicatedData]],
+              ActorRef[dd.Replicator.SubscribeResponse[ReplicatedData]]])
+        : Behavior[SReplicator.Command] = {
 
-        def stopSubscribeAdapter(
-            subscriber: ActorRef[JReplicator.SubscribeResponse[ReplicatedData]]): Behavior[SReplicator.Command] = {
+        def stopSubscribeAdapter
+          (
+              subscriber: ActorRef[JReplicator.SubscribeResponse[ReplicatedData]])
+          : Behavior[SReplicator.Command] = {
           subscribeAdapters.get(subscriber) match {
             case Some(adapter) =>
               // will be unsubscribed from classicReplicator via Terminated

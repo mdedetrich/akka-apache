@@ -34,9 +34,10 @@ private[akka] object ActorContextAdapter {
 /**
  * INTERNAL API. Wrapping an [[akka.actor.ActorContext]] as an [[TypedActorContext]].
  */
-@InternalApi private[akka] final class ActorContextAdapter[T](
-    val classicContext: classic.ActorContext,
-    adapter: ActorAdapter[T])
+@InternalApi private[akka] final class ActorContextAdapter[T]
+  (
+      val classicContext: classic.ActorContext,
+      adapter: ActorAdapter[T])
     extends ActorContextImpl[T] {
 
   import ActorRefAdapter.toClassic

@@ -15,25 +15,31 @@ import akka.stream.ActorMaterializerSettings
 import akka.stream.Materializer
 import akka.stream.scaladsl._
 
-class ChainSetup[In, Out, M](
-    stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
-    val settings: ActorMaterializerSettings,
-    materializer: Materializer,
-    toPublisher: (Source[Out, _], Materializer) => Publisher[Out])(implicit val system: ActorSystem) {
+class ChainSetup[In, Out, M]
+  (
+      stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
+      val settings: ActorMaterializerSettings,
+      materializer: Materializer,
+      toPublisher: (Source[Out, _], Materializer) => Publisher[Out])
+  (implicit val system: ActorSystem) {
 
   @nowarn("msg=deprecated")
-  def this(
-      stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
-      settings: ActorMaterializerSettings,
-      toPublisher: (Source[Out, _], Materializer) => Publisher[Out])(implicit system: ActorSystem) =
+  def this
+    (
+        stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
+        settings: ActorMaterializerSettings,
+        toPublisher: (Source[Out, _], Materializer) => Publisher[Out])
+    (implicit system: ActorSystem) =
     this(stream, settings, ActorMaterializer(settings)(system), toPublisher)(system)
 
   @nowarn("msg=deprecated")
-  def this(
-      stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
-      settings: ActorMaterializerSettings,
-      materializerCreator: (ActorMaterializerSettings, ActorRefFactory) => Materializer,
-      toPublisher: (Source[Out, _], Materializer) => Publisher[Out])(implicit system: ActorSystem) =
+  def this
+    (
+        stream: Flow[In, In, NotUsed] => Flow[In, Out, M],
+        settings: ActorMaterializerSettings,
+        materializerCreator: (ActorMaterializerSettings, ActorRefFactory) => Materializer,
+        toPublisher: (Source[Out, _], Materializer) => Publisher[Out])
+    (implicit system: ActorSystem) =
     this(stream, settings, materializerCreator(settings, system), toPublisher)(system)
 
   val upstream = TestPublisher.manualProbe[In]()

@@ -15,9 +15,10 @@ import akka.persistence.typed.internal.ReplicationContextImpl
 /**
  * Base class for replicated event sourced behaviors.
  */
-abstract class ReplicatedEventSourcedBehavior[Command, Event, State](
-    replicationContext: ReplicationContext,
-    onPersistFailure: Optional[BackoffSupervisorStrategy])
+abstract class ReplicatedEventSourcedBehavior[Command, Event, State]
+  (
+      replicationContext: ReplicationContext,
+      onPersistFailure: Optional[BackoffSupervisorStrategy])
     extends EventSourcedBehavior[Command, Event, State](replicationContext.persistenceId, onPersistFailure) {
 
   def this(replicationContext: ReplicationContext) = this(replicationContext, Optional.empty())

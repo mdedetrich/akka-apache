@@ -54,11 +54,13 @@ class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("akka.loglevel
   private var iteration = 1
   private val iterationsPerTest = 10
 
-  private def testRebalance(
-      allocationStrategy: ShardAllocationStrategy,
-      maxRegions: Int,
-      maxShardsPerRegion: Int,
-      expectedMaxSteps: Int): Unit = {
+  private def testRebalance
+    (
+        allocationStrategy: ShardAllocationStrategy,
+        maxRegions: Int,
+        maxShardsPerRegion: Int,
+        expectedMaxSteps: Int)
+    : Unit = {
     (1 to iterationsPerTest).foreach { _ =>
       iteration += 1
       val numberOfRegions = rnd.nextInt(maxRegions) + 1
@@ -76,11 +78,13 @@ class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("akka.loglevel
     }
   }
 
-  @tailrec private def testRebalance(
-      allocationStrategy: ShardAllocationStrategy,
-      allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-      steps: Vector[Map[ActorRef, immutable.IndexedSeq[ShardId]]],
-      maxSteps: Int): Unit = {
+  @tailrec private def testRebalance
+    (
+        allocationStrategy: ShardAllocationStrategy,
+        allocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
+        steps: Vector[Map[ActorRef, immutable.IndexedSeq[ShardId]]],
+        maxSteps: Int)
+    : Unit = {
     val round = steps.size
     val rebalanceResult = allocationStrategy.rebalance(allocations, Set.empty).value.get.get
     val newAllocations = afterRebalance(allocationStrategy, allocations, rebalanceResult)
