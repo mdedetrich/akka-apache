@@ -65,6 +65,7 @@ manifest.mf
 metals.sbt
 mongoDB/
 multiverse.log
+null
 out
 project/akka-build.properties
 project/boot/*
