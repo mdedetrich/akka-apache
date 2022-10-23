@@ -86,14 +86,15 @@ import akka.annotation.InternalApi
 
   private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
     try shutdownReason match {
-      case Some(_: SpecViolation) => // ok, not allowed to call onError
-      case Some(e) =>
-        tryOnSubscribe(subscriber, CancelledSubscription)
-        tryOnError(subscriber, e)
-      case None =>
-        tryOnSubscribe(subscriber, CancelledSubscription)
-        tryOnComplete(subscriber)
-    } catch {
+        case Some(_: SpecViolation) => // ok, not allowed to call onError
+        case Some(e) =>
+          tryOnSubscribe(subscriber, CancelledSubscription)
+          tryOnError(subscriber, e)
+        case None =>
+          tryOnSubscribe(subscriber, CancelledSubscription)
+          tryOnComplete(subscriber)
+      }
+    catch {
       case _: SpecViolation => // nothing to do
     }
 
@@ -107,7 +108,7 @@ import akka.annotation.InternalApi
     final val subscriber: Subscriber[_ >: T])
     extends Subscription {
   override def request(elements: Long): Unit = impl ! RequestMore(this, elements)
-  override def cancel(): Unit = impl ! Cancel(this)
+  override def cancel(): Unit = impl                ! Cancel(this)
 }
 
 /**

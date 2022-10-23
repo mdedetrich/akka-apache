@@ -111,7 +111,7 @@ private[remote] object Remoting {
       case None =>
         throw new RemoteTransportException(
           s"No transport is loaded for protocol: [${remote.protocol}], available protocols: [${transportMapping.keys
-            .mkString(", ")}]",
+              .mkString(", ")}]",
           null)
     }
   }
@@ -677,7 +677,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 address,
                 quarantineUid,
                 Deadline.now + settings.QuarantineDuration)
-            case _ => //the quarantine uid has lost the race with some failure, do nothing
+            case _ => // the quarantine uid has lost the race with some failure, do nothing
           }
         case (Some(Quarantined(uid, _)), Some(quarantineUid)) if uid == quarantineUid => // the UID to be quarantined already exists, do nothing
         case (_, Some(quarantineUid))                                                 =>
@@ -744,7 +744,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
           endpoint ! s
         case Some(Gated(timeOfRelease)) =>
           if (timeOfRelease.isOverdue()) createAndRegisterWritingEndpoint() ! s
-          else extendedSystem.deadLetters ! s
+          else extendedSystem.deadLetters                                   ! s
         case Some(Quarantined(_, _)) =>
           // timeOfRelease is only used for garbage collection reasons, therefore it is ignored here. We still have
           // the Quarantined tombstone and we know what UID we don't want to accept, so use it.
@@ -898,7 +898,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       //   Driver
       val driver = extendedSystem.dynamicAccess
         .createInstanceFor[Transport](fqn, args)
-        .recover({
+        .recover {
 
           case exception =>
             throw new IllegalArgumentException(
@@ -907,7 +907,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
               "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
               exception)
 
-        })
+        }
         .get
 
       // Iteratively decorates the bottom level driver with a list of adapters.

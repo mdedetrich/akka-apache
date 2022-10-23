@@ -47,11 +47,10 @@ class CrossDcHeartbeatSenderSpec extends AkkaSpec("""
       awaitAssert(Cluster(system).selfMember.status == MemberStatus.Up)
       val underTest = system.actorOf(Props(new TestCrossDcHeartbeatSender(heartbeatProbe)))
 
-      underTest ! CurrentClusterState(
-        members = SortedSet(
-          Cluster(system).selfMember,
-          Member(UniqueAddress(Address("akka", system.name), 2L), Set("dc-dc2"), Version.Zero)
-            .copy(status = MemberStatus.Up)))
+      underTest ! CurrentClusterState(members = SortedSet(
+        Cluster(system).selfMember,
+        Member(UniqueAddress(Address("akka", system.name), 2L), Set("dc-dc2"), Version.Zero)
+          .copy(status = MemberStatus.Up)))
 
       awaitAssert {
         underTest ! ReportStatus()

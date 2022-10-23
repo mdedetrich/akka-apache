@@ -218,7 +218,7 @@ import scala.util.Success
   override def ask[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)(
       mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit = {
     import akka.actor.typed.scaladsl.AskPattern._
-    pipeToSelf((target.ask(createRequest))(responseTimeout, system.scheduler))(mapResponse)
+    pipeToSelf(target.ask(createRequest)(responseTimeout, system.scheduler))(mapResponse)
   }
 
   override def askWithStatus[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)(
@@ -276,7 +276,7 @@ import scala.util.Success
       applyToResult: akka.japi.function.Function2[Value, Throwable, T]): Unit = {
     future.whenComplete { (value, ex) =>
       if (ex != null)
-        self.unsafeUpcast ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
+        self.unsafeUpcast    ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
       else self.unsafeUpcast ! AdaptMessage(value, applyToResult.apply(_: Value, null))
     }
   }

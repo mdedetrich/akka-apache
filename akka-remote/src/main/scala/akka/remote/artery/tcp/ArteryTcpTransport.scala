@@ -315,7 +315,8 @@ private[remote] class ArteryTcpTransport(
           Flow[EnvelopeBuffer]
             .map(_ => log.warning("Dropping large message, missing large-message-destinations configuration."))
             .to(Sink.ignore),
-          Promise[Done]().future) // never completed, not enabled
+          Promise[Done]().future
+        ) // never completed, not enabled
     }
 
     // An inbound connection will only use one of the control, ordinary or large streams, but we have to
@@ -326,14 +327,16 @@ private[remote] class ArteryTcpTransport(
     // overhead.
     val inboundStream = Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
-      val partition = b.add(Partition[EnvelopeBuffer](3, env => {
-        env.streamId match {
-          case OrdinaryStreamId => 1
-          case ControlStreamId  => 0
-          case LargeStreamId    => 2
-          case other            => throw new IllegalArgumentException(s"Unexpected streamId [$other]")
-        }
-      }))
+      val partition = b.add(Partition[EnvelopeBuffer](
+        3,
+        env => {
+          env.streamId match {
+            case OrdinaryStreamId => 1
+            case ControlStreamId  => 0
+            case LargeStreamId    => 2
+            case other            => throw new IllegalArgumentException(s"Unexpected streamId [$other]")
+          }
+        }))
       partition.out(0) ~> controlStream
       partition.out(1) ~> ordinaryMessagesStream
       partition.out(2) ~> largeMessagesStream
@@ -365,10 +368,11 @@ private[remote] class ArteryTcpTransport(
       inboundKillSwitch = KillSwitches.shared("inboundKillSwitch")
 
       val allStopped: Future[Done] = for {
-        _ <- controlStreamCompleted.recover { case _          => Done }
+        _ <- controlStreamCompleted.recover { case _ => Done }
         _ <- ordinaryMessagesStreamCompleted.recover { case _ => Done }
         _ <- if (largeMessageChannelEnabled)
-          largeMessagesStreamCompleted.recover { case _ => Done } else Future.successful(Done)
+          largeMessagesStreamCompleted.recover { case _ => Done }
+        else Future.successful(Done)
       } yield Done
       allStopped.foreach(_ => runInboundStreams(port, bindPort))
     }
@@ -385,7 +389,7 @@ private[remote] class ArteryTcpTransport(
         .addAttributes(Attributes.logLevels(onFailure = LogLevels.Off))
         .via(inboundKillSwitch.flow)
         .via(inboundFlow(settings, NoInboundCompressions))
-        .toMat(inboundControlSink)({ case (a, (c, d)) => (a, c, d) })
+        .toMat(inboundControlSink) { case (a, (c, d)) => (a, c, d) }
         .run()(controlMaterializer)
     attachControlMessageObserver(ctrl)
     updateStreamMatValues(completed)
@@ -403,7 +407,7 @@ private[remote] class ArteryTcpTransport(
           .addAttributes(Attributes.logLevels(onFailure = LogLevels.Off))
           .via(inboundKillSwitch.flow)
           .viaMat(inboundFlow(settings, _inboundCompressions))(Keep.both)
-          .toMat(inboundSink(envelopeBufferPool))({ case ((a, b), c) => (a, b, c) })
+          .toMat(inboundSink(envelopeBufferPool)) { case ((a, b), c) => (a, b, c) }
           .run()(materializer)
 
       } else {
@@ -426,9 +430,9 @@ private[remote] class ArteryTcpTransport(
                 new FixedSizePartitionHub[InboundEnvelope](
                   inboundLanePartitioner,
                   inboundLanes,
-                  settings.Advanced.InboundHubBufferSize)))({
+                  settings.Advanced.InboundHubBufferSize))) {
               case ((a, b), c) => (a, b, c)
-            })
+            }
             .run()(materializer)
 
         val lane = inboundSink(envelopeBufferPool)

@@ -94,12 +94,12 @@ class RemoteActorSelectionSpec extends ArteryMultiNodeSpec with ImplicitSender {
       localSystem.actorSelection("/user/looker2/child") ! Identify(None)
       expectMsgType[ActorIdentity].ref should ===(Some(remoteChild))
 
-      localLooker2 ! ActorSelReq("child/..")
+      localLooker2                  ! ActorSelReq("child/..")
       expectMsgType[ActorSelection] ! Identify(None)
       (expectMsgType[ActorIdentity].ref.get should be).theSameInstanceAs(localLooker2)
 
       localSystem.actorSelection(localSystem / "looker2" / "child") ! ActorSelReq("..")
-      expectMsgType[ActorSelection] ! Identify(None)
+      expectMsgType[ActorSelection]                                 ! Identify(None)
       (expectMsgType[ActorIdentity].ref.get should be).theSameInstanceAs(localLooker2)
 
       localGrandchild ! ((TestActors.echoActorProps, "grandgrandchild"))

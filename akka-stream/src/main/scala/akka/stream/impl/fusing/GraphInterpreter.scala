@@ -43,11 +43,11 @@ import akka.stream.stage._
 
   final val PullStartFlip = 3 // 0011
   final val PullEndFlip = 10 // 1010
-  final val PushStartFlip = 12 //1100
-  final val PushEndFlip = 5 //0101
+  final val PushStartFlip = 12 // 1100
+  final val PushEndFlip = 5 // 0101
 
   final val KeepGoingFlag = 0x4000000
-  final val KeepGoingMask = 0x3ffffff
+  final val KeepGoingMask = 0x3FFFFFF
 
   /**
    * Marker object that indicates that a port holds no element since it was already grabbed. The port is still pullable,
@@ -536,7 +536,8 @@ import akka.stream.stage._
   private def processPush(connection: Connection): Unit = {
     if (Debug)
       println(
-        s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(connection)}, ${connection.slot} (${connection.inHandler}) [${inLogicName(connection)}]")
+        s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(
+            connection)}, ${connection.slot} (${connection.inHandler}) [${inLogicName(connection)}]")
     activeStage = connection.inOwner
     connection.portState ^= PushEndFlip
     connection.inHandler.onPush()

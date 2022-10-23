@@ -188,7 +188,7 @@ class ClusterHeartbeatSenderStateSpec extends AnyWordSpec with Matchers {
 
                 state.failureDetector.isMonitoring(node.address) should ===(false)
                 state.failureDetector.isAvailable(node.address) should ===(true)
-                state.activeReceivers should not contain (node)
+                state.activeReceivers should not contain node
               }
 
             case Unreachable =>
@@ -207,7 +207,7 @@ class ClusterHeartbeatSenderStateSpec extends AnyWordSpec with Matchers {
                 state = state.heartbeatRsp(node)
 
                 if (oldUnreachable(node))
-                  state.oldReceiversNowUnreachable should not contain (node)
+                  state.oldReceiversNowUnreachable should not contain node
 
                 if (oldUnreachable(node) && !oldRingReceivers(node))
                   state.failureDetector.isMonitoring(node.address) should ===(false)

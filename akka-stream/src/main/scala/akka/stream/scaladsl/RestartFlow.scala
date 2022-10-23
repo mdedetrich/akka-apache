@@ -299,13 +299,15 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
       }
     })
 
-    setHandler(out, new OutHandler {
-      override def onPull() = sinkIn.pull()
-      override def onDownstreamFinish(cause: Throwable) = {
-        finishing = true
-        sinkIn.cancel(cause)
-      }
-    })
+    setHandler(
+      out,
+      new OutHandler {
+        override def onPull() = sinkIn.pull()
+        override def onDownstreamFinish(cause: Throwable) = {
+          finishing = true
+          sinkIn.cancel(cause)
+        }
+      })
     sinkIn
   }
 

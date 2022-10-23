@@ -38,7 +38,7 @@ class ClusterShardingStatsSpec
       val upProbe = createTestProbe[SelfUp]()
 
       cluster.subscriptions ! akka.cluster.typed.Subscribe(upProbe.ref, classOf[SelfUp])
-      cluster.manager ! Join(cluster.selfMember.address)
+      cluster.manager       ! Join(cluster.selfMember.address)
       upProbe.expectMessageType[SelfUp]
 
       val replyProbe = createTestProbe[ClusterShardingStats]()

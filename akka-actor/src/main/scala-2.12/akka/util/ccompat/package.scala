@@ -5,7 +5,7 @@
 package akka.util
 
 import scala.{ collection => c }
-import scala.collection.{ GenTraversable, immutable => i, mutable => m }
+import scala.collection.{ immutable => i, mutable => m, GenTraversable }
 import scala.collection.generic.{ CanBuildFrom, GenericCompanion, Sorted, SortedSetFactory }
 import scala.language.higherKinds
 import scala.language.implicitConversions

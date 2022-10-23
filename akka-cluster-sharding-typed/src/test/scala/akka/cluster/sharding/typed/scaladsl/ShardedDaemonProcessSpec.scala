@@ -68,9 +68,11 @@ class ShardedDaemonProcessSpec
     "have a single node cluster running first" in {
       val probe = createTestProbe()
       Cluster(system).manager ! Join(Cluster(system).selfMember.address)
-      probe.awaitAssert({
-        Cluster(system).selfMember.status == MemberStatus.Up
-      }, 3.seconds)
+      probe.awaitAssert(
+        {
+          Cluster(system).selfMember.status == MemberStatus.Up
+        },
+        3.seconds)
     }
 
     "start N actors with unique ids" in {

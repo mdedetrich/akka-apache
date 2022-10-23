@@ -92,8 +92,8 @@ abstract class EventSourcedBehaviorLoggingSpec(config: Config)
       val doneProbe = createTestProbe[Done]()
       LoggingTestKit
         .debug("Handled command [akka.persistence.typed.EventSourcedBehaviorLoggingSpec$ChattyEventSourcingBehavior$Hellos], " +
-        "resulting effect: [PersistAll(akka.persistence.typed.EventSourcedBehaviorLoggingSpec$ChattyEventSourcingBehavior$Event," +
-        "akka.persistence.typed.EventSourcedBehaviorLoggingSpec$ChattyEventSourcingBehavior$Event)], side effects: [1]")
+          "resulting effect: [PersistAll(akka.persistence.typed.EventSourcedBehaviorLoggingSpec$ChattyEventSourcingBehavior$Event," +
+          "akka.persistence.typed.EventSourcedBehaviorLoggingSpec$ChattyEventSourcingBehavior$Event)], side effects: [1]")
         .withLoggerName(loggerName)
         .expect {
           chattyActor ! Hellos("Mary", "Joe", doneProbe.ref)

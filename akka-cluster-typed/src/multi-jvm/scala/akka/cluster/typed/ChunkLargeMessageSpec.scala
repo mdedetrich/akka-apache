@@ -124,7 +124,7 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
         Behaviors.receiveMessage {
           case WrappedDelivery(d) =>
             d.message.replyTo ! Producer.Reply(d.message.sendTimstamp)
-            d.confirmTo ! ConsumerController.Confirmed
+            d.confirmTo       ! ConsumerController.Confirmed
             Behaviors.same
           case Stop =>
             Behaviors.stopped
@@ -176,7 +176,7 @@ abstract class ChunkLargeMessageSpec extends MultiNodeSpec(ChunkLargeMessageSpec
         identify(s"largeProducerController$n", first)
       largeConsumerController ! ConsumerController.RegisterToProducerController(largeProducerController)
       enterBarrier(s"producer$n-stopped")
-      consumer ! Consumer.Stop
+      consumer      ! Consumer.Stop
       largeConsumer ! Consumer.Stop
     }
     enterBarrier(s"after-$n")

@@ -61,8 +61,7 @@ class PhiAccrualFailureDetector(
     val acceptableHeartbeatPause: FiniteDuration,
     val firstHeartbeatEstimate: FiniteDuration,
     eventStream: Option[EventStream])(
-    implicit
-    clock: Clock)
+    implicit clock: Clock)
     extends FailureDetector {
 
   /**

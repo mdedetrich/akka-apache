@@ -40,10 +40,10 @@ akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
 
     def persistenceId = self.path.name
 
-    override def preStart(): Unit = monitor ! PreStart(persistenceId)
+    override def preStart(): Unit = monitor                                      ! PreStart(persistenceId)
     override def preRestart(reason: Throwable, msg: Option[Any]): Unit = monitor ! PreRestart(persistenceId)
-    override def postRestart(reason: Throwable): Unit = monitor ! PostRestart(persistenceId)
-    override def postStop(): Unit = monitor ! PostStop(persistenceId)
+    override def postRestart(reason: Throwable): Unit = monitor                  ! PostRestart(persistenceId)
+    override def postStop(): Unit = monitor                                      ! PostStop(persistenceId)
 
     def receiveRecover = {
       case x => monitor ! x

@@ -48,7 +48,7 @@ trait PipeToSupport {
     def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
       future.whenComplete(new BiConsumer[T, Throwable] {
         override def accept(t: T, ex: Throwable): Unit = {
-          if (t != null) recipient ! t
+          if (t != null) recipient  ! t
           if (ex != null) recipient ! Status.Failure(ex)
         }
       })
@@ -56,7 +56,7 @@ trait PipeToSupport {
     def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
       future.whenComplete(new BiConsumer[T, Throwable] {
         override def accept(t: T, ex: Throwable): Unit = {
-          if (t != null) recipient ! t
+          if (t != null) recipient  ! t
           if (ex != null) recipient ! Status.Failure(ex)
         }
       })

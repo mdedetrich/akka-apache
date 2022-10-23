@@ -87,11 +87,13 @@ abstract class AbstractRemoteSendConsistencySpec(config: Config)
   "Artery" must {
 
     "be able to identify a remote actor and ping it" in {
-      systemB.actorOf(Props(new Actor {
-        def receive = {
-          case "ping" => sender() ! "pong"
-        }
-      }), "echo")
+      systemB.actorOf(
+        Props(new Actor {
+          def receive = {
+            case "ping" => sender() ! "pong"
+          }
+        }),
+        "echo")
 
       val actorPath = rootB / "user" / "echo"
       val echoSel = system.actorSelection(actorPath)

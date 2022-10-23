@@ -72,7 +72,7 @@ class DeadLetterSuspensionSpec extends AkkaSpec("""
       .intercept {
         deadActor ! 4
       }
-    deadActor ! 5
+    deadActor     ! 5
     droppingActor ! 6
 
     // let suspend-duration elapse

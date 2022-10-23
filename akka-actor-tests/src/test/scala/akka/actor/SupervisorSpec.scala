@@ -197,7 +197,7 @@ class SupervisorSpec
 
   def kill(pingPongActor: ActorRef) = {
     val result = pingPongActor.?(DieReply)(DilatedTimeout)
-    expectMsg(Timeout, ExceptionMessage) //this is sent from PingPongActor's postRestart()
+    expectMsg(Timeout, ExceptionMessage) // this is sent from PingPongActor's postRestart()
     intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
   }
 
@@ -218,7 +218,7 @@ class SupervisorSpec
     }
 
     "restart properly when same instance is returned" in {
-      val restarts = 3 //max number of restarts
+      val restarts = 3 // max number of restarts
       lazy val childInstance = new Actor {
         var preRestarts = 0
         var postRestarts = 0
@@ -439,17 +439,19 @@ class SupervisorSpec
 
     "not lose system messages when a NonFatal exception occurs when processing a system message" in {
       val parent = system.actorOf(Props(new Actor {
-        override val supervisorStrategy = OneForOneStrategy()({
+        override val supervisorStrategy = OneForOneStrategy() {
           case e: IllegalStateException if e.getMessage == "OHNOES" => throw e
           case _                                                    => SupervisorStrategy.Restart
-        })
-        val child = context.watch(context.actorOf(Props(new Actor {
-          override def postRestart(reason: Throwable): Unit = testActor ! "child restarted"
-          def receive = {
-            case l: TestLatch => { Await.ready(l, 5 seconds); throw new IllegalStateException("OHNOES") }
-            case "test"       => sender() ! "child green"
-          }
-        }), "child"))
+        }
+        val child = context.watch(context.actorOf(
+          Props(new Actor {
+            override def postRestart(reason: Throwable): Unit = testActor ! "child restarted"
+            def receive = {
+              case l: TestLatch => { Await.ready(l, 5 seconds); throw new IllegalStateException("OHNOES") }
+              case "test"       => sender() ! "child green"
+            }
+          }),
+          "child"))
 
         override def postRestart(reason: Throwable): Unit = testActor ! "parent restarted"
 
@@ -461,8 +463,8 @@ class SupervisorSpec
 
         def receive = {
           case Terminated(t) if t.path == child.path => testActor ! "child terminated"
-          case l: TestLatch                          => child ! l
-          case "test"                                => sender() ! "green"
+          case l: TestLatch                          => child     ! l
+          case "test"                                => sender()  ! "green"
           case "testchild"                           => child.forward("test")
           case "testchildAndAck"                     => child.forward("test"); sender() ! "ack"
         }
@@ -559,7 +561,7 @@ class SupervisorSpec
 
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 
-    //impossible to confirm if the restart window is infinite, so making sure maxNrOfRetries is respected correctly
+    // impossible to confirm if the restart window is infinite, so making sure maxNrOfRetries is respected correctly
     kill(pingpong)
     kill(pingpong)
     kill(pingpong)

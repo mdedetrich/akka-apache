@@ -42,7 +42,7 @@ class RemoteFailureSpec extends ArteryMultiNodeSpec with ImplicitSender {
 
       // first everything is up and running
       (1 to n).foreach { x =>
-        localSelection ! Ping("1")
+        localSelection                           ! Ping("1")
         remoteSelections(x % remoteSystems.size) ! Ping("1")
       }
 
@@ -58,7 +58,7 @@ class RemoteFailureSpec extends ArteryMultiNodeSpec with ImplicitSender {
       }
 
       (1 to n).foreach { x =>
-        localSelection ! Ping("2")
+        localSelection                           ! Ping("2")
         remoteSelections(x % remoteSystems.size) ! Ping("2")
       }
 

@@ -77,7 +77,7 @@ abstract class DirectMemorySpec extends MultiNodeSpec(DirectMemorySpec) with STM
       val regular = system.actorOf(Props(classOf[CountingEcho], testActor, nrOfRegularMessages), "regular")
 
       runOn(first) {
-        large ! Start(node(second))
+        large   ! Start(node(second))
         regular ! Start(node(second))
       }
 

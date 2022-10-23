@@ -162,7 +162,7 @@ class ClusterShardingSpec
   "Typed cluster sharding" must {
 
     "join cluster" in {
-      Cluster(system).manager ! Join(Cluster(system).selfMember.address)
+      Cluster(system).manager  ! Join(Cluster(system).selfMember.address)
       Cluster(system2).manager ! Join(Cluster(system).selfMember.address)
 
       eventually {
@@ -316,7 +316,7 @@ class ClusterShardingSpec
 
         Behaviors.empty
       }
-     */
+       */
     }
 
     "EntityRef - AskTimeoutException" in {

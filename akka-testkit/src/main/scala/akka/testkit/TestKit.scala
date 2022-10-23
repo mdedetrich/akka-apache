@@ -182,10 +182,13 @@ trait TestKitBase {
     val ref = impl.systemActorOf(
       TestActor.props(queue).withDispatcher(CallingThreadDispatcher.Id),
       "%s-%d".format(testActorName, TestKit.testActorId.incrementAndGet))
-    awaitCond(ref match {
-      case r: RepointableRef => r.isStarted
-      case _                 => true
-    }, 3.seconds.dilated, 10.millis)
+    awaitCond(
+      ref match {
+        case r: RepointableRef => r.isStarted
+        case _                 => true
+      },
+      3.seconds.dilated,
+      10.millis)
     ref
   }
 
@@ -415,8 +418,9 @@ trait TestKitBase {
     val prev_end = end
     end = start + max_diff
 
-    val ret = try f
-    finally end = prev_end
+    val ret =
+      try f
+      finally end = prev_end
 
     val diff = now - start
     assert(min <= diff, s"block took ${format(min.unit, diff)}, should at least have been $min")
@@ -750,8 +754,8 @@ trait TestKitBase {
     var elem: AnyRef = queue.peekFirst()
     var left = leftNow
     while (left.toNanos > 0 && elem == null) {
-      //Use of (left / 2) gives geometric series limited by finish time similar to (1/2)^n limited by 1,
-      //so it is very precise
+      // Use of (left / 2) gives geometric series limited by finish time similar to (1/2)^n limited by 1,
+      // so it is very precise
       Thread.sleep(pollInterval.toMillis min (left / 2).toMillis)
       left = leftNow
       if (left.toNanos > 0) {

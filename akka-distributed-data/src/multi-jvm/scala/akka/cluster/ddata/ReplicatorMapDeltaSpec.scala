@@ -249,7 +249,7 @@ class ReplicatorMapDeltaSpec extends MultiNodeSpec(ReplicatorMapDeltaSpec) with 
         // by setting something for each key we don't have to worry about NotFound
         List(KeyA, KeyB, KeyC).foreach { key =>
           fullStateReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, 1))
-          deltaReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, 1))
+          deltaReplicator     ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, 1))
         }
         List(KeyD, KeyE, KeyF).foreach { key =>
           fullStateReplicator ! Update(key._1, ORMultiMap.emptyWithValueDeltas[String, String], WriteLocal)(
@@ -259,7 +259,7 @@ class ReplicatorMapDeltaSpec extends MultiNodeSpec(ReplicatorMapDeltaSpec) with 
         }
         List(KeyG, KeyH, KeyI).foreach { key =>
           fullStateReplicator ! Update(key._1, ORMultiMap.empty[String, String], WriteLocal)(_ :+ (key._2 -> Set("a")))
-          deltaReplicator ! Update(key._1, ORMultiMap.empty[String, String], WriteLocal)(_ :+ (key._2 -> Set("a")))
+          deltaReplicator     ! Update(key._1, ORMultiMap.empty[String, String], WriteLocal)(_ :+ (key._2 -> Set("a")))
         }
         List(KeyJ, KeyK, KeyL).foreach { key =>
           fullStateReplicator ! Update(key._1, ORMap.empty[String, ORSet[String]], WriteLocal)(
@@ -346,10 +346,10 @@ class ReplicatorMapDeltaSpec extends MultiNodeSpec(ReplicatorMapDeltaSpec) with 
             case Delay(d) => Thread.sleep(d)
             case Incr(key, n, _) =>
               fullStateReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, n))
-              deltaReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, n))
+              deltaReplicator     ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, n))
             case Decr(key, n, _) =>
               fullStateReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.decrementBy(key._2, n))
-              deltaReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.decrementBy(key._2, n))
+              deltaReplicator     ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.decrementBy(key._2, n))
             case AddVD(key, elem, _) =>
               // to have an deterministic result when mixing add/remove we can only perform
               // the ORSet operations from one node

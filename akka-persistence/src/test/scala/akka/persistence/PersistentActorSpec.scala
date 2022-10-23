@@ -450,7 +450,7 @@ object PersistentActorSpec {
         super.receiveRecover(msg)
       case RecoveryCompleted =>
         probe ! RecoveryCompleted
-        self ! "I am the recovered"
+        self  ! "I am the recovered"
         updateState(Evt(RecoveryCompleted))
     }
 
@@ -770,7 +770,7 @@ object PersistentActorSpec {
             probe ! inner
             Thread.sleep(1000) // really long wait here...
             // the next incoming command must be handled by the following function
-            context.become({ case _ => sender() ! "done" })
+            context.become { case _ => sender() ! "done" }
           }
         }
     }
@@ -1334,9 +1334,9 @@ abstract class PersistentActorSpec(config: Config) extends PersistenceSpec(confi
     "correlate persistAsync handlers after restart" in {
       val persistentActor = asyncPersistHandlerCorrelationCheck
       for (n <- 1 to 100) persistentActor ! Cmd(n)
-      persistentActor ! "boom"
-      for (n <- 1 to 20) persistentActor ! Cmd(n)
-      persistentActor ! Cmd("done")
+      persistentActor                     ! "boom"
+      for (n <- 1 to 20) persistentActor  ! Cmd(n)
+      persistentActor                     ! Cmd("done")
       expectMsg(5.seconds, "done")
     }
     "allow deferring handlers in order to provide ordered processing in respect to persist handlers" in {

@@ -240,7 +240,7 @@ abstract class ReplicatedShardingSpec(replicationType: ReplicationType, configA:
   "Replicated sharding" should {
 
     "form a one node cluster" in {
-      Cluster(system).manager ! Join(Cluster(system).selfMember.address)
+      Cluster(system).manager  ! Join(Cluster(system).selfMember.address)
       Cluster(system2).manager ! Join(Cluster(system).selfMember.address)
 
       eventually {

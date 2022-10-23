@@ -83,7 +83,7 @@ class CounterSpec extends ReplicationBaseSpec {
 
       for (n <- 1 to 10) {
         if (n % 2 == 0) r1 ! Increment
-        else r1 ! Decrement
+        else r1            ! Decrement
       }
       for (_ <- 1 to 10) {
         r2 ! Increment

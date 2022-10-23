@@ -170,7 +170,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
 
   "contain a sample for scheduling messages to self" in {
 
-    //#timer
+    // #timer
     object Buncher {
 
       sealed trait Command
@@ -214,7 +214,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
         }
       }
     }
-    //#timer
+    // #timer
 
     val probe = createTestProbe[Buncher.Batch]()
     val buncher: ActorRef[Buncher.Command] = spawn(Buncher(probe.ref, 1.second, 10))
@@ -414,7 +414,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
 
             // we narrow the ActorRef type to any subtype of the actual type we accept
             keyCabinet ! KeyCabinet.GetKeys(whoIsLeaving, context.self.narrow[Keys])
-            drawer ! Drawer.GetWallet(whoIsLeaving, context.self.narrow[Wallet])
+            drawer     ! Drawer.GetWallet(whoIsLeaving, context.self.narrow[Wallet])
 
             def nextBehavior(): Behavior[AnyRef] =
               (keys, wallet) match {
@@ -581,7 +581,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
   }
 
   "contain a sample for pipeToSelf" in {
-    //#pipeToSelf
+    // #pipeToSelf
 
     trait CustomerDataAccess {
       def update(value: Customer): Future[Done]
@@ -632,7 +632,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
         }
       }
     }
-    //#pipeToSelf
+    // #pipeToSelf
 
     val dataAccess = new CustomerDataAccess {
       override def update(value: Customer): Future[Done] = Future.successful(Done)

@@ -49,11 +49,11 @@ class ActorSourceSinkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
 
       val autoPilot = Behaviors.receiveMessage[AckProto] {
         case m @ Init(sender) =>
-          p.ref ! m
+          p.ref  ! m
           sender ! "ACK"
           Behaviors.same
         case m @ Msg(sender, _) =>
-          p.ref ! m
+          p.ref  ! m
           sender ! "ACK"
           Behaviors.same
         case m =>
@@ -86,11 +86,11 @@ class ActorSourceSinkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
 
       val autoPilot = Behaviors.receiveMessage[AckProto] {
         case m @ Init(sender) =>
-          p.ref ! m
+          p.ref  ! m
           sender ! "ACK"
           Behaviors.same
         case m @ Msg(sender, _) =>
-          p.ref ! m
+          p.ref  ! m
           sender ! "ACK"
           Behaviors.same
         case m =>
@@ -150,7 +150,8 @@ class ActorSourceSinkSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
       val (in, out) = ActorSource
         .actorRefWithBackpressure[String, String](
           p.ref,
-          "ack", { case "complete" => CompletionStrategy.draining },
+          "ack",
+          { case "complete" => CompletionStrategy.draining },
           PartialFunction.empty)
         .toMat(Sink.seq)(Keep.both)
         .run()

@@ -121,7 +121,7 @@ class RemoteFeaturesDisabledSpec extends RemoteFeaturesSpec(RemoteFeaturesSpec.d
       EventFilter
         .warning(pattern = s"Dropped remote Watch: disabled for *", occurrences = 1)
         .intercept(monitor ! WatchRemote(remoteWatchee, watcher))
-      monitor ! Stats
+      monitor              ! Stats
       expectMsg(Stats.empty)
       expectNoMessage(100.millis)
 
@@ -146,7 +146,8 @@ class RemoteFeaturesDisabledSpec extends RemoteFeaturesSpec(RemoteFeaturesSpec.d
     """))
 
       val masterRef = masterSystem.actorOf(Props[RemoteDeploymentSpec.Echo1](), actorName)
-      masterRef.path shouldEqual RootActorPath(AddressFromURIString(s"akka://${masterSystem.name}")) / "user" / actorName
+      masterRef.path shouldEqual RootActorPath(
+        AddressFromURIString(s"akka://${masterSystem.name}")) / "user" / actorName
       masterRef.path.address.hasLocalScope shouldBe true
 
       masterSystem.actorSelection(RootActorPath(address(system)) / "user" / actorName) ! Identify(1)

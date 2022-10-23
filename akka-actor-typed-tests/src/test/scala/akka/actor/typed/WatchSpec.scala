@@ -159,15 +159,17 @@ class WatchSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogC
       val grossoBosso =
         spawn(
           Behaviors.setup[Any] { context =>
-            val middleManagement = context.spawn(Behaviors.setup[Any] { context =>
-              val sixPackJoe = context.spawn(Behaviors.receive[Any]((_, _) => throw ex), "joe")
-              context.watch(sixPackJoe)
+            val middleManagement = context.spawn(
+              Behaviors.setup[Any] { context =>
+                val sixPackJoe = context.spawn(Behaviors.receive[Any]((_, _) => throw ex), "joe")
+                context.watch(sixPackJoe)
 
-              Behaviors.receive[Any] { (_, message) =>
-                sixPackJoe ! message
-                Behaviors.same
-              } // no handling of terminated, even though we watched!!!
-            }, "middle-management")
+                Behaviors.receive[Any] { (_, message) =>
+                  sixPackJoe ! message
+                  Behaviors.same
+                } // no handling of terminated, even though we watched!!!
+              },
+              "middle-management")
 
             context.watch(middleManagement)
 

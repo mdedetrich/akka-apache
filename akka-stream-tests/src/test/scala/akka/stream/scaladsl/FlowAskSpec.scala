@@ -36,7 +36,7 @@ object FlowAskSpec {
   class ReplyAndProxy(to: ActorRef) extends Actor {
     override def receive: Receive = {
       case msg: Int =>
-        to ! msg
+        to       ! msg
         sender() ! Reply(msg)
     }
   }

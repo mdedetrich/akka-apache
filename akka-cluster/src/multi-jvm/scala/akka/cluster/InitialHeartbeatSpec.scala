@@ -45,19 +45,23 @@ abstract class InitialHeartbeatSpec extends MultiNodeClusterSpec(InitialHeartbea
 
       runOn(first) {
         within(10 seconds) {
-          awaitAssert({
-            cluster.sendCurrentClusterState(testActor)
-            expectMsgType[CurrentClusterState].members.map(_.address) should contain(secondAddress)
-          }, interval = 50.millis)
+          awaitAssert(
+            {
+              cluster.sendCurrentClusterState(testActor)
+              expectMsgType[CurrentClusterState].members.map(_.address) should contain(secondAddress)
+            },
+            interval = 50.millis)
         }
       }
       runOn(second) {
         cluster.join(first)
         within(10 seconds) {
-          awaitAssert({
-            cluster.sendCurrentClusterState(testActor)
-            expectMsgType[CurrentClusterState].members.map(_.address) should contain(firstAddress)
-          }, interval = 50.millis)
+          awaitAssert(
+            {
+              cluster.sendCurrentClusterState(testActor)
+              expectMsgType[CurrentClusterState].members.map(_.address) should contain(firstAddress)
+            },
+            interval = 50.millis)
         }
       }
       enterBarrier("second-joined")

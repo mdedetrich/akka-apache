@@ -621,12 +621,13 @@ object GraphDSL extends GraphCreate {
     }
     val sListH = gbuilder.delegate.add(graphs.get(0), toList)
     val sListT = graphs.subList(1, graphs.size()).asScala.map(g => gbuilder.delegate.add(g, combine)).asJava
-    val s = buildBlock(gbuilder, {
-      val newList = new util.ArrayList[IS]
-      newList.add(sListH)
-      newList.addAll(sListT)
-      newList
-    })
+    val s = buildBlock(
+      gbuilder, {
+        val newList = new util.ArrayList[IS]
+        newList.add(sListH)
+        newList.addAll(sListT)
+        newList
+      })
     new GenericGraph(s, gbuilder.delegate.result(s))
   }
 
